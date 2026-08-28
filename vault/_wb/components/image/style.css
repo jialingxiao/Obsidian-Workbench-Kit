@@ -1,0 +1,47 @@
+/* 组件 · image */
+
+.wb .wb-img { height: 100%; display: flex; flex-direction: column; min-height: 0; }
+
+/* ── 单图 ── */
+.wb figure.wb-img-one {
+  margin: 0;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.wb .wb-img-one.is-linked { cursor: pointer; }
+.wb .wb-img-one img {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: block;
+}
+.wb .wb-img-one.is-cover img   { object-fit: cover; }
+.wb .wb-img-one.is-contain img { object-fit: contain; }
+.wb .wb-img.is-rounded .wb-img-one img { border-radius: var(--wb-radius); }
+
+.wb .wb-img-one figcaption {
+  margin-top: 6px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  text-align: center;
+}
+
+/* ── 图集 ── */
+.wb .wb-img-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--wb-img-cols, 3), minmax(0, 1fr));
+  gap: 5px;
+}
+.wb .wb-img-cell {
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--wb-surface);
+}
+.wb .wb-img.is-rounded .wb-img-cell { border-radius: var(--wb-radius-sm); }
+.wb .wb-img-cell img { width: 100%; height: 100%; display: block; transition: transform .2s; }
+.wb .wb-img-cell.is-cover img   { object-fit: cover; }
+.wb .wb-img-cell.is-contain img { object-fit: contain; }
+.wb .wb-img-cell:hover img { transform: scale(1.05); }

@@ -1,0 +1,32 @@
+/* 组件 · seal
+   颜色走 --wb-accent，所以换主题时印章跟着变 —— 在青瓷底上是青的，
+   在朱砂底上才是红的。装饰组件也不该写死颜色。 */
+
+.wb .wb-seal.is-left   { text-align: left; }
+.wb .wb-seal.is-center { text-align: center; }
+.wb .wb-seal.is-right  { text-align: right; }
+
+.wb .wb-seal-svg { display: inline-block; max-width: 100%; height: auto; }
+
+/* 朱文：粗边框、红字、底透 */
+.wb .wb-seal-frame {
+  fill: none;
+  stroke: var(--wb-accent);
+  stroke-width: 4;
+}
+.wb .wb-seal-char {
+  fill: var(--wb-accent);
+  font-family: var(--wb-f-song, serif);
+  font-weight: 700;
+}
+
+/* 白文：整块红底、字挖空 */
+.wb .wb-seal-svg.is-yin .wb-seal-frame { fill: var(--wb-accent); stroke: none; }
+.wb .wb-seal-svg.is-yin .wb-seal-char  { fill: var(--wb-bg); }
+
+.wb .wb-seal-cap {
+  margin-top: 6px;
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .2em;
+  color: var(--wb-faint);
+}

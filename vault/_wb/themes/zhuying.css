@@ -1,0 +1,66 @@
+/* ============================================================
+   主题 · 竹影（zhuying）
+   @name 竹影
+   @en Bamboo Shade
+   @desc 浅豆青底配竹子青，铭金点缀，圆体字清爽轻快
+   @font 圆体
+   @swatch #EDF3E4 #18260F #5E724D
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-zhuying {
+  --wb-bg:             #EDF3E4;
+  --wb-surface:        #FBFDF7;
+  --wb-surface-2:      #DAE6C9;
+  --wb-border:         #C4D4AE;
+  --wb-rule:           #18260F;
+  --wb-text:           #18260F;
+  --wb-muted:          #44503B;
+  --wb-faint:          #5B6752;
+  --wb-accent:         #5E724D;
+  --wb-accent-2:       #A8861B;
+  --wb-on-accent:      #FAFDF5;
+  --wb-success:        #3A6B1E;
+  --wb-danger:         #A3462E;
+  --wb-heat-empty:     #DAE6C9;
+  --wb-mast-bg:        #1F2E15;
+  --wb-mast-text:      #FAFDF5;
+  --wb-mast-dim:       #B1B8AA;
+  --wb-radius:         14px;
+  --wb-radius-sm:      8px;
+  --wb-gap:            12px;
+  --wb-pad:            18px;
+  --wb-font:           var(--wb-f-yuan);
+  --wb-font-display:   var(--wb-f-yuan);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.3em;
+  --wb-title-weight:   700;
+  --wb-title-track:    0.01em;
+  --wb-shadow:         0 1px 3px rgba(35,60,20,.10);
+}
+
+/* 深色模式：底色整体压暗，但保留这套主题的色相关系。
+   取值同样由脚本推算，不手写。 */
+.theme-dark .wb.wb-theme-zhuying {
+  --wb-bg:             #10150C;
+  --wb-surface:        #151B10;
+  --wb-surface-2:      #1A2215;
+  --wb-border:         #374527;
+  --wb-rule:           #E7EEDC;
+  --wb-text:           #E7EEDC;
+  --wb-muted:          #BCC3B2;
+  --wb-faint:          #A6AC9D;
+  --wb-accent:         #789262;
+  --wb-accent-2:       #E9CE77;
+  --wb-on-accent:      #0B0F08;
+  --wb-success:        #8DC463;
+  --wb-danger:         #E39786;
+  --wb-heat-empty:     #1A2215;
+  --wb-mast-bg:        #0B0F08;
+  --wb-mast-text:      #E7EEDC;
+  --wb-mast-dim:       #989E90;
+}
+
+.wb.wb-theme-zhuying .wb-head-label { letter-spacing: .18em; }

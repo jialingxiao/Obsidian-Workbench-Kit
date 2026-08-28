@@ -1,0 +1,69 @@
+/* 组件 · timeline */
+
+.wb .wb-tl-line { position: relative; }
+
+.wb .wb-tl-item {
+  display: grid;
+  grid-template-columns: minmax(0, 86px) 14px 1fr;
+  align-items: start;
+  gap: 0 8px;
+  padding-bottom: 12px;
+}
+.wb .wb-tl-item:last-child { padding-bottom: 0; }
+
+.wb .wb-tl-date {
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  text-align: right;
+  padding-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* 圆点 + 竖线：线画在圆点这一列的伪元素上，天然对齐 */
+.wb .wb-tl-dot {
+  position: relative;
+  width: 14px;
+  align-self: stretch;
+}
+.wb .wb-tl-dot::before {
+  content: "";
+  position: absolute;
+  left: 5px; top: 5px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--wb-accent);
+}
+.wb .wb-tl-dot::after {
+  content: "";
+  position: absolute;
+  left: 7px; top: 12px; bottom: -12px;
+  width: 1px;
+  background: var(--wb-border);
+}
+.wb .wb-tl-item:last-child .wb-tl-dot::after { display: none; }
+
+/* 同一天的后续条目：不重复日期，圆点也收成空心 */
+.wb .wb-tl-item.is-same-day .wb-tl-dot::before {
+  background: var(--wb-bg);
+  box-shadow: 0 0 0 1px var(--wb-accent);
+}
+
+.wb a.wb-tl-title {
+  display: block;
+  font-size: var(--wb-fs-base);
+  line-height: 1.35;
+}
+.wb .wb-tl-desc {
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+  .wb .wb-tl-item { grid-template-columns: 0 14px 1fr; }
+  .wb .wb-tl-date { display: none; }
+}

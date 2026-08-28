@@ -1,0 +1,27 @@
+/* 组件 · analog-clock */
+
+.wb .wb-ac.is-left   { text-align: left; }
+.wb .wb-ac.is-center { text-align: center; }
+.wb .wb-ac.is-right  { text-align: right; }
+
+.wb .wb-ac-svg { display: inline-block; max-width: 100%; height: auto; }
+
+.wb .wb-ac-face {
+  fill: var(--wb-surface);
+  stroke: var(--wb-border);
+  stroke-width: 1;
+}
+
+.wb .wb-ac-tick { stroke: var(--wb-faint); stroke-width: .6; }
+.wb .wb-ac-tick.is-major { stroke: var(--wb-muted); stroke-width: 1.2; }
+
+.wb .wb-ac-num {
+  fill: var(--wb-muted);
+  font-family: var(--wb-font-display);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.wb .wb-ac-hand { stroke: var(--wb-text); stroke-linecap: round; }
+.wb .wb-ac-hand.is-sec { stroke: var(--wb-accent); }
+.wb .wb-ac-pin { fill: var(--wb-accent); }

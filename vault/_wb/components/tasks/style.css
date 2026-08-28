@@ -1,0 +1,34 @@
+/* 组件 · tasks
+   内容由 Dataview 渲染，这里只做收敛：它默认的字号和缩进是给正文用的，
+   放进看板块里太松散。 */
+
+.wb .wb-tasks-list { font-size: var(--wb-fs-sm); }
+
+.wb .wb-tasks-list ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.wb .wb-tasks-list ul.contains-task-list { padding-left: 0; }
+
+.wb .wb-tasks-list li { margin: 2px 0; line-height: 1.45; }
+
+/* Dataview 按文件分组时的组标题 */
+.wb .wb-tasks-list h4,
+.wb .wb-tasks-list .dataview.small-text {
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--wb-muted);
+  margin: 8px 0 3px;
+}
+.wb .wb-tasks-list h4:first-child { margin-top: 0; }
+
+.wb .wb-tasks-list a { color: var(--wb-text); }
+.wb .wb-tasks-list a:hover { color: var(--wb-accent); }
+
+/* 已完成的压暗，让未完成的跳出来 */
+.wb .wb-tasks-list li[data-task="x"],
+.wb .wb-tasks-list .is-checked {
+  color: var(--wb-faint);
+  text-decoration: line-through;
+}

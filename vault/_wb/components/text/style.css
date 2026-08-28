@@ -1,0 +1,22 @@
+/* 组件 · text */
+
+.wb .wb-text.is-center { text-align: center; }
+.wb .wb-text.is-boxed {
+  padding: 12px 14px;
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius);
+}
+
+.wb .wb-text-title {
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--wb-muted);
+  margin-bottom: 5px;
+}
+
+.wb .wb-text-body { line-height: 1.65; }
+.wb .wb-text.is-sm .wb-text-body { font-size: var(--wb-fs-sm); }
+.wb .wb-text.is-lg .wb-text-body { font-size: 1.2em; }

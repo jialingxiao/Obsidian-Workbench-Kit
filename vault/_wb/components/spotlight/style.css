@@ -1,0 +1,55 @@
+/* 组件 · spotlight */
+
+.wb .wb-spot-card { padding: 2px 0; }
+
+.wb .wb-spot-kicker {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--wb-font-mono);
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--wb-muted);
+}
+.wb .wb-spot-num { color: var(--wb-faint); letter-spacing: .04em; }
+
+.wb .wb-spot-rule {
+  height: 0;
+  border-top: 2px solid var(--wb-rule, var(--wb-text));
+  margin: 5px 0 10px;
+}
+
+.wb a.wb-spot-title {
+  display: block;
+  font-family: var(--wb-font-display);
+  font-size: 1.5em;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.wb a.wb-spot-title:hover { color: var(--wb-accent); text-decoration: none; }
+
+.wb .wb-spot-desc {
+  margin-top: 6px;
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.wb button.wb-spot-again {
+  margin-top: 10px;
+  font: inherit;
+  font-size: var(--wb-fs-xs);
+  padding: 3px 10px;
+  cursor: pointer;
+  color: var(--wb-muted);
+  background: transparent;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius-sm);
+  box-shadow: none;
+}
+.wb button.wb-spot-again:hover { color: var(--wb-accent); border-color: var(--wb-accent); }

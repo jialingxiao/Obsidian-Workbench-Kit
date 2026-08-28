@@ -1,0 +1,7 @@
+# 一律用 LF，包括 Windows 上的工作区。
+#
+# 不只是整洁问题：scripts/build-plugin.mjs 是把 vault/_wb/ 下的源码
+# 原样内联进 main.js 的字符串里的。如果 Windows 检出成 CRLF，构建出来的
+# 包就和 macOS/Linux 上构建的不是同一份字节 —— diff 会炸，也说不清
+# 到底哪一份才是发布的那个。
+* text=auto eol=lf

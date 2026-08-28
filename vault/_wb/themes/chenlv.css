@@ -1,0 +1,51 @@
+/* ============================================================
+   主题 · 沉绿（chenlv）
+   @name 沉绿
+   @en Deep Green
+   @desc 沉绿夜底上一点绿茶色，是这套里最有精神的深色
+   @font 圆体（深色）
+   @swatch #101814 #E7EFE3 #B9D731
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-chenlv {
+  --wb-bg:             #101814;
+  --wb-surface:        #15201A;
+  --wb-surface-2:      #1B2620;
+  --wb-border:         #375044;
+  --wb-rule:           #E7EFE3;
+  --wb-text:           #E7EFE3;
+  --wb-muted:          #BFC7BC;
+  --wb-faint:          #A8B0A6;
+  --wb-accent:         #B9D731;
+  --wb-accent-2:       #5AA4AE;
+  --wb-on-accent:      #0E1713;
+  --wb-success:        #7FC08A;
+  --wb-danger:         #EB9B87;
+  --wb-heat-empty:     #1F3028;
+  --wb-mast-bg:        #0E1713;
+  --wb-mast-text:      #E7EFE3;
+  --wb-mast-dim:       #9AA39A;
+  --wb-radius:         12px;
+  --wb-radius-sm:      7px;
+  --wb-gap:            12px;
+  --wb-pad:            18px;
+  --wb-font:           var(--wb-f-yuan);
+  --wb-font-display:   var(--wb-f-yuan);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.4em;
+  --wb-title-weight:   700;
+  --wb-title-track:    0.01em;
+  --wb-shadow:         0 2px 7px rgba(0,0,0,.40);
+}
+
+/* 和松烟/靛蓝/曜石一样：深底靠实底 + 边框 + 投影分层，不靠明度阶 */
+.wb.wb-theme-chenlv .wb-blk {
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  box-shadow: var(--wb-shadow);
+}
+.wb.wb-theme-chenlv .wb-blk-body { padding: 12px 14px; }
+.wb.wb-theme-chenlv .wb-head-label { color: var(--wb-accent); letter-spacing: .16em; }

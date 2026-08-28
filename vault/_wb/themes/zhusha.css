@@ -1,0 +1,67 @@
+/* ============================================================
+   主题 · 朱砂（zhusha）
+   @name 朱砂
+   @en Cinnabar
+   @desc 黑红杂志排版，粗标题配朱红，最有个性的一套
+   @font 衬线标题（Playfair / 宋体）
+   @swatch #F0ECE3 #101010 #AE1330
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-zhusha {
+  --wb-bg:             #F0ECE3;
+  --wb-surface:        #FFFFFF;
+  --wb-surface-2:      #E0D8C8;
+  --wb-border:         #CEC4B0;
+  --wb-rule:           #101010;
+  --wb-text:           #101010;
+  --wb-muted:          #484745;
+  --wb-faint:          #5E5D5A;
+  --wb-accent:         #AE1330;
+  --wb-accent-2:       #A4841B;
+  --wb-on-accent:      #FFFFFF;
+  --wb-success:        #32683E;
+  --wb-danger:         #AE1330;
+  --wb-heat-empty:     #E0D8C8;
+  --wb-mast-bg:        #0F0F0F;
+  --wb-mast-text:      #FFFFFF;
+  --wb-mast-dim:       #9D9D9D;
+  --wb-radius:         3px;
+  --wb-radius-sm:      2px;
+  --wb-gap:            14px;
+  --wb-pad:            20px;
+  --wb-font:           var(--wb-f-hei);
+  --wb-font-display:   var(--wb-f-serif);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     3.2em;
+  --wb-title-weight:   900;
+  --wb-title-track:    -0.03em;
+  --wb-shadow:         0 1px 3px rgba(0,0,0,.10);
+}
+
+/* 深色模式：底色整体压暗，但保留这套主题的色相关系。
+   取值同样由脚本推算，不手写。 */
+.theme-dark .wb.wb-theme-zhusha {
+  --wb-bg:             #131110;
+  --wb-surface:        #191614;
+  --wb-surface-2:      #1F1B18;
+  --wb-border:         #443D33;
+  --wb-rule:           #F2EEE5;
+  --wb-text:           #F2EEE5;
+  --wb-muted:          #BFBCB5;
+  --wb-faint:          #A9A69F;
+  --wb-accent:         #E8556B;
+  --wb-accent-2:       #E9CE77;
+  --wb-on-accent:      #0A0908;
+  --wb-success:        #7CB389;
+  --wb-danger:         #EF8998;
+  --wb-heat-empty:     #1F1B18;
+  --wb-mast-bg:        #0A0908;
+  --wb-mast-text:      #F2EEE5;
+  --wb-mast-dim:       #9C9993;
+}
+
+/* 杂志风的签名细节：分区标题压一道粗黑线 */
+.wb.wb-theme-zhusha .wb-head { border-bottom: 2px solid var(--wb-rule); padding-bottom: 5px; }

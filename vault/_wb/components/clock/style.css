@@ -1,0 +1,17 @@
+/* 组件 · clock */
+
+.wb .wb-clock.is-center { text-align: center; }
+.wb .wb-clock.is-right  { text-align: right; }
+
+.wb .wb-clock-time {
+  font-family: var(--wb-font-display);
+  font-size: 2.6em;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.wb .wb-clock-date {
+  margin-top: 4px;
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+}

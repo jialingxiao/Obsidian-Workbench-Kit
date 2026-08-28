@@ -1,0 +1,43 @@
+/* 组件 · bookmarks */
+
+.wb .wb-bm-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--wb-bm-cols, 2), minmax(0, 1fr));
+  gap: 6px;
+}
+
+.wb .wb-bm-item {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius-sm);
+  color: var(--wb-text);
+  text-decoration: none;
+  transition: border-color .15s, color .15s;
+}
+.wb a.wb-bm-item:hover {
+  color: var(--wb-accent);
+  border-color: var(--wb-accent);
+  text-decoration: none;
+}
+.wb .wb-bm-item.is-plain { color: var(--wb-muted); border-style: dashed; }
+
+.wb .wb-bm-text {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+.wb .wb-bm-icon { flex: none; line-height: 1; }
+.wb .wb-bm-label {
+  font-size: var(--wb-fs-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .wb .wb-bm-grid { grid-template-columns: 1fr; }
+}

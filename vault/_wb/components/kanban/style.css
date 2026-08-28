@@ -1,0 +1,64 @@
+/* 组件 · kanban */
+
+.wb .wb-kb-cols {
+  display: grid;
+  grid-template-columns: repeat(var(--wb-kb-n, 3), minmax(0, 1fr));
+  gap: var(--wb-gap);
+  align-items: start;
+}
+
+.wb .wb-kb-col { min-width: 0; }
+
+.wb .wb-kb-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  padding-bottom: 5px;
+  margin-bottom: 8px;
+  border-bottom: 2px solid var(--wb-rule, var(--wb-border));
+}
+.wb .wb-kb-name {
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--wb-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-kb-n { font-size: var(--wb-fs-xs); color: var(--wb-faint); font-weight: 700; }
+
+.wb .wb-kb-card {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius-sm);
+  min-width: 0;
+}
+.wb .wb-kb-card:hover { border-color: var(--wb-accent); }
+
+.wb a.wb-kb-title {
+  display: block;
+  font-size: var(--wb-fs-sm);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-kb-desc {
+  margin-top: 2px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-kb-more { font-size: var(--wb-fs-xs); color: var(--wb-faint); padding-left: 2px; }
+
+/* 列多了在窄块里会挤成一条，横向滚更好读 */
+@media (max-width: 560px) {
+  .wb .wb-kb-cols { grid-template-columns: repeat(var(--wb-kb-n, 3), minmax(150px, 1fr)); overflow-x: auto; }
+}

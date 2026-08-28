@@ -1,0 +1,54 @@
+/* 组件 · poem */
+
+.wb .wb-poem {
+  height: 100%;
+  display: flex;
+  gap: 14px;
+  font-family: var(--wb-font-display);
+}
+
+/* ── 竖排右起 ──
+   writing-mode 交给浏览器排字，比手动摆每个字可靠得多；
+   行序从右往左，是古籍的读法。 */
+.wb .wb-poem.is-vertical {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  align-items: flex-start;
+  overflow-x: auto;
+}
+.wb .wb-poem.is-vertical .wb-poem-body {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 10px;
+}
+.wb .wb-poem.is-vertical .wb-poem-line {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: .22em;
+  font-size: 1.15em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.wb .wb-poem.is-vertical .wb-poem-meta {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: .2em;
+  align-self: flex-start;
+  padding-top: 4px;
+}
+
+/* ── 横排 ── */
+.wb .wb-poem.is-horizontal { flex-direction: column; gap: 8px; }
+.wb .wb-poem.is-horizontal .wb-poem-line {
+  font-size: 1.1em;
+  line-height: 1.8;
+  letter-spacing: .1em;
+}
+.wb .wb-poem.is-horizontal .wb-poem-meta { display: flex; gap: 10px; align-items: baseline; }
+
+.wb .wb-poem-meta {
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+}
+.wb .wb-poem-title  { font-weight: 700; }
+.wb .wb-poem-author { color: var(--wb-faint); }

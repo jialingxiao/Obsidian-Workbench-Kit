@@ -1,0 +1,67 @@
+/* ============================================================
+   主题 · 青瓷（qingci）
+   @name 青瓷
+   @en Celadon
+   @desc 青白釉色打底，鱼师青配青梅，温润不抢眼
+   @font 宋体
+   @swatch #EAF1EF #0F2624 #247589
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-qingci {
+  --wb-bg:             #EAF1EF;
+  --wb-surface:        #FBFDFC;
+  --wb-surface-2:      #D6E4DF;
+  --wb-border:         #BFD3CB;
+  --wb-rule:           #0F2624;
+  --wb-text:           #0F2624;
+  --wb-muted:          #3C504E;
+  --wb-faint:          #546664;
+  --wb-accent:         #247589;
+  --wb-accent-2:       #748F75;
+  --wb-on-accent:      #F9FDFB;
+  --wb-success:        #2F6B54;
+  --wb-danger:         #A3453B;
+  --wb-heat-empty:     #D6E4DF;
+  --wb-mast-bg:        #153531;
+  --wb-mast-text:      #FBFEFC;
+  --wb-mast-dim:       #B4C0BD;
+  --wb-radius:         12px;
+  --wb-radius-sm:      7px;
+  --wb-gap:            14px;
+  --wb-pad:            18px;
+  --wb-font:           var(--wb-f-song);
+  --wb-font-display:   var(--wb-f-song);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.5em;
+  --wb-title-weight:   700;
+  --wb-title-track:    0.01em;
+  --wb-shadow:         0 1px 3px rgba(20,60,55,.10);
+}
+
+/* 深色模式：底色整体压暗，但保留这套主题的色相关系。
+   取值同样由脚本推算，不手写。 */
+.theme-dark .wb.wb-theme-qingci {
+  --wb-bg:             #0E1615;
+  --wb-surface:        #131C1B;
+  --wb-surface-2:      #182220;
+  --wb-border:         #2E403C;
+  --wb-rule:           #E4EFEB;
+  --wb-text:           #E4EFEB;
+  --wb-muted:          #B9C4C0;
+  --wb-faint:          #A3ADAA;
+  --wb-accent:         #5AA4AE;
+  --wb-accent-2:       #748F75;
+  --wb-on-accent:      #0A1211;
+  --wb-success:        #6CB8A5;
+  --wb-danger:         #E4968C;
+  --wb-heat-empty:     #182220;
+  --wb-mast-bg:        #0A1211;
+  --wb-mast-text:      #E4EFEB;
+  --wb-mast-dim:       #96A09D;
+}
+
+/* 瓷器的圆润感靠大圆角；分区线用釉色而不是黑 */
+.wb.wb-theme-qingci .wb-head { border-bottom: 1px solid var(--wb-accent); padding-bottom: 4px; }

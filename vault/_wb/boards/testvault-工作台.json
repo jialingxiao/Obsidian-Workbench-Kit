@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "theme": "zhuying",
+  "cols": 12,
+  "rowHeight": 34,
+  "gap": 10,
+  "blocks": [
+    {
+      "id": "bmtclbtnx0",
+      "c": "banner",
+      "x": 0,
+      "y": 0,
+      "w": 12,
+      "h": 6,
+      "props": {}
+    },
+    {
+      "id": "bmtclce111",
+      "c": "daily",
+      "x": 0,
+      "y": 12,
+      "w": 5,
+      "h": 5,
+      "props": {}
+    },
+    {
+      "id": "bmtclvwch0",
+      "c": "clock",
+      "x": 5,
+      "y": 12,
+      "w": 3,
+      "h": 5,
+      "props": {
+        "align": "center"
+      }
+    },
+    {
+      "id": "bmtclw3rd1",
+      "c": "folders",
+      "x": 0,
+      "y": 6,
+      "w": 8,
+      "h": 6,
+      "props": {
+        "sort": "count",
+        "style": "list"
+      }
+    },
+    {
+      "id": "bmtcp60gi0",
+      "c": "calendar",
+      "x": 8,
+      "y": 6,
+      "w": 4,
+      "h": 9,
+      "props": {}
+    },
+    {
+      "id": "bmtcphbwz2",
+      "c": "analog-clock",
+      "x": 8,
+      "y": 15,
+      "w": 4,
+      "h": 4,
+      "props": {}
+    }
+  ]
+}

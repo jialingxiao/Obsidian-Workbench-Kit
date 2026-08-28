@@ -1,0 +1,99 @@
+/* 组件 · masthead */
+
+.wb .wb-mh {
+  border-radius: var(--wb-radius);
+  padding: 14px var(--wb-pad) 10px;
+}
+
+.wb .wb-mh.is-inverted {
+  background: var(--wb-mast-bg);
+  color: var(--wb-mast-text);
+}
+.wb .wb-mh.is-plain {
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  border-bottom: 2px solid var(--wb-rule, var(--wb-border));
+  border-radius: 0;
+}
+
+/* 顶栏 */
+.wb .wb-mh-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  font-family: var(--wb-font-mono);
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.wb .wb-mh.is-inverted .wb-mh-top {
+  border-bottom: 1px solid rgba(255, 255, 255, .18);
+  color: var(--wb-mast-dim);
+}
+.wb .wb-mh.is-plain .wb-mh-top { color: var(--wb-muted); }
+
+/* 主体 */
+.wb .wb-mh-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0 8px;
+}
+.wb .wb-mh-title {
+  font-family: var(--wb-font-display);
+  font-size: var(--wb-title-size, 2.4em);
+  font-weight: var(--wb-title-weight, 800);
+  letter-spacing: var(--wb-title-track, -0.02em);
+  line-height: .92;
+  min-width: 0;
+  word-break: break-word;
+}
+.wb .wb-mh-avatar {
+  /* 与两行标题等高：字号 × 行高 × 2 */
+  width: calc(var(--wb-title-size, 2.4em) * .92 * 2);
+  height: calc(var(--wb-title-size, 2.4em) * .92 * 2);
+  max-width: 30%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  flex-shrink: 0;
+  border: 2px solid rgba(128, 128, 128, .25);
+}
+
+/* 副标题 */
+.wb .wb-mh-sub {
+  font-family: var(--wb-font-mono);
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding-bottom: 10px;
+}
+.wb .wb-mh.is-inverted .wb-mh-sub {
+  color: var(--wb-mast-dim);
+  border-bottom: 3px double rgba(255, 255, 255, .22);
+}
+.wb .wb-mh.is-plain .wb-mh-sub { color: var(--wb-muted); }
+
+/* 底栏 */
+.wb .wb-mh-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 9px;
+  font-family: var(--wb-font-mono);
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .08em;
+}
+.wb .wb-mh.is-inverted .wb-mh-foot { color: var(--wb-mast-dim); }
+.wb .wb-mh.is-plain .wb-mh-foot { color: var(--wb-faint); }
+
+/* 窄屏（侧边栏、手机）下头像让位给标题 */
+@media (max-width: 480px) {
+  .wb .wb-mh-avatar { display: none; }
+  .wb .wb-mh-title { font-size: calc(var(--wb-title-size, 2.4em) * .62); }
+}

@@ -1,0 +1,19 @@
+/* 组件 · greeting */
+
+.wb .wb-greet.is-center { text-align: center; }
+.wb .wb-greet.is-right  { text-align: right; }
+
+.wb .wb-greet-main {
+  font-family: var(--wb-font-display);
+  font-size: 1.9em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.wb .wb-greet-sub { margin-top: 3px; color: var(--wb-muted); }
+.wb .wb-greet-date {
+  margin-top: 6px;
+  font-family: var(--wb-font-mono);
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .08em;
+  color: var(--wb-faint);
+}

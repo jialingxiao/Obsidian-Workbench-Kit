@@ -1,0 +1,41 @@
+/* 组件 · year-progress */
+
+.wb .wb-yp-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.wb .wb-yp-label {
+  font-family: var(--wb-font-display);
+  font-size: 1.3em;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.wb .wb-yp-pct {
+  font-size: var(--wb-fs-sm);
+  font-weight: 700;
+  color: var(--wb-accent);
+}
+
+/* 点阵：一天一格，密度本身就是表达 */
+.wb .wb-yp-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 2px 0;
+}
+.wb .wb-yp-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--wb-heat-empty);
+}
+.wb .wb-yp-dot.is-past { background: var(--wb-accent); }
+
+.wb .wb-yp-foot {
+  margin-top: 6px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+}

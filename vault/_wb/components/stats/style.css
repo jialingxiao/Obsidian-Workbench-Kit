@@ -1,0 +1,47 @@
+/* 组件 · stats */
+
+.wb .wb-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--wb-stats-cols, 4), minmax(0, 1fr));
+  gap: var(--wb-gap);
+}
+
+.wb .wb-stat {
+  position: relative;
+  border-top: 3px solid var(--wb-rule, var(--wb-text));
+  padding: 8px 2px 4px;
+  min-width: 0;
+}
+.wb .wb-stat.is-linked { cursor: pointer; }
+.wb .wb-stat.is-linked:hover { border-top-color: var(--wb-accent); }
+.wb .wb-stat.is-linked:hover .wb-stat-num { color: var(--wb-accent); }
+
+/* 整块可点：铺一层透明的内部链接，交给 Obsidian 处理跳转与悬浮预览 */
+.wb .wb-stat-hit { position: absolute; inset: 0; }
+
+.wb .wb-stat-num {
+  font-family: var(--wb-font-display);
+  font-size: 1.9em;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.wb .wb-stat-label {
+  font-size: var(--wb-fs-sm);
+  font-weight: 600;
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-stat-sub {
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+}
+
+/* 进度条本体（.wb-bar）在 core/ui.css 里，多个组件共用 */
+.wb .wb-stat-progress { margin-top: 14px; }
+
+@media (max-width: 520px) {
+  .wb .wb-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

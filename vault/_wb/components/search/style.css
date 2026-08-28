@@ -1,0 +1,33 @@
+/* 组件 · search */
+
+.wb .wb-search-row { display: flex; gap: 6px; margin-bottom: 7px; }
+
+.wb input.wb-search-input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: var(--wb-fs-base);
+  padding: 6px 11px;
+  color: var(--wb-text);
+  background: var(--wb-bg);
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius-sm);
+}
+.wb input.wb-search-input:focus {
+  outline: none;
+  border-color: var(--wb-accent);
+}
+
+.wb button.wb-search-go {
+  flex: none;
+  font: inherit;
+  font-size: var(--wb-fs-sm);
+  padding: 5px 14px;
+  cursor: pointer;
+  color: var(--wb-on-accent);
+  background: var(--wb-accent);
+  border: 1px solid transparent;
+  border-radius: var(--wb-radius-sm);
+  box-shadow: none;
+}
+.wb button.wb-search-go:hover { opacity: .88; }

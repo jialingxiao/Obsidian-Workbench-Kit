@@ -1,0 +1,30 @@
+/* 组件 · reading */
+
+.wb .wb-rd-row { margin: 9px 0; }
+.wb .wb-rd-row:first-of-type { margin-top: 2px; }
+
+.wb .wb-rd-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.wb a.wb-rd-title {
+  font-size: var(--wb-fs-sm);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-rd-num {
+  flex: none;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+}
+
+/* 读完的收敛成静默状态，未读完的才该抢注意力 */
+.wb .wb-rd-row.is-done .wb-bar-fill { background: var(--wb-success, #3d9a50); }
+.wb .wb-rd-row.is-done .wb-rd-num { color: var(--wb-success, #3d9a50); font-weight: 700; }
+.wb .wb-rd-row.is-done .wb-rd-title { color: var(--wb-muted); }

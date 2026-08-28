@@ -1,0 +1,10 @@
+{
+  "id": "workbench-kit",
+  "name": "Workbench Kit",
+  "version": "0.4.2",
+  "minAppVersion": "1.4.0",
+  "description": "拖拽式首页工作台：51 个组件、12 套主题、开箱模板。不依赖 Dataview。",
+  "author": "jialingxiao",
+  "authorUrl": "https://github.com/jialingxiao",
+  "isDesktopOnly": false
+}

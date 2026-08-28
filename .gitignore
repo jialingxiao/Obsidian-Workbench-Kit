@@ -1,0 +1,29 @@
+# 把项目文件夹当 Obsidian 库打开时会生成，跟仓库无关。
+# .obsidian/ 不加前导斜杠是故意的：vault/.obsidian/ 也要挡掉。
+.obsidian/
+
+# /Daily/ 是试用「日记入口」组件时它在项目根创建的今日日记 —— 试用残留。
+#
+# 这一条必须锚在根上。写成 Daily/ 的话，它会匹配任何层级的同名目录，
+# 而 Windows 上 core.ignorecase=true，于是 vault/_wb/components/daily/
+# ——「日记入口」组件本身 —— 也被一起挡掉了。仓库里会少一个组件，
+# 而且 build-plugin.mjs 是从 vault/_wb/ 读源码的，别人克隆下来构建出的
+# 包就缺这个组件。本地一切正常，只有克隆的人会踩到。
+/Daily/
+
+# 测试库由脚本生成，244 篇假笔记不进仓库：
+#   node scripts/build-plugin.mjs && node scripts/make-testvault.mjs
+#   pwsh -File scripts/set-times.ps1
+/testvault/
+/scripts/.stamps.json
+
+# 发布包与插件构建产物，都由脚本生成
+/dist/
+
+# Claude Code 的本地配置，不属于这个库
+/.claude/
+
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

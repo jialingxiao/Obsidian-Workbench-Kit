@@ -1,0 +1,53 @@
+/* ============================================================
+   主题 · 松烟（songyan）
+   @name 松烟
+   @en Pine Soot
+   @desc 松烟墨的深底配金褐，深色里少见的宋体，沉静耐看
+   @font 宋体（深色）
+   @swatch #121514 #ECEFEA #D2BC88
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-songyan {
+  --wb-bg:             #121514;
+  --wb-surface:        #171B19;
+  --wb-surface-2:      #1D211F;
+  --wb-border:         #3D443F;
+  --wb-rule:           #ECEFEA;
+  --wb-text:           #ECEFEA;
+  --wb-muted:          #BFC2BE;
+  --wb-faint:          #A8ABA7;
+  --wb-accent:         #D2BC88;
+  --wb-accent-2:       #789262;
+  --wb-on-accent:      #0E100F;
+  --wb-success:        #87B58E;
+  --wb-danger:         #E3988B;
+  --wb-heat-empty:     #1D211F;
+  --wb-mast-bg:        #0E100F;
+  --wb-mast-text:      #ECEFEA;
+  --wb-mast-dim:       #9B9E9A;
+  --wb-radius:         4px;
+  --wb-radius-sm:      2px;
+  --wb-gap:            14px;
+  --wb-pad:            20px;
+  --wb-font:           var(--wb-f-song);
+  --wb-font-display:   var(--wb-f-song);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.7em;
+  --wb-title-weight:   700;
+  --wb-title-track:    0.03em;
+  --wb-shadow:         0 2px 6px rgba(0,0,0,.35);
+}
+
+/* 这套认定了要深色：浅色模式下打开也照样是深色，没有 .theme-dark 覆写 —— 刻意的。
+   深底上纯靠边框分不出层次，所以给块加实底和投影。 */
+.wb.wb-theme-songyan .wb-blk {
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  box-shadow: var(--wb-shadow);
+}
+.wb.wb-theme-songyan .wb-blk-body { padding: 12px 14px; }
+.wb.wb-theme-songyan .wb-head { border-bottom: 1px solid var(--wb-border); padding-bottom: 5px; }
+.wb.wb-theme-songyan .wb-head-label { letter-spacing: .28em; color: var(--wb-accent); }

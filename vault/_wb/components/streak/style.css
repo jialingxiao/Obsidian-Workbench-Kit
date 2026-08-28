@@ -1,0 +1,21 @@
+/* 组件 · streak */
+
+.wb .wb-streak-main { display: flex; align-items: baseline; gap: 6px; }
+
+.wb .wb-streak-num {
+  font-family: var(--wb-font-display);
+  font-size: 2.8em;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--wb-accent);
+}
+.wb .wb-streak-unit {
+  font-size: var(--wb-fs-base);
+  color: var(--wb-muted);
+}
+.wb .wb-streak-meta {
+  margin-top: 6px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+}

@@ -1,0 +1,71 @@
+/* ============================================================
+   主题 · 宣纸（xuanzhi）
+   @name 宣纸
+   @en Xuan Paper
+   @desc 米白纸面配墨黑宋体，朱砂点题，像一页刚写完的稿纸
+   @font 宋体
+   @swatch #F4EFE2 #1B1712 #A62B20
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-xuanzhi {
+  --wb-bg:             #F4EFE2;
+  --wb-surface:        #FCFAF4;
+  --wb-surface-2:      #E6DDC7;
+  --wb-border:         #D6CAAE;
+  --wb-rule:           #1B1712;
+  --wb-text:           #1B1712;
+  --wb-muted:          #4E4A43;
+  --wb-faint:          #656059;
+  --wb-accent:         #A62B20;
+  --wb-accent-2:       #A8861B;
+  --wb-on-accent:      #FDFBF5;
+  --wb-success:        #3E6A44;
+  --wb-danger:         #A62B20;
+  --wb-heat-empty:     #E6DDC7;
+  --wb-mast-bg:        #221C15;
+  --wb-mast-text:      #FDFBF5;
+  --wb-mast-dim:       #ABA7A1;
+  --wb-radius:         4px;
+  --wb-radius-sm:      2px;
+  --wb-gap:            14px;
+  --wb-pad:            20px;
+  --wb-font:           var(--wb-f-song);
+  --wb-font-display:   var(--wb-f-song);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.8em;
+  --wb-title-weight:   700;
+  --wb-title-track:    0.02em;
+  --wb-shadow:         0 1px 3px rgba(60,45,20,.10);
+}
+
+/* 深色模式：底色整体压暗，但保留这套主题的色相关系。
+   取值同样由脚本推算，不手写。 */
+.theme-dark .wb.wb-theme-xuanzhi {
+  --wb-bg:             #181510;
+  --wb-surface:        #1E1A14;
+  --wb-surface-2:      #241F18;
+  --wb-border:         #463D2D;
+  --wb-rule:           #F0EADB;
+  --wb-text:           #F0EADB;
+  --wb-muted:          #C6C0B3;
+  --wb-faint:          #AFAA9E;
+  --wb-accent:         #D4685A;
+  --wb-accent-2:       #E9CE77;
+  --wb-on-accent:      #100E0A;
+  --wb-success:        #87B587;
+  --wb-danger:         #E7968B;
+  --wb-heat-empty:     #241F18;
+  --wb-mast-bg:        #100E0A;
+  --wb-mast-text:      #F0EADB;
+  --wb-mast-dim:       #A09C90;
+}
+
+/* 极淡的横向纸纹 —— 1.2% 的黑，凑近才看得见，远看只觉得纸不是死平的 */
+.wb.wb-theme-xuanzhi .wb-grid {
+  background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.012) 0 1px, transparent 1px 4px);
+}
+.wb.wb-theme-xuanzhi .wb-head { border-bottom: 1px solid var(--wb-border); padding-bottom: 4px; }
+.wb.wb-theme-xuanzhi .wb-head-label { letter-spacing: .3em; }

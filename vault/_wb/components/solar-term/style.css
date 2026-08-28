@@ -1,0 +1,43 @@
+/* 组件 · solar-term */
+
+.wb .wb-st.is-center { text-align: center; }
+
+.wb .wb-st-name {
+  font-family: var(--wb-font-display);
+  font-size: 2.2em;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: .1em;
+}
+.wb .wb-st-sub {
+  margin-top: 2px;
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+}
+
+.wb .wb-st-next {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--wb-border);
+}
+.wb .wb-st-next-name {
+  font-family: var(--wb-font-display);
+  font-size: 1.15em;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.wb .wb-st-next-days { font-size: var(--wb-fs-sm); color: var(--wb-accent); }
+
+.wb .wb-st-list { margin-top: 8px; }
+.wb .wb-st-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+  padding: 2px 0;
+}
+.wb .wb-st-date { color: var(--wb-faint); font-variant-numeric: tabular-nums; }

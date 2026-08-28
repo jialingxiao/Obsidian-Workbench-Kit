@@ -1,0 +1,44 @@
+/* 组件 · calendar */
+
+.wb .wb-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.wb .wb-cal-dow {
+  text-align: center;
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  color: var(--wb-faint);
+  padding-bottom: 3px;
+}
+
+.wb .wb-cal-pad { aspect-ratio: 1; }
+
+.wb .wb-cal-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  min-height: 22px;
+  border-radius: var(--wb-radius-sm);
+  font-size: var(--wb-fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--wb-faint);
+  background: var(--wb-heat-empty);
+}
+
+/* 写过的日期用强调色实心，一眼看出这个月的密度 */
+.wb .wb-cal-day.is-done {
+  color: var(--wb-on-accent);
+  background: var(--wb-accent);
+  cursor: pointer;
+  font-weight: 600;
+}
+.wb .wb-cal-day.is-done:hover { opacity: .8; }
+
+.wb .wb-cal-day.is-today {
+  outline: 2px solid var(--wb-text);
+  outline-offset: -2px;
+}

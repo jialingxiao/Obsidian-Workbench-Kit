@@ -1,0 +1,169 @@
+/* ============================================================
+   Workbench Kit · 基础层
+   只有结构、间距和失败态。所有颜色一律走 --wb-* 变量，
+   具体取值由 themes/<name>.css 提供。
+   ========================================================== */
+
+/* ── 兜底 token ──────────────────────────────────────────────
+   主题文件加载失败时，组件也不至于变成不可读的一坨。 */
+.wb {
+  --wb-bg:            var(--background-primary, #fff);
+  --wb-surface:       var(--background-secondary, #f6f6f6);
+  --wb-surface-2:     var(--background-secondary-alt, #eee);
+  --wb-border:        var(--background-modifier-border, #ddd);
+  --wb-text:          var(--text-normal, #222);
+  --wb-muted:         var(--text-muted, #777);
+  --wb-faint:         var(--text-faint, #aaa);
+  --wb-accent:        var(--interactive-accent, #5b6cff);
+  --wb-accent-2:      var(--interactive-accent, #5b6cff);
+  --wb-on-accent:     var(--text-on-accent, #fff);
+  --wb-heat-empty:    var(--background-modifier-border, #e4e4e4);
+  --wb-success:       var(--color-green, #3d9a50);
+  --wb-danger:        var(--color-red, #d2404a);
+
+  --wb-radius:        8px;
+  --wb-radius-sm:     4px;
+  --wb-gap:           12px;
+  --wb-pad:           16px;
+
+  /* ── 字体族库 ──────────────────────────────────────────────
+     各主题从这里挑，不各写各的。一律只用系统已装的字体 + 多级兜底，
+     不联网拉字体：组件库要能离线用，也不该把用户的阅读习惯绑在 CDN 上。
+     每条都按 macOS → Windows → 思源/Noto → 通用 的顺序排。 */
+  --wb-f-system: var(--font-interface, -apple-system, "Segoe UI", sans-serif);
+  --wb-f-song:   "Songti SC", "SimSun", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", Georgia, serif;
+  --wb-f-kai:    "Kaiti SC", "KaiTi", "STKaiti", "Noto Serif CJK SC", Georgia, serif;
+  --wb-f-hei:    "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", -apple-system, "Segoe UI", sans-serif;
+  --wb-f-yuan:   "Yuanti SC", "YouYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --wb-f-fangsong: "Fangsong SC", "FangSong", "STFangsong", "Songti SC", "SimSun", serif;
+  --wb-f-serif:  "Playfair Display", Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+  --wb-f-mono:   "JetBrains Mono", ui-monospace, Consolas, "Fira Code", monospace;
+
+  --wb-font:          var(--wb-f-system);
+  --wb-font-display:  var(--wb-font);
+  --wb-font-mono:     var(--wb-f-mono);
+
+  --wb-fs-xs:         11px;
+  --wb-fs-sm:         12px;
+  --wb-fs-base:       14px;
+
+  --wb-shadow:        none;
+
+  color: var(--wb-text);
+  font-family: var(--wb-font);
+  font-size: var(--wb-fs-base);
+  line-height: 1.55;
+  margin: var(--wb-gap) 0;
+}
+
+.wb *, .wb *::before, .wb *::after { box-sizing: border-box; }
+
+/* ── 表单控件重置 ──────────────────────────────────────────────
+   Obsidian 给 button / input 设了固定 height（--input-height）和
+   nowrap。我们的按钮里常常塞着两三行块级内容，撑不开就会溢出、
+   和下一条压在一起。浏览器里看不到这个问题，因为那儿没有 Obsidian 的
+   样式表 —— 所以必须显式声明，不能靠默认值。
+
+   特异度刻意做成 0,1,1（.wb + button），而不是用 :where() 压成 0,0,1 ——
+   后者和 Obsidian 的 `button {}` 打平，谁后加载谁赢，等于在赌加载顺序。
+   代价是各组件的按钮规则必须写成 `.wb button.xxx`（0,2,1）才盖得过它。 */
+.wb button,
+.wb button:hover,
+.wb-pop button,
+.wb input, .wb select, .wb textarea,
+.wb-pop input, .wb-pop select, .wb-pop textarea {
+  height: auto;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  line-height: 1.5;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-transform: none;
+  white-space: normal;
+  overflow: visible;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.wb input, .wb textarea,
+.wb-pop input, .wb-pop textarea { cursor: text; }
+
+/* Obsidian 的 ul/li 带正文段距，放进组件里显得松垮。
+   这条用 :where() 压到 0,0,1 是安全的 —— 没有全局规则会来抢。 */
+:where(.wb) ul, :where(.wb) ol { margin: 0; padding-left: 0; }
+:where(.wb) li { margin: 0; }
+
+/* 数字一律等宽，指标横向对齐时不会跳动 */
+.wb [data-wb-num], .wb .wb-num { font-variant-numeric: tabular-nums; }
+
+.wb a.wb-link { color: var(--wb-text); text-decoration: none; }
+.wb a.wb-link:hover { color: var(--wb-accent); text-decoration: underline; }
+
+/* ── 分区标题（组件间共用）───────────────────────────────── */
+.wb .wb-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.wb .wb-head-label {
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--wb-muted);
+}
+.wb .wb-head-meta {
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-faint);
+}
+
+/* ── 空状态 ─────────────────────────────────────────────── */
+.wb .wb-empty {
+  border: 1px dashed var(--wb-border);
+  border-radius: var(--wb-radius);
+  padding: 22px 16px;
+  text-align: center;
+  color: var(--wb-muted);
+}
+.wb .wb-empty-msg  { font-size: var(--wb-fs-base); }
+.wb .wb-empty-hint { font-size: var(--wb-fs-sm); color: var(--wb-faint); margin-top: 4px; }
+
+/* ── 错误卡 ─────────────────────────────────────────────── */
+.wb .wb-error {
+  border: 1px solid var(--color-red, #d33);
+  border-left-width: 4px;
+  border-radius: var(--wb-radius-sm);
+  background: rgba(221, 51, 51, .06);
+  padding: 10px 14px;
+}
+.wb .wb-error-title { font-weight: 600; color: var(--color-red, #d33); margin-bottom: 3px; }
+.wb .wb-error-msg   { font-size: var(--wb-fs-sm); font-family: var(--wb-font-mono); word-break: break-word; }
+.wb .wb-error-hint  { font-size: var(--wb-fs-xs); color: var(--wb-muted); margin-top: 6px; }
+
+/* ============================================================
+   页面级样式 —— 在首页笔记的 frontmatter 里写：
+     cssclasses: [wb-page]
+   ========================================================== */
+.markdown-preview-view.wb-page,
+.markdown-source-view.mod-cm6.wb-page { --file-line-width: 100%; }
+
+.wb-page .markdown-preview-sizer,
+.wb-page .markdown-preview-section { max-width: 100% !important; }
+.wb-page .cm-contentContainer, .wb-page .cm-sizer { max-width: 100% !important; }
+
+.wb-page .inline-title,
+.wb-page .metadata-container { display: none !important; }
+
+/* 首页是拼装出来的，块与块之间不需要正文那种段距 */
+.wb-page .markdown-preview-section > div { margin-block: 0; }
+.wb-page .block-language-dataviewjs { padding: 0; }

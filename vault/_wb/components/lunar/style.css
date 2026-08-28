@@ -1,0 +1,68 @@
+/* 组件 · lunar */
+
+.wb .wb-lu.is-center { text-align: center; }
+
+.wb .wb-lu-solar {
+  font-family: var(--wb-font-mono);
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .08em;
+  color: var(--wb-faint);
+}
+
+.wb .wb-lu-main {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 2px;
+  font-family: var(--wb-font-display);
+}
+.wb .wb-lu.is-center .wb-lu-main { justify-content: center; }
+
+.wb .wb-lu-month {
+  font-size: 1.5em;
+  font-weight: 700;
+  color: var(--wb-muted);
+  letter-spacing: .04em;
+}
+.wb .wb-lu-day {
+  font-size: 2.2em;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: .04em;
+}
+
+.wb .wb-lu-gz {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 5px;
+}
+.wb .wb-lu.is-center .wb-lu-gz { justify-content: center; }
+
+.wb .wb-lu-gz-year {
+  font-family: var(--wb-font-display);
+  font-size: var(--wb-fs-base);
+  letter-spacing: .1em;
+}
+/* 生肖用强调色的圆底，是这一块唯一的彩色，跟着主题走 */
+.wb .wb-lu-zodiac {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7em;
+  height: 1.7em;
+  border-radius: 50%;
+  background: var(--wb-accent);
+  color: var(--wb-on-accent);
+  font-size: var(--wb-fs-sm);
+  font-weight: 700;
+}
+
+.wb .wb-lu-extra {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--wb-border);
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-muted);
+  line-height: 1.6;
+}

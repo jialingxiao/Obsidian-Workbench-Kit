@@ -1,0 +1,33 @@
+/* 组件 · divider */
+
+.wb .wb-divider {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  min-height: 1px;
+}
+.wb .wb-divider.is-space { border: none; }
+
+/* 用伪元素画线：有文字时线自动从两侧延伸，没文字时就是一整条 */
+.wb .wb-divider:not(.is-space)::before,
+.wb .wb-divider:not(.is-space)::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--wb-border);
+}
+.wb .wb-divider.is-double::before,
+.wb .wb-divider.is-double::after { border-top: 3px double var(--wb-border); }
+.wb .wb-divider.is-dashed::before,
+.wb .wb-divider.is-dashed::after { border-top: 1px dashed var(--wb-border); }
+
+.wb .wb-divider:not(.has-label)::after { display: none; }
+
+.wb .wb-divider-label {
+  padding: 0 12px;
+  font-family: var(--wb-font-mono);
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--wb-faint);
+  white-space: nowrap;
+}

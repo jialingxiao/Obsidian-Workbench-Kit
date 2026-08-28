@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workbench Kit · 插件模式测试台</title>
+<style>
+  body.theme-light {
+    --background-primary:#fff; --background-secondary:#f4f5f7; --background-secondary-alt:#e9ebef;
+    --background-modifier-border:#dcdfe4; --background-modifier-hover:rgba(0,0,0,.06);
+    --text-normal:#1f2328; --text-muted:#6b7280; --text-faint:#9aa1ac; --text-on-accent:#fff;
+    --interactive-accent:#6c63ff; --color-red:#d2404a; --color-green:#3d9a50;
+    --font-interface:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    --font-monospace:ui-monospace,"JetBrains Mono",Consolas,monospace;
+  }
+  /* 和主预览器一样：这个环境可能不合成帧，过渡会永远停在中间值 */
+  .wb .wb-blk { transition: none !important; }
+  /* 模拟 Obsidian 对 button/input 的全局样式，真机上的坑在这儿就能露出来 */
+  button { height:30px; padding:5px 15px; white-space:nowrap; background:var(--background-modifier-hover);
+           border:none; border-radius:5px; font:inherit; color:var(--text-normal); cursor:pointer; }
+  input, select, textarea { height:30px; padding:5px 9px; border:1px solid var(--background-modifier-border);
+           border-radius:5px; background:var(--background-primary); color:var(--text-normal); font:inherit; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:18px; background:var(--background-primary); color:var(--text-normal);
+         font-family:var(--font-interface); }
+  h2 { margin:24px 0 10px; font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+       color:var(--text-muted); border-bottom:1px solid var(--background-modifier-border); padding-bottom:5px; }
+  .panel { border:1px solid var(--background-modifier-border); border-radius:10px; padding:16px; }
+  #log { font-family:var(--font-monospace); font-size:12px; white-space:pre-wrap; line-height:1.6; }
+  #log .ok { color:var(--color-green); }
+  #log .bad { color:var(--color-red); font-weight:700; }
+  .setting-item { display:flex; justify-content:space-between; align-items:center; gap:12px;
+                  padding:10px 0; border-top:1px solid var(--background-modifier-border); }
+  .setting-item-description { font-size:12px; color:var(--text-muted); }
+</style>
+</head>
+<body class="theme-light">
+
+<h2>自检结果</h2>
+<div class="panel" id="log">运行中…</div>
+
+<h2>```workbench（空 → 看板模式）</h2>
+<div class="panel" id="board"></div>
+
+<h2>```workbench + c: heatmap（单组件模式）</h2>
+<div class="panel" id="single"></div>
+
+<h2>设置界面</h2>
+<div class="panel" id="settings"></div>
+
+<script src="./stubs.js"></script>
+<script>
+/* ============================================================
+   插件模式测试台
+   把构建产物 dist/plugin/main.js 当成真插件加载：桩掉 require('obsidian')，
+   喂给它同一批假笔记，然后真的调 onload() 和代码块处理器。
+   语法检查只能说明它能解析，这里验证的是它能不能跑起来。
+   ========================================================== */
+
+/* 期望的资源数量。加了组件/主题/模板记得同步这里，否则自检会漏掉「没打包进去」这类问题 */
+const EXPECT = { components: 51, themes: 12, presets: 4 };
+
+const log = document.getElementById("log");
+const say = (msg, cls = "") => { log.innerHTML += `\n<span class="${cls}">${msg}</span>`; };
+let fails = 0;
+const check = (name, cond, extra = "") => {
+  if (cond) say(`  ✓ ${name}${extra ? "  " + extra : ""}`, "ok");
+  else { fails++; say(`  ✗ ${name}${extra ? "  " + extra : ""}`, "bad"); }
+};
+
+/* ── Obsidian API 桩件 ───────────────────────────────────── */
+function makeObsidianStub(app) {
+  const noop = () => {};
+  class Plugin {
+    constructor(a, manifest) { this.app = a; this.manifest = manifest; this._data = null;
+      this.commands = []; this.ribbons = []; this.processors = {}; this.settingTabs = []; }
+    async loadData() { return this._data; }
+    async saveData(d) { this._data = d; }
+    registerMarkdownCodeBlockProcessor(lang, fn) { this.processors[lang] = fn; }
+    addRibbonIcon(icon, title, fn) { this.ribbons.push({ icon, title, fn }); return document.createElement("div"); }
+    addCommand(c) { this.commands.push(c); }
+    addSettingTab(t) { this.settingTabs.push(t); }
+    registerEvent(e) { return e; }
+    register(fn) { return fn; }
+  }
+  class PluginSettingTab { constructor(a, p) { this.app = a; this.plugin = p; this.containerEl = document.createElement("div"); } }
+  class MarkdownRenderChild { constructor(el) { this.containerEl = el; } }
+  class Notice { constructor(msg) { say(`    [Notice] ${msg}`); } }
+
+  /* 链式 Setting —— 只实现插件真正用到的那几个方法 */
+  class Setting {
+    constructor(c) {
+      this.el = document.createElement("div");
+      this.el.className = "setting-item";
+      this.info = document.createElement("div");
+      this.ctrl = document.createElement("div");
+      this.el.append(this.info, this.ctrl);
+      c.appendChild(this.el);
+    }
+    setName(n) { const d = document.createElement("div"); d.textContent = n; this.info.prepend(d); return this; }
+    setDesc(n) { const d = document.createElement("div"); d.className = "setting-item-description"; d.textContent = n; this.info.append(d); return this; }
+    addDropdown(fn) { const s = document.createElement("select");
+      const api = { addOption:(v,t)=>{const o=document.createElement("option");o.value=v;o.textContent=t;s.appendChild(o);return api;},
+                    setValue:(v)=>{s.value=v;return api;}, onChange:(f)=>{s.addEventListener("change",()=>f(s.value));return api;} };
+      this.ctrl.appendChild(s); fn(api); return this; }
+    addText(fn) { const i = document.createElement("input");
+      const api = { setPlaceholder:(v)=>{i.placeholder=v;return api;}, setValue:(v)=>{i.value=v;return api;},
+                    onChange:(f)=>{i.addEventListener("input",()=>f(i.value));return api;}, inputEl:i };
+      this.ctrl.appendChild(i); fn(api); return this; }
+    addTextArea(fn) { const i = document.createElement("textarea");
+      const api = { setValue:(v)=>{i.value=v;return api;}, onChange:(f)=>{i.addEventListener("input",()=>f(i.value));return api;}, inputEl:i };
+      this.ctrl.appendChild(i); fn(api); return this; }
+    addButton(fn) { const b = document.createElement("button");
+      const api = { setButtonText:(v)=>{b.textContent=v;return api;}, onClick:(f)=>{b.addEventListener("click",f);return api;} };
+      this.ctrl.appendChild(b); fn(api); return this; }
+  }
+
+  /* 极简 YAML：只认 key: value、数字、布尔、引号串。
+     真插件用的是 Obsidian 自带的 parseYaml，这里够验证代码块解析就行。 */
+  function parseYaml(src) {
+    const out = {};
+    for (const line of String(src || "").split("\n")) {
+      const m = line.match(/^\s*([A-Za-z_][\w-]*)\s*:\s*(.*)$/);
+      if (!m) continue;
+      let v = m[2].trim();
+      if (v === "") continue;
+      if (/^-?\d+(\.\d+)?$/.test(v)) v = Number(v);
+      else if (v === "true") v = true;
+      else if (v === "false") v = false;
+      else v = v.replace(/^["']|["']$/g, "");
+      out[m[1]] = v;
+    }
+    return out;
+  }
+
+  return { Plugin, PluginSettingTab, MarkdownRenderChild, Notice, Setting, parseYaml };
+}
+
+/* Obsidian 给 HTMLElement 加的便利方法，插件外壳用到了 */
+if (!HTMLElement.prototype.createEl) {
+  HTMLElement.prototype.createEl = function (tag, o = {}) {
+    const e = document.createElement(tag);
+    if (o.cls) e.className = o.cls;
+    if (o.text) e.textContent = o.text;
+    this.appendChild(e); return e;
+  };
+  HTMLElement.prototype.empty = function () { while (this.firstChild) this.removeChild(this.firstChild); };
+}
+
+/* ── 跑起来 ───────────────────────────────────────────────── */
+(async () => {
+  log.textContent = "加载 dist/plugin/main.js …";
+  try {
+    const app = makeFakeApp();
+    const obsidian = makeObsidianStub(app);
+    const src = await (await fetch("../dist/plugin/main.js", { cache: "no-store" })).text();
+
+    // 按 CommonJS 求值，和 Obsidian 加载插件的方式一致
+    const module = { exports: {} };
+    new Function("require", "module", "exports", src)(
+      (n) => { if (n === "obsidian") return obsidian; throw new Error("未知模块 " + n); },
+      module, module.exports
+    );
+    check("main.js 以 CommonJS 加载成功", typeof module.exports === "function", `${(src.length/1024).toFixed(0)} KB`);
+
+    const plugin = new module.exports(app, { id: "workbench-kit", dir: ".obsidian/plugins/workbench-kit" });
+    await plugin.onload();
+    say("");
+    check("onload 完成", true);
+    check("内核已引导", !!plugin.WB, "v" + (plugin.WB?.version || "?"));
+    check("数据层是原生实现（无 Dataview）", !!plugin.WB?.query?.reindex);
+    check("组件全部打进包里", plugin.WB.runtime.listComponents().length === EXPECT.components,
+          plugin.WB.runtime.listComponents().length + " 个");
+    check("主题全部打进包里", plugin.WB.runtime.listThemes().length === EXPECT.themes,
+          plugin.WB.runtime.listThemes().length + " 套");
+    check("模板全部打进包里", plugin.WB.runtime.listPresets().length === EXPECT.presets);
+    check("任务索引已建立", plugin.WB.query.taskCount > 0, plugin.WB.query.taskCount + " 条");
+    check("注册了 ```workbench 代码块", !!plugin.processors.workbench);
+    check("注册了侧边栏图标与命令", plugin.ribbons.length === 1 && plugin.commands.length === 2);
+    check("设置里的主题名是中文", plugin.settings.theme === "素笺", plugin.settings.theme);
+
+    // ── 看板模式 ──
+    say("\n渲染 ```workbench（空）…");
+    const boardEl = document.getElementById("board");
+    await plugin.processors.workbench("", boardEl, { sourcePath: "工作台.md", addChild: () => {} });
+    await new Promise((r) => setTimeout(r, 1200));
+    check("看板渲染出工具栏", boardEl.querySelectorAll(".wb-tb-btn").length >= 4);
+    check("空看板给出模板卡片", boardEl.querySelectorAll(".wb-preset-card").length === 4);
+    check("看板无错误卡", boardEl.querySelectorAll(".wb-error").length === 0);
+
+    // ── 单组件模式 ──
+    say("\n渲染 ```workbench + c: heatmap …");
+    const singleEl = document.getElementById("single");
+    await plugin.processors.workbench("c: heatmap\nweeks: 26\n", singleEl, { sourcePath: "别的笔记.md", addChild: () => {} });
+    await new Promise((r) => setTimeout(r, 800));
+    const hmCells = singleEl.querySelectorAll(".wb-hm-grid .wb-hm-cell").length;
+    check("热力图渲染出格子", hmCells > 100, hmCells + " 格");
+    check("YAML 参数生效（26 周）", singleEl.querySelectorAll(".wb-hm-week").length === 26);
+    check("单组件无错误卡", singleEl.querySelectorAll(".wb-error").length === 0);
+
+    // ── 套模板 ──
+    say("\n套用「知识库」模板…");
+    [...boardEl.querySelectorAll(".wb-preset-card")].find((c) => c.textContent.includes("知识库")).click();
+    await new Promise((r) => setTimeout(r, 3000));
+    const blks = [...boardEl.querySelectorAll(".wb-blk")];
+    const rects = blks.map((b) => b.getBoundingClientRect());
+    let ov = 0;
+    for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++) {
+      const a = rects[i], b = rects[j];
+      if (a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1) ov++;
+    }
+    check("模板铺出 9 个块", blks.length === 9, blks.length + " 个");
+    check("块之间无重叠", ov === 0);
+    check("无内容被切", blks.filter((b) => { const y = b.querySelector(".wb-blk-body");
+      return y.scrollHeight > y.clientHeight + 4; }).length === 0);
+    check("主题跟着模板切到朱砂",
+      [...boardEl.querySelector(".wb").classList].includes("wb-theme-zhusha"));
+    check("布局写进了插件数据目录",
+      Object.keys(app.__files).some((p) => p.includes("plugins/workbench-kit/boards")),
+      Object.keys(app.__files).find((p) => p.includes("boards")) || "");
+
+    // ── 设置界面 ──
+    say("\n渲染设置界面…");
+    const tab = plugin.settingTabs[0];
+    tab.display();
+    await new Promise((r) => setTimeout(r, 600));
+    document.getElementById("settings").appendChild(tab.containerEl);
+    check("设置项渲染出来", tab.containerEl.querySelectorAll(".setting-item").length >= 8,
+          tab.containerEl.querySelectorAll(".setting-item").length + " 项");
+    check("主题下拉列出全部主题", tab.containerEl.querySelector("select")?.options.length === EXPECT.themes);
+
+    say(`\n${fails === 0 ? "全部通过" : fails + " 项失败"}`, fails === 0 ? "ok" : "bad");
+  } catch (e) {
+    say(`\n✗ 崩了：${e.message}\n${e.stack}`, "bad");
+    console.error(e);
+  }
+})();
+</script>
+</body>
+</html>
+

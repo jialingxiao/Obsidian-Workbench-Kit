@@ -1,0 +1,42 @@
+/* ============================================================
+   主题 · 素笺（sujian）
+   @name 素笺
+   @en Plain Letter
+   @desc 不喧宾夺主，完全跟随你的 Obsidian 主题与明暗模式
+   @font 系统界面字体
+   @swatch var(--background-primary) var(--text-normal) var(--interactive-accent)
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-sujian {
+  --wb-bg:             var(--background-primary);
+  --wb-surface:        var(--background-secondary);
+  --wb-surface-2:      var(--background-secondary-alt);
+  --wb-border:         var(--background-modifier-border);
+  --wb-rule:           var(--background-modifier-border);
+  --wb-text:           var(--text-normal);
+  --wb-muted:          var(--text-muted);
+  --wb-faint:          var(--text-muted);
+  --wb-accent:         var(--interactive-accent);
+  --wb-accent-2:       var(--text-accent-hover, var(--interactive-accent));
+  --wb-on-accent:      var(--text-on-accent);
+  --wb-success:        var(--color-green);
+  --wb-danger:         var(--color-red);
+  --wb-heat-empty:     var(--background-modifier-border);
+  --wb-mast-bg:        var(--background-secondary);
+  --wb-mast-text:      var(--text-normal);
+  --wb-mast-dim:       var(--text-muted);
+  --wb-radius:         10px;
+  --wb-radius-sm:      6px;
+  --wb-gap:            14px;
+  --wb-pad:            18px;
+  --wb-font:           var(--wb-f-system);
+  --wb-font-display:   var(--wb-f-system);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.0em;
+  --wb-title-weight:   650;
+  --wb-title-track:    -0.01em;
+  --wb-shadow:         0 1px 2px rgba(0,0,0,.06);
+}

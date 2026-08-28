@@ -1,0 +1,41 @@
+/* 组件 · quick-actions */
+
+.wb .wb-qa-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.wb button.wb-qa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  cursor: pointer;
+  color: var(--wb-text);
+  background: transparent;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius-sm);
+  box-shadow: none;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.wb button.wb-qa-btn:hover {
+  color: var(--wb-accent);
+  border-color: var(--wb-accent);
+}
+
+/* chip：紧凑一排，适合放在报头下面当导航条 */
+.wb .wb-qa-row.is-chip .wb-qa-btn {
+  padding: 4px 12px;
+  font-size: var(--wb-fs-sm);
+}
+
+/* tile：大方块，图标在上文字在下，适合当主入口 */
+.wb .wb-qa-row.is-tile { gap: var(--wb-gap); }
+.wb .wb-qa-row.is-tile .wb-qa-btn {
+  flex-direction: column;
+  gap: 4px;
+  min-width: 78px;
+  padding: 12px 14px;
+  border-radius: var(--wb-radius);
+}
+.wb .wb-qa-row.is-tile .wb-qa-icon { font-size: 20px; line-height: 1; }
+.wb .wb-qa-row.is-tile .wb-qa-label { font-size: var(--wb-fs-sm); }
+
+.wb .wb-qa-icon { line-height: 1; }

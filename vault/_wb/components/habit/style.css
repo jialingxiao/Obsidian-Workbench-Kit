@@ -1,0 +1,44 @@
+/* 组件 · habit */
+
+.wb .wb-hb-grid {
+  display: grid;
+  grid-template-columns: minmax(56px, auto) 1fr auto;
+  gap: 6px 10px;
+  align-items: center;
+}
+
+.wb .wb-hb-name {
+  font-size: var(--wb-fs-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb .wb-hb-track {
+  display: grid;
+  grid-template-columns: repeat(var(--wb-hb-days, 21), minmax(0, 1fr));
+  gap: 2px;
+  min-width: 0;
+}
+
+.wb .wb-hb-cell {
+  aspect-ratio: 1;
+  min-height: 8px;
+  border-radius: 2px;
+  background: var(--wb-heat-empty);
+}
+.wb .wb-hb-cell.is-done { background: var(--wb-accent); }
+
+.wb .wb-hb-rate {
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  color: var(--wb-muted);
+  text-align: right;
+  min-width: 32px;
+}
+
+.wb .wb-hb-foot {
+  margin-top: 9px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+}

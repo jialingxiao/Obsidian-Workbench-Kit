@@ -1,0 +1,69 @@
+/* ============================================================
+   主题 · 水墨（shuimo）
+   @name 水墨
+   @en Ink Wash
+   @desc 冷灰纸上浓淡两级墨色，标题用楷体，留白多过着墨
+   @font 楷体标题 + 黑体正文
+   @swatch #EBEFEE #14181B #2E4550
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-shuimo {
+  --wb-bg:             #EBEFEE;
+  --wb-surface:        #FBFCFC;
+  --wb-surface-2:      #DAE0DF;
+  --wb-border:         #C2CBC9;
+  --wb-rule:           #14181B;
+  --wb-text:           #14181B;
+  --wb-muted:          #474B4D;
+  --wb-faint:          #5E6263;
+  --wb-accent:         #2E4550;
+  --wb-accent-2:       #748F75;
+  --wb-on-accent:      #FAFBFB;
+  --wb-success:        #3D6B4C;
+  --wb-danger:         #9B3B33;
+  --wb-heat-empty:     #DAE0DF;
+  --wb-mast-bg:        #1A1F23;
+  --wb-mast-text:      #FAFBFB;
+  --wb-mast-dim:       #A6A9AA;
+  --wb-radius:         2px;
+  --wb-radius-sm:      1px;
+  --wb-gap:            16px;
+  --wb-pad:            20px;
+  --wb-font:           var(--wb-f-hei);
+  --wb-font-display:   var(--wb-f-kai);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     3.0em;
+  --wb-title-weight:   400;
+  --wb-title-track:    0.06em;
+  --wb-shadow:         0 1px 3px rgba(20,30,35,.10);
+}
+
+/* 深色模式：底色整体压暗，但保留这套主题的色相关系。
+   取值同样由脚本推算，不手写。 */
+.theme-dark .wb.wb-theme-shuimo {
+  --wb-bg:             #131719;
+  --wb-surface:        #181D20;
+  --wb-surface-2:      #1E2427;
+  --wb-border:         #3F494E;
+  --wb-rule:           #E9EDEC;
+  --wb-text:           #E9EDEC;
+  --wb-muted:          #C1C5C5;
+  --wb-faint:          #AAAEAD;
+  --wb-accent:         #9FB6C2;
+  --wb-accent-2:       #748F75;
+  --wb-on-accent:      #0D1012;
+  --wb-success:        #8AB897;
+  --wb-danger:         #E69B95;
+  --wb-heat-empty:     #1E2427;
+  --wb-mast-bg:        #0D1012;
+  --wb-mast-text:      #E9EDEC;
+  --wb-mast-dim:       #9B9E9E;
+}
+
+/* 水墨讲究留白：标题细、字距开，分区线只用一道极淡的灰。
+   楷体只用在标题 —— 长段正文用楷体在屏幕上很难读。 */
+.wb.wb-theme-shuimo .wb-head { border-bottom: 1px solid var(--wb-border); padding-bottom: 6px; }
+.wb.wb-theme-shuimo .wb-head-label { font-weight: 400; letter-spacing: .34em; }

@@ -1,0 +1,35 @@
+/* 组件 · vault-info */
+
+.wb .wb-vi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: var(--wb-gap);
+}
+
+.wb .wb-vi-item {
+  border-top: 2px solid var(--wb-border);
+  padding-top: 6px;
+  min-width: 0;
+}
+.wb .wb-vi-val {
+  font-family: var(--wb-font-display);
+  font-size: 1.5em;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.wb .wb-vi-key {
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  margin-top: 1px;
+}
+
+.wb .wb-vi-oldest {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--wb-border);
+  font-size: var(--wb-fs-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-vi-oldest-label { color: var(--wb-faint); font-size: var(--wb-fs-xs); }

@@ -1,0 +1,18 @@
+/* 组件 · quote */
+
+.wb blockquote.wb-quote {
+  margin: 0;
+  padding: 4px 0 4px 14px;
+  border-left: 3px solid var(--wb-accent);
+}
+.wb .wb-quote-text {
+  font-family: var(--wb-font-display);
+  font-size: 1.1em;
+  font-style: italic;
+  line-height: 1.6;
+}
+.wb .wb-quote-from {
+  margin-top: 6px;
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+}

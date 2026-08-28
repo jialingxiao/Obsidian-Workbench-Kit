@@ -1,0 +1,41 @@
+/* 组件 · table */
+
+.wb .wb-tb-scroll { overflow-x: auto; scrollbar-width: thin; }
+
+.wb table.wb-tb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--wb-fs-sm);
+}
+
+.wb .wb-tb-table th {
+  text-align: left;
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--wb-muted);
+  padding: 0 10px 5px 0;
+  border-bottom: 2px solid var(--wb-rule, var(--wb-border));
+  white-space: nowrap;
+}
+
+.wb .wb-tb-table td {
+  padding: 6px 10px 6px 0;
+  border-bottom: 1px solid var(--wb-border);
+  vertical-align: baseline;
+}
+.wb .wb-tb-table.is-compact td { padding: 3px 10px 3px 0; }
+.wb .wb-tb-table tr:last-child td { border-bottom: none; }
+
+/* 第一列通常是笔记名，给它最多空间，其余列按内容收 */
+.wb .wb-tb-table td:first-child { width: 40%; }
+.wb .wb-tb-table td:first-child .wb-link {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb .wb-tb-dim  { color: var(--wb-muted); white-space: nowrap; }
+.wb .wb-tb-none { color: var(--wb-faint); }

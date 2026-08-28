@@ -1,0 +1,64 @@
+/* 组件 · heatmap */
+
+.wb .wb-hm { --wb-hm-cell: 11px; --wb-hm-gap: 3px; }
+
+/* 窄容器里横向滚动，而不是把格子压变形 */
+.wb .wb-hm-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+.wb .wb-hm-inner {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 100%;
+}
+
+/* 月份标签行：每列一格，与下面的周列一一对齐 */
+.wb .wb-hm-months {
+  display: flex;
+  gap: var(--wb-hm-gap);
+  height: 13px;
+}
+.wb .wb-hm-month {
+  width: var(--wb-hm-cell);
+  flex: none;
+  font-size: 9px;
+  line-height: 13px;
+  letter-spacing: .04em;
+  color: var(--wb-faint);
+  white-space: nowrap;
+}
+
+.wb .wb-hm-grid {
+  display: flex;
+  gap: var(--wb-hm-gap);
+}
+.wb .wb-hm-week {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wb-hm-gap);
+  flex: none;
+}
+
+.wb .wb-hm-cell {
+  width: var(--wb-hm-cell);
+  height: var(--wb-hm-cell);
+  border-radius: 2px;
+  flex: none;
+}
+.wb .wb-hm-cell.is-future { background: transparent; }
+
+/* ── 图例 ── */
+.wb .wb-hm-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--wb-hm-gap);
+  margin-top: 7px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+}
+.wb .wb-hm-legend span { margin: 0 3px; }

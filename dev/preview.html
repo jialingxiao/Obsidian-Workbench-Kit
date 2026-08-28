@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workbench Kit · 组件预览器</title>
+<style>
+  /* ── Obsidian 原生变量的仿制品 ──────────────────────────────
+     minimal 主题和所有浮层都靠这些变量，没有它们没法在浏览器里验证。 */
+  body.theme-light {
+    --background-primary: #ffffff;
+    --background-secondary: #f4f5f7;
+    --background-secondary-alt: #e9ebef;
+    --background-modifier-border: #dcdfe4;
+    --background-modifier-hover: rgba(0,0,0,.06);
+    --text-normal: #1f2328;
+    --text-muted: #6b7280;
+    --text-faint: #9aa1ac;
+    --text-on-accent: #ffffff;
+    --interactive-accent: #6c63ff;
+    --color-red: #d2404a;
+    --font-interface: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-monospace: ui-monospace, "JetBrains Mono", Consolas, monospace;
+  }
+  body.theme-dark {
+    --background-primary: #1e1e21;
+    --background-secondary: #26262a;
+    --background-secondary-alt: #2e2e33;
+    --background-modifier-border: #3a3a41;
+    --background-modifier-hover: rgba(255,255,255,.08);
+    --text-normal: #e4e5e7;
+    --text-muted: #9ba1a9;
+    --text-faint: #6b7079;
+    --text-on-accent: #ffffff;
+    --interactive-accent: #8b83ff;
+    --color-red: #e0555f;
+    --font-interface: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-monospace: ui-monospace, "JetBrains Mono", Consolas, monospace;
+  }
+
+  /* 预览器里禁用块的位移/尺寸过渡。
+     这个页面有时跑在不合成帧的环境里（面板隐藏、后台标签），那时
+     CSS transition 会永远停在中间值 —— 内联写着 518px，实际量到 342px，
+     排查布局时全是假象。真实 Obsidian 里窗口可见，过渡正常完成。 */
+  .wb .wb-blk { transition: none !important; }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 18px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-family: var(--font-interface);
+  }
+  .bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 9px 13px; margin-bottom: 16px;
+    border: 1px solid var(--background-modifier-border); border-radius: 8px;
+    background: var(--background-secondary);
+    position: sticky; top: 8px; z-index: 500;
+  }
+  .bar b { font-size: 13px; }
+  .bar button {
+    font: inherit; font-size: 12px; padding: 4px 11px; cursor: pointer;
+    border: 1px solid var(--background-modifier-border); border-radius: 5px;
+    background: var(--background-primary); color: var(--text-normal);
+  }
+  .bar button.on { background: var(--interactive-accent); color: #fff; border-color: transparent; }
+  .bar .sp { flex: 1; }
+  .bar .err { color: var(--color-red); font-size: 12px; }
+
+  h2.sec {
+    margin: 26px 0 10px; font-size: 11px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted);
+    border-bottom: 1px solid var(--background-modifier-border); padding-bottom: 5px;
+  }
+  .panel {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 10px; padding: 16px; background: var(--background-primary);
+  }
+  /* min(400px,100%) 而不是 400px：窄面板下才不会自己撑出横向滚动条，
+     否则排查组件溢出时全是预览器自己造成的假警报 */
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr)); gap: 18px; align-items: start; }
+  .col { border: 1px solid var(--background-modifier-border); border-radius: 10px; overflow: hidden; }
+  .col > h3 {
+    margin: 0; padding: 7px 13px; font-size: 11px; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    background: var(--background-secondary); color: var(--text-muted);
+    border-bottom: 1px solid var(--background-modifier-border);
+  }
+  .col > .body { padding: 14px; }
+  .wall { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 16px; align-items: start; }
+  .wall .tile { border: 1px solid var(--background-modifier-border); border-radius: 10px; overflow: hidden; }
+  .wall .tile > h3 {
+    margin: 0; padding: 8px 12px; display: flex; align-items: center; gap: 8px;
+    background: var(--background-secondary); border-bottom: 1px solid var(--background-modifier-border);
+    font-size: 13px; font-weight: 700;
+  }
+  .wall .tile > h3 .id { font-size: 10px; font-weight: 400; font-family: var(--font-monospace); color: var(--text-faint); }
+  .wall .tile > h3 .note { margin-left: auto; font-size: 10px; font-weight: 400; color: var(--text-muted); }
+  .wall .tile > h3 .sw { display: flex; width: 30px; height: 18px; border-radius: 3px; overflow: hidden; border: 1px solid var(--background-modifier-border); }
+  .wall .tile > h3 .sw i { flex: 1; }
+  /* 关键：每块用主题自己的 --wb-bg 当底，否则看不出配色关系 */
+  .wall .tile .stage { padding: 12px; }
+  #fonts table { border-collapse: collapse; font-size: 13px; width: 100%; }
+  #fonts td { padding: 5px 10px; border-bottom: 1px solid var(--background-modifier-border); }
+  #fonts td:first-child { width: 110px; color: var(--text-muted); }
+  #fonts td.hit { font-weight: 700; }
+  #fonts td.miss { color: var(--color-red); }
+  #fonts td.rest { color: var(--text-faint); font-size: 11px; font-family: var(--font-monospace); }
+  #fonts .sample { font-size: 17px; }
+  .case { margin-bottom: 22px; }
+  .case > .cap {
+    font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: 5px; font-family: var(--font-monospace);
+  }
+</style>
+</head>
+<body class="theme-light">
+
+<div class="bar">
+  <b>Workbench Kit · 预览器</b>
+  <button data-mode="light" class="on">Light</button>
+  <button data-mode="dark">Dark</button>
+  <button id="reload">重新加载</button>
+  <button id="wipe">清空布局</button>
+  <button id="obsim" class="on">模拟 Obsidian 样式</button>
+  <button id="native">数据层：Dataview</button>
+  <span class="sp"></span>
+  <span class="err" id="err"></span>
+</div>
+
+<h2 class="sec">看板模式 · dv.view("_wb")　—— 可拖拽 / 可缩放 / 可换主题</h2>
+<div class="panel" id="board"></div>
+
+<h2 class="sec">字体自检 · 各字体族在本机实际落到哪一个</h2>
+<div class="panel" id="fonts"></div>
+
+<h2 class="sec">主题墙 · 12 套主题同屏对照（顶栏可切明/暗）</h2>
+<div class="wall" id="wall"></div>
+
+<h2 class="sec">单组件模式 · dv.view("_wb", { c: "…" })</h2>
+<div class="cols" id="out"></div>
+
+<script>
+/* ============================================================
+   Dataview / Obsidian 桩件
+   刻意复刻 dv.view 的真实加载方式，所以预览器验证的是真调度器。
+   ========================================================== */
+
+const THEMES = ["sujian", "xuanzhi", "shuimo", "zhusha", "qingci", "qiuhao", "zhuying", "ganyu",
+                "songyan", "dianlan", "yaoshi", "chenlv"];
+const PRESETS = ["knowledge", "planner", "start", "writing"];
+const IDS = [
+  // header
+  "masthead", "clock", "greeting", "quote", "banner",
+  // nav
+  "quick-actions", "bookmarks", "folders", "tags", "search",
+  // metrics
+  "stats", "heatmap", "breakdown", "trend", "vault-info", "goals",
+  // notes
+  "recent", "notes", "spotlight", "orphans", "hubs", "untagged",
+  // tasks
+  "tasks", "daily", "calendar", "upcoming", "streak",
+  // layout
+  "heading", "divider", "embed", "text",
+  // 新增（实用组）
+  "table", "kanban", "week", "habit", "on-this-day", "countdown",
+  "stale", "coverage", "opened", "reading", "attachments", "timeline", "graph",
+  // 装饰组
+  "seal", "poem", "year-progress", "analog-clock", "image", "solar-term", "lunar",
+];
+
+const TOPICS = ["注意力机制","向量数据库","上下文窗口","检索增强生成","思维链","知识图谱","语义搜索","模型蒸馏"];
+
+function makeFakePages() {
+  const folders = ["00.inbox", "01.notes", "01.notes/concepts", "01.notes/entities", "99.output"];
+  const pages = [];
+  const now = Date.now();
+  let seed = 20260828;
+  const rnd = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  for (let i = 0; i < 420; i++) {
+    const folder = folders[Math.floor(rnd() * folders.length)];
+    const daysAgo = Math.floor(Math.pow(rnd(), 1.4) * 730);
+    const ctime = new Date(now - daysAgo * 86400000);
+    const name = `${TOPICS[Math.floor(rnd() * TOPICS.length)]}-${i}`;
+    const path = `${folder}/${name}.md`;
+    const tasks = [];
+    if (rnd() < 0.12) {
+      const n = 1 + Math.floor(rnd() * 2);
+      for (let k = 0; k < n; k++) {
+        // 一部分带 📅 到期日，供 upcoming 组件验证（含逾期）
+        const dated = rnd() < 0.5;
+        const due = new Date(now + (Math.floor(rnd() * 24) - 6) * 86400000);
+        const p2 = (x) => String(x).padStart(2, "0");
+        const dueStr = `${due.getFullYear()}-${p2(due.getMonth() + 1)}-${p2(due.getDate())}`;
+        tasks.push({
+          text: `整理 ${name} 的${k ? "参考文献" : "要点"}` + (dated ? ` 📅 ${dueStr}` : ""),
+          completed: rnd() < 0.3, path, line: k,
+        });
+      }
+    }
+    // 标签、反链、出链：tags / orphans / hubs / untagged 都要用
+    const tags = [];
+    if (rnd() < 0.75) tags.push("#" + ["笔记", "摘要", "综述", "实验", "读书"][Math.floor(rnd() * 5)]);
+    if (rnd() < 0.4) tags.push("#kb");
+    const inlinks = []; const outlinks = [];
+    const nIn = rnd() < 0.35 ? 0 : Math.floor(Math.pow(rnd(), 2.2) * 14);
+    for (let k = 0; k < nIn; k++) inlinks.push({ path: `01.notes/x${k}.md` });
+    for (let k = 0; k < Math.floor(rnd() * 4); k++) outlinks.push({ path: `01.notes/y${k}.md` });
+
+    pages.push({
+      file: { path, name, ctime, mtime: new Date(ctime.getTime() + 3600000), tasks, tags, inlinks, outlinks },
+      一句话描述: `关于${name.split("-")[0]}的一条记录`,
+      // 一部分笔记带阅读进度，供 reading 组件验证
+      ...(i % 17 === 0 ? { 进度: `${20 + (i % 9) * 30}/300` } : {}),
+    });
+  }
+  // 日记：最近 14 天里挑一部分
+  for (let d = 0; d < 14; d++) {
+    if (d % 3 === 1) continue;
+    const dt = new Date(); dt.setDate(dt.getDate() - d); dt.setHours(9,0,0,0);
+    const p = (n) => String(n).padStart(2, "0");
+    const name = `${dt.getFullYear()}-${p(dt.getMonth()+1)}-${p(dt.getDate())}`;
+    // 日记里带习惯打卡的待办，供 habit / week 组件验证
+    const dTasks = [];
+    ["晨跑", "读书", "冥想"].forEach((hb, k) => {
+      dTasks.push({ text: hb, completed: (d + k) % 3 !== 0, path: `Daily/${name}.md`, line: k });
+    });
+    pages.push({ file: { path: `Daily/${name}.md`, name, ctime: dt, mtime: dt, tasks: dTasks, tags: ["#daily"], inlinks: [], outlinks: [] } });
+  }
+  return pages;
+}
+const FAKE_PAGES = makeFakePages();
+
+/* getFiles() 必须列出组件与主题文件 —— 组件面板和主题菜单靠扫它发现内容 */
+/* 假附件：一部分故意不被引用，好让 attachments 的「无人引用」有东西可查 */
+const FAKE_ATTACHMENTS = Array.from({ length: 18 }, (_, i) => ({
+  path: `assets/图片-${i}.png`,
+  name: `图片-${i}.png`,
+  stat: { size: 20000 + i * 37000 },
+}));
+
+const FAKE_FILES = [
+  ...FAKE_ATTACHMENTS,
+  { path: "_wb/view.js" },
+  { path: "_wb/core/runtime.js" },
+  ...IDS.map((id) => ({ path: `_wb/components/${id}/component.js` })),
+  ...THEMES.map((t) => ({ path: `_wb/themes/${t}.css` })),
+  ...PRESETS.map((t) => ({ path: `_wb/presets/${t}.json` })),
+  ...FAKE_PAGES.map((p) => ({ path: p.file.path })),
+];
+
+/* 内存版 vault.adapter：布局存 localStorage，刷新页面也还在，
+   跟真实 Obsidian 里存 JSON 文件的行为一致。 */
+const LS_KEY = "wb-preview-files";
+const memFiles = JSON.parse(localStorage.getItem(LS_KEY) || "{}");
+const persist = () => localStorage.setItem(LS_KEY, JSON.stringify(memFiles));
+
+const log = (...a) => console.log("[stub]", ...a);
+
+/* embed / untagged / vault-info 都要读笔记正文 */
+const SAMPLE_MD = `---
+tags: [笔记]
+---
+
+## 要点
+
+- 注意力机制让模型能按需分配算力
+- 上下文窗口决定了一次能看多少材料
+
+## 展开
+
+检索增强生成把外部知识接进来，缓解了参数记忆的局限。
+相关：[[向量数据库]]
+`;
+
+const fakeApp = {
+  vault: {
+    getName: () => "个人知识库",
+    getFiles: () => FAKE_FILES,
+    getMarkdownFiles: () => FAKE_PAGES.map((p) => ({
+      path: p.file.path, basename: p.file.name,
+      parent: { path: p.file.path.replace(/\/[^/]+$/, "") },
+      stat: { ctime: +p.file.ctime, mtime: +p.file.mtime, size: 1024 },
+    })),
+    cachedRead: async (f) => {
+      const p = FAKE_PAGES.find((x) => x.file.path === f.path);
+      if (!p) return SAMPLE_MD;
+      // 原生层要从正文里抠任务文本，所以行号必须和 listItems 对得上
+      const lines = [];
+      for (const t of p.file.tasks) {
+        while (lines.length < (t.line ?? 0)) lines.push("");
+        lines[t.line ?? lines.length] = `- [${t.completed ? "x" : " "}] ${t.text}`;
+      }
+      return lines.join("\n") || SAMPLE_MD;
+    },
+    modify: async (f, text) => { memFiles[f.path] = text; persist(); log("modify", f.path); },
+    getAbstractFileByPath: (p) => (FAKE_FILES.some((f) => f.path === p) ? { path: p } : null),
+    getResourcePath: (f) => f.path,
+    read: async (f) => memFiles[f.path] ?? SAMPLE_MD,
+    create: async (p, body) => { FAKE_FILES.push({ path: p }); memFiles[p] = body; persist(); log("create", p); return { path: p }; },
+    createFolder: async (p) => log("createFolder", p),
+    adapter: {
+      exists: async (p) => p in memFiles || p.endsWith("/boards"),
+      read: async (p) => memFiles[p],
+      write: async (p, d) => { memFiles[p] = d; persist(); },
+      mkdir: async () => {},
+    },
+  },
+  /* Obsidian 原生 API 的桩件 —— 用来验证 query-native.js（插件版数据层）。
+     它读的是 metadataCache 而不是 Dataview，所以桩件也得按那个形状造。 */
+  metadataCache: {
+    getFileCache: (f) => {
+      const p = FAKE_PAGES.find((x) => x.file.path === f.path);
+      if (!p) return null;
+      return {
+        frontmatter: p["一句话描述"] ? { 一句话描述: p["一句话描述"], tags: p.file.tags.map((t) => t.slice(1)) }
+                                     : { tags: p.file.tags.map((t) => t.slice(1)) },
+        tags: p.file.tags.map((t) => ({ tag: t })),
+        links: p.file.outlinks.map((l) => ({ link: l.path })),
+        listItems: p.file.tasks.map((t, i) => ({
+          task: t.completed ? "x" : " ",
+          position: { start: { line: t.line ?? i } },
+        })),
+      };
+    },
+    // resolvedLinks: { 源文件: { 目标文件: 次数 } } —— 原生层从这里反转出反链
+    get resolvedLinks() {
+      const out = {};
+      for (const p of FAKE_PAGES) {
+        for (const l of p.file.inlinks) {
+          out[l.path] = out[l.path] || {};
+          out[l.path][p.file.path] = 1;
+        }
+      }
+      return out;
+    },
+  },
+  workspace: {
+    getLastOpenFiles: () => FAKE_PAGES.slice(3, 20).map((p) => p.file.path),
+    openLinkText: (p) => log("openLinkText", p),
+    getLeaf: () => ({ openFile: async (f) => log("openFile", f.path) }),
+    trigger: () => {},
+  },
+  commands: { executeCommandById: (id) => log("command", id) },
+  // 书签核心插件：验证 bookmarks 组件的 native 模式
+  internalPlugins: {
+    getPluginById: (id) =>
+      id === "global-search"
+        ? { instance: { openGlobalSearch: (q) => log("search", q) } }
+        : id === "bookmarks"
+        ? { instance: { getBookmarks: () => [
+            { type: "file", path: "01.notes/注意力机制-3.md", title: "注意力机制" },
+            { type: "file", path: "99.output/思维链-11.md" },
+            { type: "group", title: "写作", items: [
+              { type: "file", path: "00.inbox/语义搜索-7.md", title: "语义搜索笔记" },
+              { type: "search", query: "tag:#todo", title: "待办搜索" },
+            ]},
+          ] } }
+        : null,
+  },
+};
+
+function makeDv(container, notePath = "工作台.md") {
+  return {
+    container,
+    containerEl: container,
+    app: fakeApp,
+    current: () => ({ file: { path: notePath } }),
+    io: {
+      load: async (p) => {
+        const res = await fetch(`../vault/${p}`, { cache: "no-store" });
+        return res.ok ? await res.text() : null;
+      },
+    },
+    pages: (dql) => {
+      let list = FAKE_PAGES;
+      const src = String(dql || "").trim();
+      if (src) {
+        const folder = src.replace(/^["']|["']$/g, "");
+        list = FAKE_PAGES.filter((p) => p.file.path.startsWith(folder + "/"));
+      }
+      const arr = list.slice();
+      arr.array = () => arr;
+      return arr;
+    },
+    /* embed 组件在拿不到 Obsidian MarkdownRenderer 时的兜底路径 */
+    paragraph(md) {
+      const p = document.createElement("div");
+      p.className = "stub-md";
+      p.textContent = String(md);
+      p.style.whiteSpace = "pre-wrap";
+      this.container.appendChild(p);
+    },
+    /* Dataview 的 taskList 桩件：渲染进 dv.container —— 这正是
+       tasks 组件用 q.renderWith 临时换掉 container 要验证的行为。 */
+    taskList(tasks, groupByFile) {
+      const host = this.container;
+      const groups = new Map();
+      for (const t of tasks) {
+        const k = groupByFile ? t.path : "";
+        if (!groups.has(k)) groups.set(k, []);
+        groups.get(k).push(t);
+      }
+      for (const [k, list] of groups) {
+        if (k) {
+          const hd = document.createElement("h4");
+          hd.textContent = k.split("/").pop().replace(/\.md$/, "");
+          host.appendChild(hd);
+        }
+        const ul = document.createElement("ul");
+        ul.className = "contains-task-list";
+        for (const t of list) {
+          const li = document.createElement("li");
+          li.className = "task-list-item";
+          li.dataset.task = t.completed ? "x" : " ";
+          const cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.checked = !!t.completed;
+          li.appendChild(cb);
+          li.appendChild(document.createTextNode(" " + t.text));
+          ul.appendChild(li);
+        }
+        host.appendChild(ul);
+      }
+    },
+  };
+}
+
+/* demo 里不能写死库内路径（每个库都不一样），预览器这边补上假库里的 */
+const DEMO_OVERRIDE = {
+  embed: { note: "01.notes/示例笔记" },
+  image: { folder: "assets", columns: 3, limit: 6, label: "图集" },
+};
+FAKE_FILES.push({ path: "01.notes/示例笔记.md" });
+
+let runView = null;
+async function loadDispatcher() {
+  const res = await fetch("../vault/_wb/view.js", { cache: "no-store" });
+  if (!res.ok) throw new Error("读不到 vault/_wb/view.js");
+  const src = await res.text();
+  runView = new Function("dv", "input", `return (async () => { ${src} })();`);
+}
+
+const errEl = document.getElementById("err");
+
+async function render() {
+  errEl.textContent = "";
+  document.getElementById("board").innerHTML = "";
+  document.getElementById("wall").innerHTML = "";
+  document.getElementById("out").innerHTML = "";
+  document.querySelectorAll('style[id^="wb-style-"]').forEach((s) => s.remove());
+  document.querySelectorAll(".wb-pop").forEach((s) => s.remove());
+  delete window.__WB__;
+  delete window.__WB_ROOT__;
+
+  try {
+    await loadDispatcher();
+
+    /* 先用一次性容器把内核引导起来。原生数据层的任务索引必须在任何组件
+       渲染之前建好 —— 任务是同步读的，索引没就绪就只会显示「没有待办」。
+       插件版的 onload 里也得是这个顺序。 */
+    const bootEl = document.createElement("div");
+    await runView(makeDv(bootEl), { c: "masthead" });
+    const WB = window.__WB__;
+    if (!WB) throw new Error("内核未能引导起来，看控制台");
+    if (WB.query.reindex) {
+      const n = await WB.query.reindex();
+      log("原生数据层：任务索引覆盖", n, "个文件");
+    }
+
+    // ── 看板模式 ──
+    await runView(makeDv(document.getElementById("board")), {});
+
+    renderFontCheck();
+
+    // ── 主题墙：同一组组件，12 套主题各渲染一遍 ──
+    const WALL_IDS = ["masthead", "stats", "heatmap", "recent"];
+    const wall = document.getElementById("wall");
+    for (const theme of THEMES) {
+      const info = await WB.theme.meta(theme);
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      const head = document.createElement("h3");
+      const sw = document.createElement("span"); sw.className = "sw";
+      for (const c of info.swatch) { const i = document.createElement("i"); i.style.background = c; sw.appendChild(i); }
+      head.appendChild(sw);
+      head.insertAdjacentHTML("beforeend",
+        `<span>${info.name}</span><span class="id">${theme}</span><span class="note">${info.font}</span>`);
+      tile.appendChild(head);
+      const stage = document.createElement("div");
+      stage.className = "stage";
+      tile.appendChild(stage);
+      wall.appendChild(tile);
+
+      for (const id of WALL_IDS) {
+        const comp = await WB.runtime.load(id);
+        const host = document.createElement("div");
+        stage.appendChild(host);
+        await runView(makeDv(host), { c: id, theme, ...(comp.meta.demo || {}) });
+      }
+      // 让整块底色跟着主题走，配色关系才看得出来
+      const root = stage.querySelector(".wb");
+      if (root) stage.style.background = getComputedStyle(root).getPropertyValue("--wb-bg").trim() || "";
+    }
+
+    // ── 单组件模式：两套主题并排 ──
+    const out = document.getElementById("out");
+    for (const theme of THEMES.slice(0, 2)) {
+      const col = document.createElement("div");
+      col.className = "col";
+      col.innerHTML = `<h3>theme · ${theme}</h3>`;
+      const body = document.createElement("div");
+      body.className = "body";
+      col.appendChild(body);
+      out.appendChild(col);
+
+      for (const id of IDS) {
+        const comp = await WB.runtime.load(id);
+        // embed 的 demo 不能写死路径（每个库都不一样），预览器这边补一个
+        const demo = { ...((comp.meta && comp.meta.demo) || {}), ...(DEMO_OVERRIDE[id] || {}) };
+        const cse = document.createElement("div");
+        cse.className = "case";
+        cse.innerHTML = `<div class="cap">${id}</div>`;
+        const host = document.createElement("div");
+        cse.appendChild(host);
+        body.appendChild(cse);
+        await runView(makeDv(host), { c: id, theme, ...demo });
+      }
+
+      const cse = document.createElement("div");
+      cse.className = "case";
+      cse.innerHTML = '<div class="cap">错误边界（故意的）</div>';
+      const host = document.createElement("div");
+      cse.appendChild(host);
+      body.appendChild(cse);
+      await runView(makeDv(host), { c: "heatmap", theme, source: "@不存在的别名" });
+    }
+  } catch (e) {
+    errEl.textContent = String((e && e.message) || e);
+    console.error(e);
+  }
+}
+
+/* ── 字体自检 ────────────────────────────────────────────────
+   汉字在几乎所有字体里都是等宽全角，量宽度分辨不出来 —— 必须逐像素
+   比对：同一个字用「候选 + 兜底」和「不存在的字体 + 同一兜底」各画一次，
+   像素不同才说明候选字体真的生效了。 */
+function fontAvailable(name, ch) {
+  const W = 120, H = 120;
+  const cv = document.createElement("canvas");
+  cv.width = W; cv.height = H;
+  const c = cv.getContext("2d", { willReadFrequently: true });
+  const draw = (font) => {
+    c.clearRect(0, 0, W, H);
+    c.fillStyle = "#000"; c.textBaseline = "top"; c.font = font;
+    c.fillText(ch, 4, 4);
+    return c.getImageData(0, 0, W, H).data;
+  };
+  for (const fb of ["serif", "sans-serif", "monospace"]) {
+    const ref = draw(`72px "__NoSuchFont__", ${fb}`);
+    const test = draw(`72px "${name}", ${fb}`);
+    let d = 0;
+    for (let i = 3; i < ref.length; i += 4) if (ref[i] !== test[i]) d++;
+    if (d > 30) return true;
+  }
+  return false;
+}
+
+const FONT_STACKS = [
+  ["宋体",  "--wb-f-song",     ["Songti SC","SimSun","STSong","Noto Serif CJK SC","Source Han Serif SC"], "永和九年"],
+  ["楷体",  "--wb-f-kai",      ["Kaiti SC","KaiTi","STKaiti","Noto Serif CJK SC"], "永和九年"],
+  ["黑体",  "--wb-f-hei",      ["PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC"], "永和九年"],
+  ["圆体",  "--wb-f-yuan",     ["Yuanti SC","YouYuan","PingFang SC","Microsoft YaHei"], "永和九年"],
+  ["仿宋",  "--wb-f-fangsong", ["Fangsong SC","FangSong","STFangsong","Songti SC","SimSun"], "永和九年"],
+  ["衬线",  "--wb-f-serif",    ["Playfair Display","Georgia","Times New Roman"], "Workbench"],
+  ["等宽",  "--wb-f-mono",     ["JetBrains Mono","Consolas","Fira Code"], "0O1Il"],
+];
+
+function renderFontCheck() {
+  const host = document.getElementById("fonts");
+  const rows = FONT_STACKS.map(([label, token, list, sample]) => {
+    const probe = /[一-龥]/.test(sample) ? sample[0] : sample[0];
+    const avail = list.filter((n) => fontAvailable(n, probe));
+    const hit = avail[0];
+    const rest = list.filter((n) => n !== hit);
+    return `<tr>
+      <td>${label}<br><span style="font-size:10px;font-family:var(--font-monospace);opacity:.6">${token}</span></td>
+      <td class="${hit ? "hit" : "miss"}">${hit || "❌ 全部缺失，退到通用兜底"}</td>
+      <td class="sample" style="font-family:${hit ? '"' + hit + '"' : "inherit"}">${sample}</td>
+      <td class="rest">${rest.map((n) => (avail.includes(n) ? n : "<s>" + n + "</s>")).join(" · ")}</td>
+    </tr>`;
+  }).join("");
+  host.innerHTML = `<table><tbody>${rows}</tbody></table>
+    <div style="margin-top:8px;font-size:11px;color:var(--text-faint)">
+      加粗 = 本机实际生效的那一个；<s>划掉</s> = 未安装。Obsidian 和浏览器同为 Chromium，字体可用性一致。
+    </div>`;
+}
+
+document.querySelectorAll(".bar button[data-mode]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".bar button[data-mode]").forEach((b) => b.classList.remove("on"));
+    btn.classList.add("on");
+    document.body.className = btn.dataset.mode === "dark" ? "theme-dark" : "theme-light";
+  });
+});
+/* ── Obsidian 全局样式模拟 ────────────────────────────────────
+   Obsidian 给 button / input 设了固定 height 和 nowrap，我们的按钮里
+   常常塞着两三行块级内容 —— 撑不开就溢出、跟下一条压在一起。浏览器里
+   没有这套样式，所以这类 bug 只会在真机暴露。默认开着，让它在这儿就露馅。
+
+   插到 head 最前面，才和真实加载顺序一致（app.css 在前，运行时注入的
+   样式在后）。 */
+function setObsidianSim(on) {
+  const old = document.getElementById("obsidian-sim");
+  if (old) old.remove();
+  if (!on) return;
+  const st = document.createElement("style");
+  st.id = "obsidian-sim";
+  st.textContent = `
+    button {
+      height: var(--input-height, 30px);
+      padding: 5px 15px;
+      white-space: nowrap;
+      background-color: var(--background-modifier-hover);
+      border: none; border-radius: 5px;
+      box-shadow: 0 1px 1px rgba(0,0,0,.05);
+      font-family: inherit; font-size: 14px; line-height: 1.2;
+      color: var(--text-normal); cursor: pointer;
+    }
+    input, select, textarea {
+      height: var(--input-height, 30px);
+      padding: 5px 9px; font-family: inherit; font-size: 14px;
+      border: 1px solid var(--background-modifier-border); border-radius: 5px;
+      background: var(--background-primary); color: var(--text-normal);
+    }
+    ul, ol { margin: 1em 0; padding-left: 2em; }
+    li { margin-bottom: .5em; }
+  `;
+  document.head.insertBefore(st, document.head.firstChild);
+}
+setObsidianSim(true);
+
+const obsimBtn = document.getElementById("obsim");
+obsimBtn.addEventListener("click", () => {
+  const on = !obsimBtn.classList.contains("on");
+  obsimBtn.classList.toggle("on", on);
+  setObsidianSim(on);
+});
+
+const nativeBtn = document.getElementById("native");
+nativeBtn.addEventListener("click", async () => {
+  const on = !nativeBtn.classList.contains("on");
+  nativeBtn.classList.toggle("on", on);
+  nativeBtn.textContent = on ? "数据层：原生（插件版）" : "数据层：Dataview";
+  window.__WB_QUERY__ = on ? "query-native" : "query";
+  await render();
+});
+
+document.getElementById("reload").addEventListener("click", render);
+document.getElementById("wipe").addEventListener("click", () => {
+  for (const k of Object.keys(memFiles)) delete memFiles[k];
+  persist();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

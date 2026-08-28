@@ -1,0 +1,50 @@
+/* ============================================================
+   主题 · 靛蓝（dianlan）
+   @name 靛蓝
+   @en Indigo
+   @desc 深靛底配月白字，天青与鹅黄点题，夜里看最舒服的一套
+   @font 黑体（深色）
+   @swatch #0C121C #E7EDF6 #85D4E3
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-dianlan {
+  --wb-bg:             #0C121C;
+  --wb-surface:        #111926;
+  --wb-surface-2:      #16202F;
+  --wb-border:         #2C3B52;
+  --wb-rule:           #E7EDF6;
+  --wb-text:           #E7EDF6;
+  --wb-muted:          #BBC1CA;
+  --wb-faint:          #A4AAB3;
+  --wb-accent:         #85D4E3;
+  --wb-accent-2:       #FEE883;
+  --wb-on-accent:      #0A0F17;
+  --wb-success:        #5FBE93;
+  --wb-danger:         #F08E9C;
+  --wb-heat-empty:     #16202F;
+  --wb-mast-bg:        #0A0F17;
+  --wb-mast-text:      #E7EDF6;
+  --wb-mast-dim:       #979DA6;
+  --wb-radius:         10px;
+  --wb-radius-sm:      6px;
+  --wb-gap:            14px;
+  --wb-pad:            18px;
+  --wb-font:           var(--wb-f-hei);
+  --wb-font-display:   var(--wb-f-hei);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.3em;
+  --wb-title-weight:   700;
+  --wb-title-track:    -0.01em;
+  --wb-shadow:         0 2px 6px rgba(0,0,0,.40);
+}
+
+.wb.wb-theme-dianlan .wb-blk {
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  box-shadow: var(--wb-shadow);
+}
+.wb.wb-theme-dianlan .wb-blk-body { padding: 12px 14px; }
+.wb.wb-theme-dianlan .wb-head-label { color: var(--wb-faint); }

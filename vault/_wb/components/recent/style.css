@@ -1,0 +1,50 @@
+/* 组件 · recent */
+
+.wb ul.wb-recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wb .wb-recent-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--wb-border);
+}
+.wb .wb-recent-item:last-child { border-bottom: none; }
+
+.wb .wb-recent-main { flex: 1; min-width: 0; }
+.wb .wb-recent-main .wb-link {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb .wb-recent-desc {
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-recent-folder {
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  font-family: var(--wb-font-mono);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb .wb-recent-time {
+  flex: none;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

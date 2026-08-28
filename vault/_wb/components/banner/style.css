@@ -1,0 +1,52 @@
+/* 组件 · banner */
+
+.wb .wb-banner {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-height: 90px;
+  overflow: hidden;
+  border-radius: var(--wb-radius);
+  background: var(--wb-surface);
+}
+.wb .wb-banner.is-linked { cursor: pointer; }
+
+.wb .wb-banner-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 渐变兜底：任何图都可能和白字撞色，不加这层就是在赌 */
+.wb .wb-banner.has-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.15) 55%, transparent);
+}
+
+.wb .wb-banner-text {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 16px 18px;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+}
+.wb .wb-banner.is-top .wb-banner-text    { align-self: flex-start; }
+.wb .wb-banner.is-center .wb-banner-text { align-self: center; }
+.wb .wb-banner.is-bottom .wb-banner-text { align-self: flex-end; }
+
+.wb .wb-banner-title {
+  font-family: var(--wb-font-display);
+  font-size: 1.8em;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.wb .wb-banner-sub {
+  margin-top: 3px;
+  font-size: var(--wb-fs-sm);
+  opacity: .85;
+}

@@ -1,0 +1,68 @@
+/* ============================================================
+   主题 · 绀宇（ganyu）
+   @name 绀宇
+   @en Deep Azure
+   @desc 十样锦的暖粉纸压绀青深蓝，冷暖对冲，像一幅工笔设色
+   @font 黑体正文 + 宋体标题
+   @swatch #F7E9DE #08192B #023C71
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-ganyu {
+  --wb-bg:             #F7E9DE;
+  --wb-surface:        #FFFAF6;
+  --wb-surface-2:      #F4DACA;
+  --wb-border:         #E3C2AD;
+  --wb-rule:           #08192B;
+  --wb-text:           #08192B;
+  --wb-muted:          #434C57;
+  --wb-faint:          #5C626A;
+  --wb-accent:         #023C71;
+  --wb-accent-2:       #B35C44;
+  --wb-on-accent:      #FFFBF8;
+  --wb-success:        #2F6B54;
+  --wb-danger:         #A6402F;
+  --wb-heat-empty:     #F4DACA;
+  --wb-mast-bg:        #04203C;
+  --wb-mast-text:      #FFFBF8;
+  --wb-mast-dim:       #A3ABB3;
+  --wb-radius:         8px;
+  --wb-radius-sm:      4px;
+  --wb-gap:            14px;
+  --wb-pad:            20px;
+  --wb-font:           var(--wb-f-hei);
+  --wb-font-display:   var(--wb-f-song);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.6em;
+  --wb-title-weight:   700;
+  --wb-title-track:    0.01em;
+  --wb-shadow:         0 1px 3px rgba(70,40,25,.12);
+}
+
+/* 深色模式：底色整体压暗，但保留这套主题的色相关系。
+   取值同样由脚本推算，不手写。 */
+.theme-dark .wb.wb-theme-ganyu {
+  --wb-bg:             #0A1119;
+  --wb-surface:        #0F1722;
+  --wb-surface-2:      #141D29;
+  --wb-border:         #2A3A50;
+  --wb-rule:           #F7E4D8;
+  --wb-text:           #F7E4D8;
+  --wb-muted:          #C8BBB2;
+  --wb-faint:          #B0A59F;
+  --wb-accent:         #FCC8B1;
+  --wb-accent-2:       #7FB2E8;
+  --wb-on-accent:      #060B12;
+  --wb-success:        #7CC49A;
+  --wb-danger:         #E98F7D;
+  --wb-heat-empty:     #141D29;
+  --wb-mast-bg:        #060B12;
+  --wb-mast-text:      #F7E4D8;
+  --wb-mast-dim:       #A39893;
+}
+
+/* 冷暖对冲是这套的全部：标题下的线用绀青，压在暖粉纸上最亮眼 */
+.wb.wb-theme-ganyu .wb-head { border-bottom: 1px solid var(--wb-accent); padding-bottom: 4px; }
+.wb.wb-theme-ganyu .wb-head-label { letter-spacing: .2em; color: var(--wb-accent); }

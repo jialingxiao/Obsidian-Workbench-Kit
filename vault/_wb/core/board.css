@@ -1,0 +1,376 @@
+/* ============================================================
+   看板画布 · 工具栏 / 栅格 / 拖拽 / 浮层
+   ============================================================
+   两套外观：
+   · 只读态 —— 块没有边框没有底色，看起来就是一张排好版的首页
+   · 编辑态 —— 露出虚线框、标题条和缩放手柄
+   首页大部分时间是只读的，所以默认那一套必须干净。
+   ========================================================== */
+
+/* ── 工具栏 ── */
+.wb .wb-tb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.wb .wb-tb-sp { flex: 1; }
+.wb .wb-tb-status {
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  transition: opacity .2s;
+}
+.wb button.wb-tb-btn {
+  font: inherit;
+  font-size: var(--wb-fs-sm);
+  line-height: 1.4;
+  padding: 3px 10px;
+  cursor: pointer;
+  color: var(--wb-muted);
+  background: transparent;
+  border: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius-sm);
+  box-shadow: none;
+}
+.wb button.wb-tb-btn:hover:not(:disabled) { color: var(--wb-text); border-color: var(--wb-accent); }
+.wb button.wb-tb-btn:disabled { opacity: .4; cursor: default; }
+.wb button.wb-tb-btn.is-hidden { display: none; }
+.wb button.wb-tb-toggle.is-on {
+  color: var(--wb-on-accent);
+  background: var(--wb-accent);
+  border-color: transparent;
+}
+
+/* ── 栅格 ── */
+.wb .wb-grid { position: relative; width: 100%; }
+
+.wb .wb-blk {
+  position: absolute;
+  border-radius: var(--wb-radius);
+  transition: left .16s ease, top .16s ease, width .16s ease, height .16s ease;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.wb .wb-blk-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+/* 组件自己的外边距在块里是多余的，块间距由 gap 统一控制 */
+.wb .wb-blk-body > * { margin-top: 0; margin-bottom: 0; }
+
+/* 只读态：没有任何框线，看起来就是一张排好的版 */
+.wb .wb-blk-bar,
+.wb .wb-blk-resize { display: none; }
+
+/* ── 编辑态 ── */
+.wb.is-editing .wb-grid {
+  /* 淡淡的栅格底纹，拖的时候知道自己在对哪一格 */
+  background-image: linear-gradient(var(--wb-border) 1px, transparent 1px);
+  background-size: 100% calc(var(--wb-row, 34px) + var(--wb-gap-px, 10px));
+  border-radius: var(--wb-radius);
+}
+.wb.is-editing .wb-blk {
+  outline: 1px dashed var(--wb-border);
+  outline-offset: 0;
+  background: var(--wb-bg);
+}
+.wb.is-editing .wb-blk:hover { outline-color: var(--wb-accent); }
+
+.wb.is-editing .wb-blk-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px 2px 6px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-muted);
+  background: var(--wb-surface);
+  border-bottom: 1px solid var(--wb-border);
+  border-radius: var(--wb-radius) var(--wb-radius) 0 0;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  flex: none;
+}
+.wb .wb-blk-sp { flex: 1; }
+.wb .wb-blk-drag::before { content: "⠿"; opacity: .55; }
+.wb .wb-blk-name { font-family: var(--wb-font-mono); letter-spacing: .04em; }
+
+.wb button.wb-blk-btn {
+  font: inherit;
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 5px;
+  cursor: pointer;
+  color: var(--wb-muted);
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  box-shadow: none;
+}
+.wb button.wb-blk-btn:hover { color: var(--wb-text); background: var(--wb-surface-2); }
+
+.wb.is-editing .wb-blk-resize {
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  /* 命中区做到 22px：16px 的角太小，鼠标常常擦边打到块本体上 */
+  width: 22px;
+  height: 22px;
+  cursor: nwse-resize;
+  touch-action: none;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  /* 右下角两道斜线，是通用的缩放手柄语汇 */
+  background:
+    linear-gradient(135deg, transparent 45%, var(--wb-faint) 45%, var(--wb-faint) 55%, transparent 55%),
+    linear-gradient(135deg, transparent 70%, var(--wb-faint) 70%, var(--wb-faint) 80%, transparent 80%);
+}
+
+/* 拖动中：脱离过渡动画，跟手才不粘滞 */
+.wb .wb-blk.is-dragging,
+.wb .wb-blk.is-resizing {
+  transition: none;
+  user-select: none;
+  z-index: 20;
+  opacity: .92;
+  outline-color: var(--wb-accent);
+  cursor: grabbing;
+}
+/* 拖的时候别让指针落到组件内部的链接上 */
+.wb .wb-blk.is-dragging .wb-blk-body,
+.wb .wb-blk.is-resizing .wb-blk-body { pointer-events: none; }
+
+/* 落点提示 */
+.wb .wb-ghost {
+  position: absolute;
+  border: 1px dashed var(--wb-accent);
+  background: var(--wb-accent);
+  opacity: .12;
+  border-radius: var(--wb-radius);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── 空看板 ── */
+.wb .wb-board-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 240px;
+  padding: 24px 16px;
+  border: 1px dashed var(--wb-border);
+  border-radius: var(--wb-radius);
+  color: var(--wb-muted);
+}
+.wb .wb-board-empty-hint { font-size: var(--wb-fs-sm); color: var(--wb-faint); }
+
+/* 空看板上直接摆出模板卡片：让「从零开始」变成点一下 */
+.wb .wb-preset-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 8px;
+  width: 100%;
+  max-width: 720px;
+  margin-top: 16px;
+}
+
+.wb button.wb-preset-card,
+.wb-pop button.wb-preset-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 10px 12px;
+  color: var(--wb-text, var(--text-normal));
+  background: var(--wb-surface, var(--background-secondary));
+  border: 1px solid var(--wb-border, var(--background-modifier-border));
+  border-radius: var(--wb-radius, 8px);
+  box-shadow: none;
+  transition: border-color .15s;
+}
+.wb button.wb-preset-card:hover,
+.wb-pop button.wb-preset-card:hover { border-color: var(--wb-accent, var(--interactive-accent)); }
+
+.wb .wb-preset-name, .wb-pop .wb-preset-name { font-weight: 700; font-size: 13px; }
+.wb .wb-preset-desc, .wb-pop .wb-preset-desc {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--wb-muted, var(--text-muted));
+  margin-top: 2px;
+}
+.wb .wb-preset-meta, .wb-pop .wb-preset-meta {
+  font-size: 10px;
+  font-family: var(--wb-font-mono, var(--font-monospace));
+  color: var(--wb-faint, var(--text-faint));
+  margin-top: 4px;
+}
+
+/* 待确认状态：替换布局是破坏性操作，得先变红提醒一次 */
+.wb-pop button.wb-preset-card.is-armed { border-color: var(--color-red, #d33); }
+.wb-pop button.wb-preset-card.is-armed .wb-preset-meta { color: var(--color-red, #d33); font-weight: 700; }
+
+.wb-pop-preset { width: 300px; }
+.wb-preset-menu { display: flex; flex-direction: column; gap: 6px; }
+
+/* ============================================================
+   浮层（组件面板 / 主题菜单 / 参数表单）
+   挂在 document.body 上，拿不到 .wb 的 token，所以一律用 Obsidian
+   原生变量 —— 这些是编辑器 chrome，本来也不该跟着看板主题变。
+   ========================================================== */
+.wb-pop {
+  position: fixed;
+  z-index: 9999;
+  max-height: 70vh;
+  overflow: auto;
+  padding: 6px;
+  background: var(--background-primary, #fff);
+  color: var(--text-normal, #222);
+  border: 1px solid var(--background-modifier-border, #ddd);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .18);
+  font-family: var(--font-interface);
+  font-size: 13px;
+}
+
+/* 面板本身不滚动，只有下面的列表滚 —— 否则搜索框会跟着滚走 */
+.wb-pop-pick { width: 320px; display: flex; flex-direction: column; overflow: hidden; }
+.wb-pick-wrap { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.wb-pop input.wb-pick-search {
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 9px;
+  margin-bottom: 4px;
+  color: var(--text-normal);
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+}
+.wb-pick { overflow-y: auto; overflow-x: hidden; flex: 1; min-height: 0; }
+.wb-pick-search { flex: none; }
+.wb-pick-group {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 9px 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.wb-pick-group:first-child { padding-top: 3px; }
+.wb-pick-count { font-weight: 400; letter-spacing: 0; }
+.wb-pop button.wb-pick-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  padding: 7px 9px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  box-shadow: none;
+}
+.wb-pop button.wb-pick-item:hover { background: var(--background-modifier-hover, rgba(128,128,128,.12)); }
+.wb-pick-name { font-weight: 600; }
+.wb-pick-desc { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+.wb-pick-id { font-size: 10px; color: var(--text-faint); font-family: var(--font-monospace); margin-top: 2px; }
+.wb-pick-empty { padding: 10px; color: var(--text-muted); }
+
+.wb-pop-menu { width: 180px; }
+.wb-pop button.wb-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  padding: 6px 9px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  box-shadow: none;
+}
+.wb-pop button.wb-menu-item:hover { background: var(--background-modifier-hover, rgba(128,128,128,.12)); }
+.wb-pop button.wb-menu-item.is-on { font-weight: 700; }
+.wb-pop button.wb-menu-item.is-on::after { content: "✓"; margin-left: auto; opacity: .7; }
+/* ── 主题菜单 ── */
+.wb-pop-theme { width: 300px; }
+.wb-theme-menu { display: flex; flex-direction: column; gap: 2px; }
+
+.wb-pop button.wb-theme-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  padding: 7px 9px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  box-shadow: none;
+}
+.wb-pop button.wb-theme-item:hover { background: var(--background-modifier-hover, rgba(128,128,128,.12)); }
+.wb-pop button.wb-theme-item.is-on { background: var(--background-modifier-hover, rgba(128,128,128,.12)); }
+.wb-pop button.wb-theme-item.is-on::after { content: "✓"; margin-left: auto; opacity: .7; flex: none; }
+
+/* 三色样本：底色 / 字色 / 强调色，一眼看出这套主题的气质 */
+.wb-sw {
+  display: flex;
+  flex: none;
+  width: 34px; height: 22px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--background-modifier-border);
+}
+.wb-sw-c { flex: 1; }
+
+.wb-theme-txt { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+.wb-theme-name { font-weight: 700; font-size: 13px; }
+.wb-theme-desc {
+  font-size: 11px; line-height: 1.4;
+  color: var(--text-muted);
+}
+.wb-theme-font {
+  font-size: 10px;
+  font-family: var(--font-monospace);
+  color: var(--text-faint);
+}
+
+.wb-pop-form { width: 320px; }
+.wb-form-title { font-weight: 700; padding: 4px 6px 8px; border-bottom: 1px solid var(--background-modifier-border); margin-bottom: 6px; }
+.wb-form-row { display: block; padding: 6px; }
+.wb-form-label { font-size: 12px; font-weight: 600; margin-bottom: 3px; font-family: var(--font-monospace); }
+.wb-pop .wb-form-input {
+  width: 100%;
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 7px;
+  color: var(--text-normal);
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 5px;
+}
+.wb-form-json { font-family: var(--font-monospace); font-size: 11px; resize: vertical; }
+.wb-form-input.is-bad { border-color: var(--color-red, #d33); }
+.wb-form-check { width: auto; }
+.wb-form-desc { font-size: 11px; color: var(--text-faint); margin-top: 3px; }
+.wb-form-err { font-size: 11px; color: var(--color-red, #d33); margin-top: 3px; }

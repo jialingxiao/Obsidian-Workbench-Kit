@@ -1,0 +1,55 @@
+/* 组件 · daily */
+
+.wb button.wb-daily-today {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 12px 14px;
+  color: var(--wb-text);
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  border-left: 3px solid var(--wb-border);
+  border-radius: var(--wb-radius);
+  box-shadow: none;
+  transition: border-color .15s, color .15s;
+}
+.wb button.wb-daily-today:hover { border-color: var(--wb-accent); border-left-color: var(--wb-accent); }
+/* 没写的用强调色提醒，写了的收敛成静默状态 */
+.wb button.wb-daily-today.is-todo { border-left-color: var(--wb-accent); }
+
+.wb .wb-daily-date {
+  font-family: var(--wb-font-display);
+  font-size: 1.5em;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.wb .wb-daily-week {
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+  margin-top: 2px;
+}
+
+.wb .wb-daily-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 10px;
+}
+.wb .wb-daily-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--wb-heat-empty);
+}
+.wb .wb-daily-cell.is-done { background: var(--wb-accent); cursor: pointer; }
+.wb .wb-daily-cell.is-done:hover { opacity: .7; }
+.wb .wb-daily-cell.is-today { outline: 1px solid var(--wb-text); outline-offset: 1px; }
+
+.wb .wb-daily-meta {
+  margin-top: 8px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+}

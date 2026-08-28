@@ -1,0 +1,39 @@
+/* 组件 · graph */
+
+.wb .wb-gp-wrap { width: 100%; }
+
+.wb svg.wb-gp-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;   /* 标签会伸到 viewBox 外面 */
+}
+
+.wb .wb-gp-edge {
+  stroke: var(--wb-border);
+  stroke-width: .35;
+}
+
+.wb .wb-gp-node { cursor: pointer; }
+.wb .wb-gp-node circle {
+  fill: var(--wb-accent);
+  transition: r .15s;
+}
+.wb .wb-gp-node:hover circle { fill: var(--wb-text); }
+.wb .wb-gp-node:hover ~ .wb-gp-node circle { opacity: 1; }
+
+.wb .wb-gp-label {
+  font-family: var(--wb-font);
+  font-size: 3.2px;
+  fill: var(--wb-muted);
+  dominant-baseline: middle;
+}
+.wb .wb-gp-node:hover .wb-gp-label { fill: var(--wb-text); font-weight: 700; }
+
+.wb .wb-gp-foot {
+  margin-top: 6px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  text-align: center;
+}

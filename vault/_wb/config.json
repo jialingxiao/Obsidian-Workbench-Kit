@@ -1,0 +1,14 @@
+{
+  "theme": "素笺",
+  "locale": "zh",
+  "dev": false,
+
+  "paths": {
+    "inbox": "00.inbox",
+    "notes": "01.notes",
+    "daily": "Daily",
+    "output": "99.output"
+  },
+
+  "tokens": {}
+}

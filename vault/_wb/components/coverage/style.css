@@ -1,0 +1,17 @@
+/* 组件 · coverage
+   进度条本体（.wb-bar）在 core/ui.css 里，多个组件共用 */
+
+.wb .wb-cov-num {
+  font-family: var(--wb-font-display);
+  font-size: 2.4em;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.wb .wb-cov-list {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--wb-border);
+}

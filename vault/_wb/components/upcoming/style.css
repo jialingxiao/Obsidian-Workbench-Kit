@@ -1,0 +1,9 @@
+/* 组件 · upcoming */
+
+.wb .wb-list-item.is-overdue .wb-up-when {
+  color: var(--wb-danger, #d2404a);
+  font-weight: 700;
+}
+.wb .wb-list-item.is-overdue .wb-link { color: var(--wb-danger, #d2404a); }
+
+.wb .wb-up-when { min-width: 52px; text-align: right; }

@@ -1,0 +1,38 @@
+/* 组件 · embed
+   嵌入的是用户自己的正文，所以只做最低限度的收敛：字号跟随看板、
+   去掉首尾多余外边距、图片不许撑破块。 */
+
+.wb a.wb-embed-title {
+  display: block;
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--wb-muted);
+  margin-bottom: 6px;
+}
+.wb a.wb-embed-title:hover { color: var(--wb-accent); }
+
+.wb .wb-embed-body { font-size: var(--wb-fs-base); line-height: 1.6; }
+.wb .wb-embed-body > :first-child { margin-top: 0; }
+.wb .wb-embed-body > :last-child { margin-bottom: 0; }
+
+.wb .wb-embed-body img { max-width: 100%; height: auto; }
+.wb .wb-embed-body pre { overflow-x: auto; }
+.wb .wb-embed-body table { display: block; overflow-x: auto; max-width: 100%; }
+
+.wb .wb-embed-body h1, .wb .wb-embed-body h2,
+.wb .wb-embed-body h3, .wb .wb-embed-body h4 {
+  font-family: var(--wb-font-display);
+  line-height: 1.25;
+  margin: 12px 0 6px;
+}
+.wb .wb-embed-body h1 { font-size: 1.4em; }
+.wb .wb-embed-body h2 { font-size: 1.2em; }
+.wb .wb-embed-body h3 { font-size: 1.05em; }
+
+/* 基础层把列表缩进清零了（避免 Obsidian 正文段距渗进组件），
+   但嵌入的是用户真正的正文，列表得把缩进还回去 */
+.wb .wb-embed-body ul,
+.wb .wb-embed-body ol { padding-left: 1.4em; margin: 6px 0; }
+.wb .wb-embed-body li { margin: 2px 0; }

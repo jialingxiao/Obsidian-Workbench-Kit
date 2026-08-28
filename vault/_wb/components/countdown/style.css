@@ -1,0 +1,39 @@
+/* 组件 · countdown */
+
+.wb .wb-cd-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--wb-cd-n, 3), minmax(0, 1fr));
+  gap: var(--wb-gap);
+}
+
+.wb .wb-cd-item {
+  border-top: 3px solid var(--wb-rule, var(--wb-text));
+  padding-top: 7px;
+  min-width: 0;
+}
+/* 一周以内的用强调色催一下；已经过去的压暗 */
+.wb .wb-cd-item.is-near  { border-top-color: var(--wb-accent); }
+.wb .wb-cd-item.is-near .wb-cd-num { color: var(--wb-accent); }
+.wb .wb-cd-item.is-since { border-top-color: var(--wb-border); }
+.wb .wb-cd-item.is-since .wb-cd-num { color: var(--wb-muted); }
+
+.wb .wb-cd-num {
+  font-family: var(--wb-font-display);
+  font-size: 2em;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.wb .wb-cd-label {
+  font-size: var(--wb-fs-sm);
+  font-weight: 600;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-cd-sub { font-size: var(--wb-fs-xs); color: var(--wb-faint); }
+
+@media (max-width: 420px) {
+  .wb .wb-cd-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

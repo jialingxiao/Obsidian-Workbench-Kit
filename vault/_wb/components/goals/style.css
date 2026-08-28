@@ -1,0 +1,30 @@
+/* 组件 · goals
+   .wb-bar / .wb-bar-fill 复用 stats 组件的进度条样式，
+   这里只补目标行自己的排版。 */
+
+.wb .wb-goal { margin: 9px 0; }
+.wb .wb-goal:first-of-type { margin-top: 2px; }
+
+.wb .wb-goal-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.wb .wb-goal-label {
+  font-size: var(--wb-fs-sm);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-goal-num {
+  flex: none;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+}
+
+/* 达标的换个颜色，一眼看出哪条已经完成 */
+.wb .wb-goal.is-done .wb-bar-fill { background: var(--wb-success, #3d9a50); }
+.wb .wb-goal.is-done .wb-goal-num { color: var(--wb-success, #3d9a50); font-weight: 700; }

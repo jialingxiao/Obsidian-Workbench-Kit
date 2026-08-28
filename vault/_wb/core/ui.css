@@ -1,0 +1,162 @@
+/* ============================================================
+   共用版式：笔记列表 / 横条 / 竖柱 / 胶囊
+   组件只负责取数据，长相统一由这里决定。
+   ========================================================== */
+
+/* ── 笔记列表 ── */
+.wb ul.wb-list { list-style: none; margin: 0; padding: 0; }
+
+.wb .wb-list-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--wb-border);
+}
+.wb .wb-list-item:last-child { border-bottom: none; }
+.wb ul.wb-list.is-dense .wb-list-item { padding: 3px 0; border-bottom: none; }
+
+.wb .wb-list-bullet { flex: none; color: var(--wb-faint); font-size: var(--wb-fs-xs); }
+
+.wb .wb-list-main { flex: 1; min-width: 0; }
+.wb .wb-list-main .wb-link,
+.wb .wb-list-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb .wb-list-desc {
+  font-size: var(--wb-fs-sm);
+  color: var(--wb-muted);
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-list-sub {
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  font-family: var(--wb-font-mono);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-list-meta {
+  flex: none;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── 横向条形图 ── */
+.wb .wb-bars-row { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
+.wb .wb-bars-row.is-linked { cursor: pointer; }
+.wb .wb-bars-row.is-linked:hover .wb-bars-name { color: var(--wb-accent); }
+
+.wb .wb-bars-name {
+  width: 32%;
+  max-width: 140px;
+  flex: none;
+  font-size: var(--wb-fs-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wb .wb-bars-track {
+  flex: 1;
+  min-width: 0;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--wb-heat-empty);
+  overflow: hidden;
+}
+/* 双色渐变而不是单色：单色条在一屏里重复十几次就显得平。
+   两个色相之间过渡，长条和短条看起来也不一样，信息密度更高。 */
+.wb .wb-bars-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--wb-accent-2), var(--wb-accent));
+  transition: width .3s ease;
+}
+.wb .wb-bars-val {
+  width: 44px;
+  flex: none;
+  text-align: right;
+  font-size: var(--wb-fs-sm);
+  font-weight: 700;
+  color: var(--wb-muted);
+}
+
+/* ── 竖向柱状图 ── */
+.wb .wb-cols {
+  display: grid;
+  grid-template-columns: repeat(var(--wb-cols-n, 12), minmax(0, 1fr));
+  gap: 4px;
+  align-items: end;
+  min-height: 90px;
+}
+.wb .wb-cols-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  height: 100%;
+  min-width: 0;
+}
+.wb .wb-cols-val { font-size: 10px; color: var(--wb-faint); line-height: 1; }
+.wb .wb-cols-bar {
+  width: 100%;
+  background: linear-gradient(180deg, var(--wb-accent), var(--wb-accent-2));
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+  transition: height .3s ease;
+}
+.wb .wb-cols-label {
+  font-size: 9px;
+  color: var(--wb-faint);
+  line-height: 1.2;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ── 进度条（stats / goals / 任何需要的组件共用）── */
+.wb .wb-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--wb-heat-empty);
+  overflow: hidden;
+}
+.wb .wb-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--wb-accent-2), var(--wb-accent));
+  transition: width .3s ease;
+}
+.wb .wb-bar-label {
+  margin-top: 5px;
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 胶囊 ── */
+.wb .wb-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.wb .wb-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 2px 9px;
+  font-size: var(--wb-fs-sm);
+  border: 1px solid var(--wb-border);
+  border-radius: 999px;
+  color: var(--wb-text);
+}
+.wb .wb-chip.is-clickable { cursor: pointer; }
+.wb .wb-chip.is-clickable:hover { color: var(--wb-accent); border-color: var(--wb-accent); }
+.wb .wb-chip-n { font-size: var(--wb-fs-xs); color: var(--wb-faint); font-weight: 700; }

@@ -1,0 +1,38 @@
+/* 组件 · heading */
+
+.wb .wb-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 2px 0;
+}
+.wb .wb-heading.is-center { justify-content: center; }
+
+.wb .wb-heading.rule-under { border-bottom: 2px solid var(--wb-rule, var(--wb-text)); padding-bottom: 5px; }
+.wb .wb-heading.rule-over  { border-top: 2px solid var(--wb-rule, var(--wb-text)); padding-top: 5px; }
+
+.wb .wb-heading-text {
+  font-family: var(--wb-font-display);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.wb .wb-heading.is-sm .wb-heading-text {
+  font-family: var(--wb-font);
+  font-size: var(--wb-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--wb-muted);
+}
+.wb .wb-heading.is-md .wb-heading-text { font-size: 1.25em; }
+.wb .wb-heading.is-lg .wb-heading-text { font-size: 1.9em; }
+
+.wb .wb-heading-note {
+  font-family: var(--wb-font-mono);
+  font-size: var(--wb-fs-xs);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--wb-faint);
+}

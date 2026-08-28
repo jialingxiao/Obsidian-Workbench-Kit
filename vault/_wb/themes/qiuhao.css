@@ -1,0 +1,72 @@
+/* ============================================================
+   主题 · 秋毫（qiuhao）
+   @name 秋毫
+   @en Autumn Brush
+   @desc 奶油纸配金褐，衬线字，像一本摊开的手稿本
+   @font Georgia 衬线
+   @swatch #F6F0E2 #191510 #8A5F12
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-qiuhao {
+  --wb-bg:             #F6F0E2;
+  --wb-surface:        #FFFCF4;
+  --wb-surface-2:      #E8DDC4;
+  --wb-border:         #D6C9A9;
+  --wb-rule:           #191510;
+  --wb-text:           #191510;
+  --wb-muted:          #4F4A43;
+  --wb-faint:          #656058;
+  --wb-accent:         #8A5F12;
+  --wb-accent-2:       #B35C44;
+  --wb-on-accent:      #FFFDF6;
+  --wb-success:        #3E6A44;
+  --wb-danger:         #A5402E;
+  --wb-heat-empty:     #E8DDC4;
+  --wb-mast-bg:        #1B1813;
+  --wb-mast-text:      #FFFDF6;
+  --wb-mast-dim:       #A5A39D;
+  --wb-radius:         6px;
+  --wb-radius-sm:      3px;
+  --wb-gap:            14px;
+  --wb-pad:            20px;
+  --wb-font:           Georgia, "Times New Roman", var(--wb-f-song);
+  --wb-font-display:   Georgia, "Times New Roman", var(--wb-f-song);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.6em;
+  --wb-title-weight:   700;
+  --wb-title-track:    -0.015em;
+  --wb-shadow:         0 1px 3px rgba(70,55,20,.10);
+}
+
+/* 深色模式：底色整体压暗，但保留这套主题的色相关系。
+   取值同样由脚本推算，不手写。 */
+.theme-dark .wb.wb-theme-qiuhao {
+  --wb-bg:             #171511;
+  --wb-surface:        #1D1A15;
+  --wb-surface-2:      #231F19;
+  --wb-border:         #453C2E;
+  --wb-rule:           #EFE9DA;
+  --wb-text:           #EFE9DA;
+  --wb-muted:          #C5C0B3;
+  --wb-faint:          #AFAA9E;
+  --wb-accent:         #D8B25C;
+  --wb-accent-2:       #BD6851;
+  --wb-on-accent:      #100E0A;
+  --wb-success:        #87B587;
+  --wb-danger:         #E39786;
+  --wb-heat-empty:     #231F19;
+  --wb-mast-bg:        #100E0A;
+  --wb-mast-text:      #EFE9DA;
+  --wb-mast-dim:       #A09C91;
+}
+
+/* 手稿感：分区标题用小写斜体，不做全大写 + 字母间距那一套 */
+.wb.wb-theme-qiuhao .wb-head-label {
+  font-family: var(--wb-font-display);
+  font-style: italic; font-size: var(--wb-fs-sm); font-weight: 600;
+  letter-spacing: .02em; text-transform: none; color: var(--wb-text);
+}
+.wb.wb-theme-qiuhao .wb-head { border-bottom: 1px solid var(--wb-border); padding-bottom: 4px; }

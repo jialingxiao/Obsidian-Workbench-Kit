@@ -1,0 +1,47 @@
+/* 组件 · week */
+
+.wb .wb-wk-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.wb .wb-wk-day {
+  padding: 8px 4px 9px;
+  text-align: center;
+  border-radius: var(--wb-radius-sm);
+  border: 1px solid var(--wb-border);
+  cursor: pointer;
+  min-width: 0;
+  transition: border-color .15s;
+}
+.wb .wb-wk-day:hover { border-color: var(--wb-accent); }
+
+/* 写了日记的用实底，没写的留白 —— 一眼看出这周的密度 */
+.wb .wb-wk-day.is-done { background: var(--wb-surface); border-color: var(--wb-border); }
+.wb .wb-wk-day.is-empty { background: transparent; border-style: dashed; }
+.wb .wb-wk-day.is-today { border-color: var(--wb-accent); border-width: 2px; }
+
+.wb .wb-wk-dow {
+  font-size: var(--wb-fs-xs);
+  color: var(--wb-faint);
+  letter-spacing: .08em;
+}
+.wb .wb-wk-num {
+  font-family: var(--wb-font-display);
+  font-size: 1.35em;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.wb .wb-wk-day.is-empty .wb-wk-num { color: var(--wb-faint); }
+.wb .wb-wk-day.is-today .wb-wk-num { color: var(--wb-accent); }
+
+.wb .wb-wk-task {
+  font-size: 10px;
+  line-height: 1.4;
+  min-height: 1.4em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.wb .wb-wk-task.is-todo  { color: var(--wb-accent); font-weight: 700; }
+.wb .wb-wk-task.is-clear { color: var(--wb-faint); }

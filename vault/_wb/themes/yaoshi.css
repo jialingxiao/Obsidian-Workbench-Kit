@@ -1,0 +1,55 @@
+/* ============================================================
+   主题 · 曜石（yaoshi）
+   @name 曜石
+   @en Obsidian Glass
+   @desc 近黑底配电光蓝，块有实底和投影，仪表盘的观感
+   @font 黑体（深色）
+   @swatch #0B0E13 #E9ECF2 #54A3FF
+   ------------------------------------------------------------
+   本文件由 scripts/gen-themes.py 生成，改配色请改脚本。
+   muted / faint / on-accent 的明度由脚本推算，保证对比度达标；
+   自检见 scripts/audit-contrast.mjs。
+   ============================================================ */
+.wb.wb-theme-yaoshi {
+  --wb-bg:             #0B0E13;
+  --wb-surface:        #10141A;
+  --wb-surface-2:      #151A22;
+  --wb-border:         #2D3540;
+  --wb-rule:           #E9ECF2;
+  --wb-text:           #E9ECF2;
+  --wb-muted:          #B8BBC1;
+  --wb-faint:          #A2A5AB;
+  --wb-accent:         #54A3FF;
+  --wb-accent-2:       #F39402;
+  --wb-on-accent:      #070A0D;
+  --wb-success:        #46C46E;
+  --wb-danger:         #FF7B87;
+  --wb-heat-empty:     #151A22;
+  --wb-mast-bg:        #070A0D;
+  --wb-mast-text:      #E9ECF2;
+  --wb-mast-dim:       #979A9F;
+  --wb-radius:         10px;
+  --wb-radius-sm:      6px;
+  --wb-gap:            12px;
+  --wb-pad:            18px;
+  --wb-font:           var(--wb-f-hei);
+  --wb-font-display:   var(--wb-f-hei);
+  --wb-font-mono:      var(--wb-f-mono);
+  --wb-title-size:     2.2em;
+  --wb-title-weight:   700;
+  --wb-title-track:    -0.02em;
+  --wb-shadow:         0 2px 8px rgba(0,0,0,.45);
+}
+
+/* 仪表盘观感的来源：块有实底和投影，在深底上才分得出层次。 */
+.wb.wb-theme-yaoshi .wb-blk {
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  box-shadow: var(--wb-shadow);
+}
+.wb.wb-theme-yaoshi .wb-blk-body { padding: 12px 14px; }
+.wb.wb-theme-yaoshi.is-editing .wb-blk-bar {
+  background: var(--wb-surface-2);
+  border-radius: calc(var(--wb-radius) - 1px) calc(var(--wb-radius) - 1px) 0 0;
+}
+.wb.wb-theme-yaoshi .wb-head-label { color: var(--wb-faint); }
