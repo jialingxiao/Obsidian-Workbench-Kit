@@ -1,0 +1,42 @@
+{
+  "name": { "zh": "项目管理", "en": "Projects" },
+  "desc": { "zh": "目标 + 里程碑倒计时 + 状态分列 + 明细表，盯住「还差多少」", "en": "Goals, milestone countdowns, a status board and a detail table" },
+  "theme": "绀宇",
+  "blocks": [
+    { "c": "heading", "x": 0, "y": 0, "w": 12, "h": 2,
+      "props": { "text": "项目看板", "note": "四条线的进度都在这一页", "size": "lg", "rule": "under" } },
+
+    { "c": "goals", "x": 0, "y": 2, "w": 5, "h": 7,
+      "props": { "label": "目标", "showPercent": true, "items": [
+        { "label": "笔记总量", "target": 300, "source": "@notes" },
+        { "label": "已产出",   "target": 40,  "source": "@output" },
+        { "label": "收件箱清零", "target": 50, "source": "@inbox" }
+      ] } },
+
+    { "c": "countdown", "x": 5, "y": 2, "w": 7, "h": 7,
+      "props": { "label": "里程碑", "columns": 3, "items": [
+        { "label": "评审", "date": "2026-09-30" },
+        { "label": "交付", "date": "2026-11-15" },
+        { "label": "年底", "date": "12-31" }
+      ] } },
+
+    { "c": "kanban", "x": 0, "y": 9, "w": 12, "h": 9,
+      "props": { "label": "按状态", "field": "status", "limit": 6,
+                 "descField": "一句话描述",
+                 "columns": ["待办", "进行中", "待审", "已完成"] } },
+
+    { "c": "table", "x": 0, "y": 18, "w": 7, "h": 9,
+      "props": { "label": "项目明细", "source": "@notes", "hasField": "project",
+                 "columns": ["file", "project", "status", "mtime"],
+                 "sort": "mtime", "order": "desc", "limit": 10, "compact": true } },
+
+    { "c": "upcoming", "x": 7, "y": 18, "w": 5, "h": 9,
+      "props": { "label": "近一个月到期", "days": 30, "showOverdue": true, "limit": 10 } },
+
+    { "c": "coverage", "x": 0, "y": 27, "w": 6, "h": 6,
+      "props": { "label": "字段体检", "source": "@notes", "field": "project,status", "showMiss": 4 } },
+
+    { "c": "breakdown", "x": 6, "y": 27, "w": 6, "h": 6,
+      "props": { "label": "笔记分布", "showPercent": true } }
+  ]
+}

@@ -274,12 +274,21 @@
     state.addBlock = addBlock;
 
     /* 量一下内容实际多高，把块高度调整到刚好装下 */
+    /* 把块的高度收到「刚好装下内容」。
+     *
+     * 量之前必须先把 applyLayout 压上去的固定高度摘掉。块体是撑满块高的，
+     * 直接读 scrollHeight 得到的是「当前块多高」而不是「内容要多高」——
+     * 于是这个函数只能把块撑大、永远缩不小。模板里的高度是手写估值，偏大
+     * 的那些就一直保持偏大，套用模板后满屏是空档，正是这么来的。 */
     function fitHeight(b) {
       const rec = state.els.get(b.id);
       if (!rec) return;
       const { gap, rowH } = geo();
       const barH = rec.el.querySelector(".wb-blk-bar")?.offsetHeight || 0;
+      const prev = rec.el.style.height;
+      rec.el.style.height = "auto";
       const need = rec.body.scrollHeight + barH + 8;
+      rec.el.style.height = prev;
       const h2 = Math.max(2, Math.ceil((need + gap) / (rowH + gap)));
       if (h2 !== b.h) {
         b.h = h2;
@@ -313,8 +322,13 @@
       await renderEmptyHint();
       applyLayout();
       if (preset.theme) await WB.editor.setTheme(state, preset.theme, { silent: true });
-      // 模板里的高度是手写的估值，换个库、换套主题就不准了 —— 按实际内容收一遍
+
+      /* 高度要在压紧之前先收。
+         模板里的 h 是手写估值，换个库、换套主题都不准。先压紧再收高度的话，
+         收完每个块都比原来矮，块之间就留下一条条空档 —— 套用模板后满屏是洞，
+         正是这个顺序反了造成的。 */
       for (const b of data.blocks) fitHeight(b);
+      WB.runtime.applyPositions(data.blocks, relayout(data.blocks));
       applyLayout();
       save();
     }
@@ -359,6 +373,11 @@
     await WB.editor.buildToolbar(state, toolbar);
     state.setEditing(false);          // 默认只读，避免误拖
     applyLayout();
+
+    /* 给工具挂个口子：dev/shots.html 要在渲染完之后按实际内容收一遍高度
+       （模板里的高度是手写估值）。不这么做的话，截图台就得自己抄一份
+       fitHeight —— 又是一份会漂的副本。组件本身用不到这个。 */
+    root.__wbState = state;
 
     // 容器宽度变了（侧栏开合、窗口缩放）要重算像素位置
     if (typeof ResizeObserver !== "undefined") {

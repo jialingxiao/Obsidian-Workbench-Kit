@@ -12,7 +12,7 @@
  * 不要在这里写组件逻辑。
  * ========================================================== */
 
-const WB_VERSION = "0.4.2";
+const WB_VERSION = "0.5.0";
 
 /* 数据层是可替换的：core/query.js 走 Dataview，core/query-native.js 直接
  * 读 Obsidian 的 metadataCache。dataviewjs 模式当然用前者；后者是插件版

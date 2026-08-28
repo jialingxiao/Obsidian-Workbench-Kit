@@ -1,0 +1,162 @@
+{
+  "name": {
+    "zh": "阅读台",
+    "en": "Reading Desk"
+  },
+  "desc": {
+    "zh": "在读进度 + 摘抄 + 那年今日，一页安静的读书桌",
+    "en": "Reading progress, excerpts and on-this-day — a quiet desk"
+  },
+  "theme": "宣纸",
+  "blocks": [
+    {
+      "c": "masthead",
+      "x": 0,
+      "y": 0,
+      "w": 12,
+      "h": 6,
+      "props": {
+        "title": "读书\n笔记",
+        "subtitle": "Reading Notes",
+        "kicker": "卷一",
+        "edition": false
+      }
+    },
+    {
+      "c": "reading",
+      "x": 0,
+      "y": 6,
+      "w": 7,
+      "h": 8,
+      "props": {
+        "label": "在读",
+        "source": "@notes",
+        "field": "进度",
+        "totalField": "总页数",
+        "limit": 5,
+        "hideDone": false
+      }
+    },
+    {
+      "c": "streak",
+      "x": 7,
+      "y": 6,
+      "w": 5,
+      "h": 4,
+      "props": {
+        "label": "连续记录",
+        "unit": "天"
+      }
+    },
+    {
+      "c": "quote",
+      "x": 7,
+      "y": 10,
+      "w": 5,
+      "h": 4,
+      "props": {
+        "mode": "daily",
+        "items": [
+          {
+            "text": "读书之法，在循序而渐进，熟读而精思。",
+            "from": "朱熹"
+          },
+          {
+            "text": "旧书不厌百回读，熟读深思子自知。",
+            "from": "苏轼"
+          },
+          {
+            "text": "读书破万卷，下笔如有神。",
+            "from": "杜甫"
+          }
+        ]
+      }
+    },
+    {
+      "c": "notes",
+      "x": 0,
+      "y": 14,
+      "w": 7,
+      "h": 9,
+      "props": {
+        "label": "最近读到",
+        "source": "@notes",
+        "sort": "mtime",
+        "limit": 9,
+        "descField": "一句话描述",
+        "showTime": true,
+        "bullet": "·"
+      }
+    },
+    {
+      "c": "on-this-day",
+      "x": 7,
+      "y": 14,
+      "w": 5,
+      "h": 9,
+      "props": {
+        "label": "那年今日",
+        "limit": 6,
+        "window": 3
+      }
+    },
+    {
+      "c": "poem",
+      "x": 0,
+      "y": 23,
+      "w": 5,
+      "h": 8,
+      "props": {
+        "vertical": true,
+        "showMeta": true,
+        "mode": "daily",
+        "items": [
+          {
+            "title": "山居秋暝",
+            "author": "王维",
+            "lines": [
+              "空山新雨后，天气晚来秋。",
+              "明月松间照，清泉石上流。"
+            ]
+          },
+          {
+            "title": "饮酒·其五",
+            "author": "陶渊明",
+            "lines": [
+              "结庐在人境，而无车马喧。",
+              "采菊东篱下，悠然见南山。"
+            ]
+          },
+          {
+            "title": "题西林壁",
+            "author": "苏轼",
+            "lines": [
+              "横看成岭侧成峰，远近高低各不同。",
+              "不识庐山真面目，只缘身在此山中。"
+            ]
+          },
+          {
+            "title": "竹里馆",
+            "author": "王维",
+            "lines": [
+              "独坐幽篁里，弹琴复长啸。",
+              "深林人不知，明月来相照。"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "c": "heatmap",
+      "x": 5,
+      "y": 23,
+      "w": 7,
+      "h": 8,
+      "props": {
+        "label": "读书记录",
+        "weeks": 30,
+        "showStats": true
+      }
+    }
+  ]
+}

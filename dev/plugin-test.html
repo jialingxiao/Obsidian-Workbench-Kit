@@ -58,7 +58,7 @@
    ========================================================== */
 
 /* 期望的资源数量。加了组件/主题/模板记得同步这里，否则自检会漏掉「没打包进去」这类问题 */
-const EXPECT = { components: 51, themes: 12, presets: 4 };
+const EXPECT = { components: 51, themes: 12, presets: 9 };
 
 const log = document.getElementById("log");
 const say = (msg, cls = "") => { log.innerHTML += `\n<span class="${cls}">${msg}</span>`; };
@@ -185,7 +185,8 @@ if (!HTMLElement.prototype.createEl) {
     await plugin.processors.workbench("", boardEl, { sourcePath: "工作台.md", addChild: () => {} });
     await new Promise((r) => setTimeout(r, 1200));
     check("看板渲染出工具栏", boardEl.querySelectorAll(".wb-tb-btn").length >= 4);
-    check("空看板给出模板卡片", boardEl.querySelectorAll(".wb-preset-card").length === 4);
+    check("空看板给出模板卡片", boardEl.querySelectorAll(".wb-preset-card").length === EXPECT.presets,
+          boardEl.querySelectorAll(".wb-preset-card").length + " 张");
     check("看板无错误卡", boardEl.querySelectorAll(".wb-error").length === 0);
 
     // ── 单组件模式 ──

@@ -54,8 +54,65 @@ function noteBody(title) {
         `这里记一笔${title}的观察，方便以后回看时能接上当时的思路。`
     );
   }
-  return `\n## 要点\n\n- ${pick(TOPICS)}\n- ${pick(TOPICS)}\n\n${paras.join("\n\n")}\n\n相关：[[${pick(TOPICS)}]]\n`;
+  return (
+    `\n## 要点\n\n- ${pick(TOPICS)}\n- ${pick(TOPICS)}\n\n${paras.join("\n\n")}\n\n` +
+    `## 待办\n\n${taskLines(title)}\n\n相关：[[${pick(TOPICS)}]]\n`
+  );
 }
+
+/* ── 下面这些是为了让组件真有东西可显示 ──
+ *
+ * 上一版的假笔记只有 tags 和「一句话描述」，于是 kanban / tasks /
+ * upcoming / reading / habit 在测试库里全是空状态卡片。组件本身没错，
+ * 但拿去截图或演示就全是空的，看不出这套东西能做什么。
+ * 字段名和写法都按各组件真正认的格式来：
+ *   kanban   读 frontmatter 的 status
+ *   upcoming 读任务文本里的 📅 YYYY-MM-DD
+ *   reading  读 frontmatter 的 进度 / 总页数
+ *   habit    在日记的 checkbox 文本里做包含匹配
+ */
+const STATUS = ["待办", "进行中", "待审", "已完成"];
+const PROJECTS = ["检索增强", "记忆系统", "评估平台", "编辑器插件"];
+const HABITS = ["晨跑", "读书", "冥想"];
+const TASK_VERBS = ["整理", "复查", "补充实验", "重写开头", "拆成两篇",
+                    "找参考文献", "画一张示意图", "补一段例子", "跟进结论"];
+
+/* 相对今天偏移若干天的 YYYY-MM-DD。负数是过去（逾期），正数是将来。 */
+function dateOffset(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+/* 正文里的待办。故意留一部分没日期、一部分已逾期 ——
+   全带日期且都在未来的话，「即将到期」的排序和逾期标红都看不出效果。 */
+function taskLines(topic) {
+  const out = [];
+  const n = 1 + Math.floor(rnd() * 3);
+  for (let i = 0; i < n; i++) {
+    const done = rnd() < 0.35;
+    let line = `- [${done ? "x" : " "}] ${pick(TASK_VERBS)}「${topic}」`;
+    const r = rnd();
+    if (!done && r < 0.30) line += ` 📅 ${dateOffset(1 + Math.floor(rnd() * 20))}`;
+    else if (!done && r < 0.42) line += ` 📅 ${dateOffset(-(1 + Math.floor(rnd() * 10)))}`;
+    out.push(line);
+  }
+  return out.join("\n");
+}
+
+/* 日记正文：习惯打卡 + 偶尔一条当天待办。
+   三个习惯的完成率刻意拉开，网格上才看得出谁坚持得住、谁断得多。 */
+function dailyBody(name) {
+  const rates = { 晨跑: 0.55, 读书: 0.75, 冥想: 0.40 };
+  const lines = HABITS.map((h) => `- [${rnd() < rates[h] ? "x" : " "}] ${h}`);
+  let body = `\n# ${name}\n\n## 习惯\n\n${lines.join("\n")}\n\n`;
+  if (rnd() < 0.5) {
+    const done = rnd() < 0.4;
+    body += `## 今天\n\n- [${done ? "x" : " "}] ${pick(TASK_VERBS)}「${pick(TOPICS)}」\n\n`;
+  }
+  return body + `## 记录\n\n今天主要在看${pick(TOPICS)}。\n`;
+}
+
 
 /* 时间分布：向近期倾斜，并且刻意留出空白日子 —— 全满的热力图看不出疏密 */
 function randomDate() {
@@ -94,12 +151,24 @@ for (const [folder, count] of Object.entries(FOLDERS)) {
     const abs = path.join(VAULT, rel);
     if (fs.existsSync(abs)) continue; // Daily 撞日期就跳过
 
-    const fm = frontmatter(
-      isDaily
-        ? { tags: ["daily"], created: name }
-        : { tags: [pick(KINDS), "kb"], 一句话描述: `关于${topic}的一条记录` }
-    );
-    fs.writeFileSync(abs, fm + `\n# ${name}\n` + noteBody(topic), "utf8");
+    const kind = pick(KINDS);
+    let meta;
+    if (isDaily) {
+      meta = { tags: ["daily"], created: name };
+    } else {
+      meta = { tags: [kind, "kb"], 一句话描述: `关于${topic}的一条记录` };
+      /* 只给七成笔记补 status / project —— 留三成没有，
+         「字段体检」才有缺失可报，不然覆盖率永远 100%，那一栏就没意义了。 */
+      if (rnd() < 0.7) meta.status = pick(STATUS);
+      if (rnd() < 0.7) meta.project = pick(PROJECTS);
+      if (kind === "读书") {
+        const total = 180 + Math.floor(rnd() * 320);
+        meta.总页数 = total;
+        meta.进度 = Math.floor(total * rnd());
+      }
+    }
+    const fm = frontmatter(meta);
+    fs.writeFileSync(abs, fm + (isDaily ? dailyBody(name) : `\n# ${name}\n` + noteBody(topic)), "utf8");
     stamps.push({ path: rel, time: date.toISOString() });
   }
 }

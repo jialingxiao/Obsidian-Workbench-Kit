@@ -4,7 +4,7 @@
 
 A component library for Obsidian homepages. Drop the `_wb/` folder into your vault, create a note, and assemble your own dashboard — no CSS to write, no snippets to install.
 
-> Status: **v0.4.2**. Visual board, **51 components in 7 categories**, **12 themes**, 4 ready-made layouts, and a packaged plugin build.
+> Status: **v0.5.0**. Visual board, **51 components in 7 categories**, **12 themes**, **9 ready-made layouts**, and a packaged plugin build.
 
 ---
 

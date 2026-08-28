@@ -1,0 +1,190 @@
+{
+  "name": {
+    "zh": "生活雅集",
+    "en": "Everyday"
+  },
+  "desc": {
+    "zh": "农历、节气、诗词与习惯打卡，最不像仪表盘的一套",
+    "en": "Lunar date, solar terms, poetry and habits — the least dashboard-like one"
+  },
+  "theme": "竹影",
+  "blocks": [
+    {
+      "c": "greeting",
+      "x": 0,
+      "y": 0,
+      "w": 7,
+      "h": 4,
+      "props": {
+        "subtitle": "今日宜读书",
+        "showDate": true,
+        "align": "left"
+      }
+    },
+    {
+      "c": "analog-clock",
+      "x": 7,
+      "y": 0,
+      "w": 5,
+      "h": 6,
+      "props": {}
+    },
+    {
+      "c": "lunar",
+      "x": 0,
+      "y": 4,
+      "w": 4,
+      "h": 6,
+      "props": {}
+    },
+    {
+      "c": "solar-term",
+      "x": 4,
+      "y": 4,
+      "w": 3,
+      "h": 6,
+      "props": {}
+    },
+    {
+      "c": "week",
+      "x": 7,
+      "y": 6,
+      "w": 5,
+      "h": 6,
+      "props": {
+        "label": "本周",
+        "startMonday": true,
+        "showTasks": true
+      }
+    },
+    {
+      "c": "habit",
+      "x": 0,
+      "y": 10,
+      "w": 7,
+      "h": 8,
+      "props": {
+        "label": "习惯打卡",
+        "habits": [
+          "晨跑",
+          "读书",
+          "冥想"
+        ],
+        "days": 21,
+        "showRate": true
+      }
+    },
+    {
+      "c": "countdown",
+      "x": 7,
+      "y": 12,
+      "w": 5,
+      "h": 6,
+      "props": {
+        "label": "节令",
+        "columns": 2,
+        "items": [
+          {
+            "label": "中秋",
+            "date": "2026-09-25"
+          },
+          {
+            "label": "春节",
+            "date": "2027-02-06"
+          }
+        ]
+      }
+    },
+    {
+      "c": "poem",
+      "x": 0,
+      "y": 18,
+      "w": 4,
+      "h": 8,
+      "props": {
+        "vertical": true,
+        "showMeta": true,
+        "mode": "daily",
+        "items": [
+          {
+            "title": "山居秋暝",
+            "author": "王维",
+            "lines": [
+              "空山新雨后，天气晚来秋。",
+              "明月松间照，清泉石上流。"
+            ]
+          },
+          {
+            "title": "饮酒·其五",
+            "author": "陶渊明",
+            "lines": [
+              "结庐在人境，而无车马喧。",
+              "采菊东篱下，悠然见南山。"
+            ]
+          },
+          {
+            "title": "题西林壁",
+            "author": "苏轼",
+            "lines": [
+              "横看成岭侧成峰，远近高低各不同。",
+              "不识庐山真面目，只缘身在此山中。"
+            ]
+          },
+          {
+            "title": "竹里馆",
+            "author": "王维",
+            "lines": [
+              "独坐幽篁里，弹琴复长啸。",
+              "深林人不知，明月来相照。"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "c": "seal",
+      "x": 4,
+      "y": 18,
+      "w": 3,
+      "h": 8,
+      "props": {
+        "text": "读书之乐",
+        "style": "white",
+        "shape": "square",
+        "caption": "闲章一枚"
+      }
+    },
+    {
+      "c": "year-progress",
+      "x": 7,
+      "y": 18,
+      "w": 5,
+      "h": 4,
+      "props": {
+        "label": "今年",
+        "unit": "year",
+        "style": "bar"
+      }
+    },
+    {
+      "c": "quote",
+      "x": 7,
+      "y": 22,
+      "w": 5,
+      "h": 4,
+      "props": {
+        "mode": "daily",
+        "items": [
+          {
+            "text": "闲看庭前花开花落，漫随天外云卷云舒。",
+            "from": "陈继儒"
+          },
+          {
+            "text": "偷得浮生半日闲。",
+            "from": "李涉"
+          }
+        ]
+      }
+    }
+  ]
+}

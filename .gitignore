@@ -17,6 +17,10 @@
 /testvault/
 /scripts/.stamps.json
 
+# 看板布局是每个用户自己的状态，不是源码。跑测试时会往这里写文件，
+# 留在仓库里每次都显示成改动。build-release.mjs 打包时本来也会剔掉它。
+/vault/_wb/boards/
+
 # 发布包与插件构建产物，都由脚本生成
 /dist/
 

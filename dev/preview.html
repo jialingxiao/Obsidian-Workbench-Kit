@@ -141,6 +141,7 @@
 <h2 class="sec">单组件模式 · dv.view("_wb", { c: "…" })</h2>
 <div class="cols" id="out"></div>
 
+<script src="./stubs.js"></script>
 <script>
 /* ============================================================
    Dataview / Obsidian 桩件
@@ -170,66 +171,10 @@ const IDS = [
   "seal", "poem", "year-progress", "analog-clock", "image", "solar-term", "lunar",
 ];
 
-const TOPICS = ["注意力机制","向量数据库","上下文窗口","检索增强生成","思维链","知识图谱","语义搜索","模型蒸馏"];
-
-function makeFakePages() {
-  const folders = ["00.inbox", "01.notes", "01.notes/concepts", "01.notes/entities", "99.output"];
-  const pages = [];
-  const now = Date.now();
-  let seed = 20260828;
-  const rnd = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
-  for (let i = 0; i < 420; i++) {
-    const folder = folders[Math.floor(rnd() * folders.length)];
-    const daysAgo = Math.floor(Math.pow(rnd(), 1.4) * 730);
-    const ctime = new Date(now - daysAgo * 86400000);
-    const name = `${TOPICS[Math.floor(rnd() * TOPICS.length)]}-${i}`;
-    const path = `${folder}/${name}.md`;
-    const tasks = [];
-    if (rnd() < 0.12) {
-      const n = 1 + Math.floor(rnd() * 2);
-      for (let k = 0; k < n; k++) {
-        // 一部分带 📅 到期日，供 upcoming 组件验证（含逾期）
-        const dated = rnd() < 0.5;
-        const due = new Date(now + (Math.floor(rnd() * 24) - 6) * 86400000);
-        const p2 = (x) => String(x).padStart(2, "0");
-        const dueStr = `${due.getFullYear()}-${p2(due.getMonth() + 1)}-${p2(due.getDate())}`;
-        tasks.push({
-          text: `整理 ${name} 的${k ? "参考文献" : "要点"}` + (dated ? ` 📅 ${dueStr}` : ""),
-          completed: rnd() < 0.3, path, line: k,
-        });
-      }
-    }
-    // 标签、反链、出链：tags / orphans / hubs / untagged 都要用
-    const tags = [];
-    if (rnd() < 0.75) tags.push("#" + ["笔记", "摘要", "综述", "实验", "读书"][Math.floor(rnd() * 5)]);
-    if (rnd() < 0.4) tags.push("#kb");
-    const inlinks = []; const outlinks = [];
-    const nIn = rnd() < 0.35 ? 0 : Math.floor(Math.pow(rnd(), 2.2) * 14);
-    for (let k = 0; k < nIn; k++) inlinks.push({ path: `01.notes/x${k}.md` });
-    for (let k = 0; k < Math.floor(rnd() * 4); k++) outlinks.push({ path: `01.notes/y${k}.md` });
-
-    pages.push({
-      file: { path, name, ctime, mtime: new Date(ctime.getTime() + 3600000), tasks, tags, inlinks, outlinks },
-      一句话描述: `关于${name.split("-")[0]}的一条记录`,
-      // 一部分笔记带阅读进度，供 reading 组件验证
-      ...(i % 17 === 0 ? { 进度: `${20 + (i % 9) * 30}/300` } : {}),
-    });
-  }
-  // 日记：最近 14 天里挑一部分
-  for (let d = 0; d < 14; d++) {
-    if (d % 3 === 1) continue;
-    const dt = new Date(); dt.setDate(dt.getDate() - d); dt.setHours(9,0,0,0);
-    const p = (n) => String(n).padStart(2, "0");
-    const name = `${dt.getFullYear()}-${p(dt.getMonth()+1)}-${p(dt.getDate())}`;
-    // 日记里带习惯打卡的待办，供 habit / week 组件验证
-    const dTasks = [];
-    ["晨跑", "读书", "冥想"].forEach((hb, k) => {
-      dTasks.push({ text: hb, completed: (d + k) % 3 !== 0, path: `Daily/${name}.md`, line: k });
-    });
-    pages.push({ file: { path: `Daily/${name}.md`, name, ctime: dt, mtime: dt, tasks: dTasks, tags: ["#daily"], inlinks: [], outlinks: [] } });
-  }
-  return pages;
-}
+/* 假库的构造函数在 dev/stubs.js 里，预览器和插件测试台共用同一份 ——
+   这里以前有一份自己的副本。两份已经漂开了（注释、变量名都不一样），
+   而且给 stubs.js 补 status / project 字段时，预览器这边完全没跟上：
+   同样的页面，一个测试台有看板数据，另一个是空的。副本删掉，只留一份。 */
 const FAKE_PAGES = makeFakePages();
 
 /* getFiles() 必须列出组件与主题文件 —— 组件面板和主题菜单靠扫它发现内容 */
@@ -361,71 +306,9 @@ const fakeApp = {
   },
 };
 
-function makeDv(container, notePath = "工作台.md") {
-  return {
-    container,
-    containerEl: container,
-    app: fakeApp,
-    current: () => ({ file: { path: notePath } }),
-    io: {
-      load: async (p) => {
-        const res = await fetch(`../vault/${p}`, { cache: "no-store" });
-        return res.ok ? await res.text() : null;
-      },
-    },
-    pages: (dql) => {
-      let list = FAKE_PAGES;
-      const src = String(dql || "").trim();
-      if (src) {
-        const folder = src.replace(/^["']|["']$/g, "");
-        list = FAKE_PAGES.filter((p) => p.file.path.startsWith(folder + "/"));
-      }
-      const arr = list.slice();
-      arr.array = () => arr;
-      return arr;
-    },
-    /* embed 组件在拿不到 Obsidian MarkdownRenderer 时的兜底路径 */
-    paragraph(md) {
-      const p = document.createElement("div");
-      p.className = "stub-md";
-      p.textContent = String(md);
-      p.style.whiteSpace = "pre-wrap";
-      this.container.appendChild(p);
-    },
-    /* Dataview 的 taskList 桩件：渲染进 dv.container —— 这正是
-       tasks 组件用 q.renderWith 临时换掉 container 要验证的行为。 */
-    taskList(tasks, groupByFile) {
-      const host = this.container;
-      const groups = new Map();
-      for (const t of tasks) {
-        const k = groupByFile ? t.path : "";
-        if (!groups.has(k)) groups.set(k, []);
-        groups.get(k).push(t);
-      }
-      for (const [k, list] of groups) {
-        if (k) {
-          const hd = document.createElement("h4");
-          hd.textContent = k.split("/").pop().replace(/\.md$/, "");
-          host.appendChild(hd);
-        }
-        const ul = document.createElement("ul");
-        ul.className = "contains-task-list";
-        for (const t of list) {
-          const li = document.createElement("li");
-          li.className = "task-list-item";
-          li.dataset.task = t.completed ? "x" : " ";
-          const cb = document.createElement("input");
-          cb.type = "checkbox";
-          cb.checked = !!t.completed;
-          li.appendChild(cb);
-          li.appendChild(document.createTextNode(" " + t.text));
-          ul.appendChild(li);
-        }
-        host.appendChild(ul);
-      }
-    },
-  };
-}
+/* makeDv 已挪进 dev/stubs.js，两个测试台共用。这里只补上本页的上下文。 */
+const makeDv = (container, notePath = "工作台.md") =>
+  makeFakeDv(container, { app: fakeApp, pages: FAKE_PAGES, notePath });
 
 /* demo 里不能写死库内路径（每个库都不一样），预览器这边补上假库里的 */
 const DEMO_OVERRIDE = {

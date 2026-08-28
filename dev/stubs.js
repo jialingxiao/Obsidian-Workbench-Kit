@@ -63,8 +63,15 @@ function makeFakePages() {
     pages.push({
       file: { path, name, ctime, mtime: new Date(ctime.getTime() + 3600000), tasks, tags, inlinks, outlinks },
       一句话描述: `关于${name.split("-")[0]}的一条记录`,
-      // 一部分笔记带阅读进度，供 reading 组件验证
+      // 一部分笔记带阅读进度，供 reading 组件验证。
+      // 两种写法都造一些：「20/300」合并写在一个字段里，以及进度/总页数分开写 ——
+      // reading 两条路径都支持，只造一种就有一半没被验证过。
       ...(i % 17 === 0 ? { 进度: `${20 + (i % 9) * 30}/300` } : {}),
+      ...(i % 17 === 8 ? { 进度: 40 + (i % 7) * 35, 总页数: 320 } : {}),
+      /* status / project 供 kanban、coverage、table(hasField) 用。
+         各留约三成不填 —— 字段体检那栏得有缺失可报，不然覆盖率永远 100%。 */
+      ...(rnd() < 0.7 ? { status: ["待办", "进行中", "待审", "已完成"][Math.floor(rnd() * 4)] } : {}),
+      ...(rnd() < 0.7 ? { project: ["检索增强", "记忆系统", "评估平台", "编辑器插件"][Math.floor(rnd() * 4)] } : {}),
     });
   }
 
@@ -158,8 +165,14 @@ function makeFakeApp(opts = {}) {
       getFileCache: (f) => {
         const p = pages.find((x) => x.file.path === f.path);
         if (!p) return null;
+        /* frontmatter 一律整体透传，不要逐个字段列白名单 ——
+           上一版只放了 tags 和「一句话描述」，于是给假数据加了 status /
+           project 之后，Dataview 那条路看得见、原生那条路是空的。
+           插件版走的正是原生这条路。 */
         const fm = { tags: p.file.tags.map((t) => t.slice(1)) };
-        if (p["一句话描述"]) fm["一句话描述"] = p["一句话描述"];
+        for (const [k, v] of Object.entries(p)) {
+          if (k !== "file") fm[k] = v;
+        }
         return {
           frontmatter: fm,
           tags: p.file.tags.map((t) => ({ tag: t })),
@@ -209,4 +222,104 @@ function makeFakeApp(opts = {}) {
     },
   };
   return app;
+}
+
+/* Dataview 的 dv 桩件。
+   preview.html 和 shots.html 共用 —— 假库的构造函数已经因为存在两份副本
+   漂开过一次（一个测试台有 status 数据、另一个没有），这个不再重蹈覆辙。 */
+function makeFakeDv(container, opts = {}) {
+  const { app, pages: PAGES, notePath = "工作台.md" } = opts;
+  return {
+    container,
+    containerEl: container,
+    app,
+    current: () => ({ file: { path: notePath } }),
+    io: {
+      load: async (p) => {
+        const res = await fetch(`../vault/${p}`, { cache: "no-store" });
+        return res.ok ? await res.text() : null;
+      },
+    },
+    pages: (dql) => {
+      let list = PAGES;
+      const src = String(dql || "").trim();
+      if (src) {
+        const folder = src.replace(/^["']|["']$/g, "");
+        list = PAGES.filter((p) => p.file.path.startsWith(folder + "/"));
+      }
+      const arr = list.slice();
+      arr.array = () => arr;
+      return arr;
+    },
+    /* embed 组件在拿不到 Obsidian MarkdownRenderer 时的兜底路径 */
+    paragraph(md) {
+      const p = document.createElement("div");
+      p.className = "stub-md";
+      p.textContent = String(md);
+      p.style.whiteSpace = "pre-wrap";
+      this.container.appendChild(p);
+    },
+    /* Dataview 的 taskList 桩件：渲染进 dv.container —— 这正是
+       tasks 组件用 q.renderWith 临时换掉 container 要验证的行为。 */
+    taskList(tasks, groupByFile) {
+      const host = this.container;
+      const groups = new Map();
+      for (const t of tasks) {
+        const k = groupByFile ? t.path : "";
+        if (!groups.has(k)) groups.set(k, []);
+        groups.get(k).push(t);
+      }
+      for (const [k, list] of groups) {
+        if (k) {
+          const hd = document.createElement("h4");
+          hd.textContent = k.split("/").pop().replace(/\.md$/, "");
+          host.appendChild(hd);
+        }
+        const ul = document.createElement("ul");
+        ul.className = "contains-task-list";
+        for (const t of list) {
+          const li = document.createElement("li");
+          li.className = "task-list-item";
+          li.dataset.task = t.completed ? "x" : " ";
+          const cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.checked = !!t.completed;
+          li.appendChild(cb);
+          li.appendChild(document.createTextNode(" " + t.text));
+          ul.appendChild(li);
+        }
+        host.appendChild(ul);
+      }
+    },
+  };
+}
+
+/* 假库里的 _wb/ 文件清单。
+   真实 Obsidian 里主题、组件、模板都是库内的普通文件，view.js 的
+   host.list() 正是靠扫 vault.getFiles() 找它们的。桩件以前完全没有这些
+   文件，于是 listThemes() 返回空数组 —— 「曜石」这类中文主题名压根没法
+   被解析成 id，看板套上的类名是 .wb-theme-曜石，对不上任何 CSS。
+   这不是内核的 bug，是桩件不够像真库。 */
+async function fetchWbFileList(base = "../vault/_wb") {
+  const kinds = [
+    ["components", (n) => `_wb/components/${n}/component.js`],
+    ["themes",     (n) => `_wb/themes/${n}.css`],
+    ["presets",    (n) => `_wb/presets/${n}.json`],
+  ];
+  const out = [];
+  for (const [kind, toPath] of kinds) {
+    const res = await fetch(`${base}/${kind}/`, { cache: "no-store" });
+    if (!res.ok) continue;
+    const html = await res.text();
+    // 目录列表里，组件是子目录（带尾斜杠），主题/模板是文件
+    const re = kind === "components" ? /href="([^"/?]+)\/"/g
+             : kind === "themes"     ? /href="([^"]+)\.css"/g
+             :                         /href="([^"]+)\.json"/g;
+    for (const m of html.matchAll(re)) {
+      const name = decodeURIComponent(m[1]);
+      out.push({ path: toPath(name), name: toPath(name).split("/").pop(),
+                 stat: { size: 1024, ctime: Date.now(), mtime: Date.now() } });
+    }
+  }
+  return out;
 }

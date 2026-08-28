@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workbench Kit · 模板截图台</title>
+<style>
+  /* Obsidian 原生变量的仿制品 —— 素笺主题和浮层都靠它们 */
+  body.theme-light {
+    --background-primary:#fff; --background-secondary:#f4f5f7;
+    --background-secondary-alt:#e9ebef; --background-modifier-border:#dcdfe4;
+    --background-modifier-hover:rgba(0,0,0,.06);
+    --text-normal:#1f2328; --text-muted:#6b7280; --text-faint:#9aa1ac;
+    --text-on-accent:#fff; --interactive-accent:#6c63ff; --color-red:#d2404a;
+    --font-interface:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    --font-monospace:ui-monospace,"JetBrains Mono",Consolas,monospace;
+  }
+  body.theme-dark {
+    --background-primary:#1e1e21; --background-secondary:#26262a;
+    --background-secondary-alt:#2e2e33; --background-modifier-border:#3a3a41;
+    --background-modifier-hover:rgba(255,255,255,.08);
+    --text-normal:#e4e5e7; --text-muted:#9ba1a9; --text-faint:#6b7079;
+    --text-on-accent:#fff; --interactive-accent:#8b83ff; --color-red:#e0555f;
+    --font-interface:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    --font-monospace:ui-monospace,"JetBrains Mono",Consolas,monospace;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px;
+    background: #7c7f88;              /* 中性灰衬底，截图裁切时边界清楚 */
+    font-family: var(--font-interface);
+  }
+  body.plain { background: transparent; padding: 0; }
+
+  .bar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 10px 14px; margin: -24px -24px 20px;
+    background: #23252b; color: #e8eaee; font-size: 13px;
+  }
+  .bar a, .bar button {
+    color: #e8eaee; background: #34373f; border: 1px solid #454955;
+    border-radius: 6px; padding: 4px 10px; font-size: 13px;
+    text-decoration: none; cursor: pointer;
+  }
+  .bar a.on { background: #6c63ff; border-color: #6c63ff; }
+  .bar .sp { flex: 1; }
+  .bar .hint { color: #9aa0ab; }
+  body.plain .bar { display: none; }
+
+  /* 一张「照片」：固定宽度，主题底色铺满，四周留白 —— 直接截这个元素 */
+  .shot { margin: 0 auto 28px; width: var(--shot-w, 1280px); max-width: 100%; }
+  .shot .cap {
+    display: flex; align-items: baseline; gap: 10px;
+    color: #e8eaee; font-size: 13px; padding: 0 2px 8px;
+  }
+  .shot .cap b { font-size: 15px; }
+  .shot .cap .id { color: #b9bec7; font-family: var(--font-monospace); font-size: 11px; }
+  .shot .cap .desc { color: #b9bec7; }
+  /* plain 模式仍然锁定宽度：截图脚本要按固定宽度算高度，
+     宽度一浮动，量出来的高度就对不上了 */
+  body.plain .shot { margin: 0; }
+  body.plain .shot .cap { display: none; }
+
+  .frame {
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  body.plain .frame { border-radius: 0; box-shadow: none; }
+  /* 观看态也有「主题 / 编辑」两个按钮，宣传图里不需要 */
+  body.plain .wb-tb { display: none !important; }
+  /* 看板本身的底色由主题的 --wb-bg 决定，这里只负责给它留出内边距 */
+  .frame > .wb { padding: 22px; }
+
+  #err { color: #ffd7d7; font-family: var(--font-monospace); font-size: 12px; white-space: pre-wrap; }
+</style>
+</head>
+<body class="theme-light">
+
+<div class="bar">
+  <b>模板截图台</b>
+  <span id="tabs"></span>
+  <span class="sp"></span>
+  <button id="mode">明 / 暗</button>
+  <button id="plain">只留画面</button>
+  <span class="hint">?p=&lt;id&gt; 单张 · ?w=1280 改宽度 · ?dark=1 深色</span>
+</div>
+
+<div id="err"></div>
+<div id="out"></div>
+
+<script src="./stubs.js"></script>
+<script>
+/* ============================================================
+   模板截图台
+   把每套模板按它自己的主题渲染成一张固定宽度的「照片」，
+   方便截图做说明与宣传。走的是真正的调度器和真正的模板 JSON，
+   不是另画一份示意图 —— 截出来的就是用户会看到的东西。
+   ========================================================== */
+
+const params = new URLSearchParams(location.search);
+const ONLY = params.get("p");
+const WIDTH = parseInt(params.get("w") || "1280", 10);
+document.documentElement.style.setProperty("--shot-w", WIDTH + "px");
+if (params.get("dark") === "1") document.body.className = "theme-dark";
+if (params.get("plain") === "1") document.body.classList.add("plain");
+
+const errEl = document.getElementById("err");
+const outEl = document.getElementById("out");
+
+/* 假库：和预览器共用同一份构造函数 */
+const FAKE_PAGES = makeFakePages();
+const memFiles = {};
+let fakeApp = null;   // 需要先取到 _wb/ 文件清单，见 main()
+
+let runView = null;
+async function loadDispatcher() {
+  const res = await fetch("../vault/_wb/view.js", { cache: "no-store" });
+  if (!res.ok) throw new Error("读不到 vault/_wb/view.js");
+  runView = new Function("dv", "input", `return (async () => { ${await res.text()} })();`);
+}
+
+/* 模板清单从目录列表里取，不在这里另抄一份 id 名单 ——
+   抄一份的话，新加模板就得记得改两个地方，迟早忘。 */
+async function listPresets() {
+  const res = await fetch("../vault/_wb/presets/", { cache: "no-store" });
+  if (!res.ok) throw new Error("列不出 presets 目录（需要能列目录的静态服务器）");
+  const html = await res.text();
+  const ids = [...html.matchAll(/href="([^"]+)\.json"/g)].map((m) => decodeURIComponent(m[1]));
+  if (!ids.length) throw new Error("presets 目录里没找到 .json");
+  return ids.sort();
+}
+
+/* 把模板塞成「已保存的看板」再渲染。
+   直接调 applyPreset 要先进编辑态，会带上工具栏；而截图要的是干净的观看态。 */
+function seedBoard(id, preset) {
+  const board = {
+    version: 1, theme: preset.theme || null,
+    cols: 12, rowHeight: 34, gap: 10,
+    blocks: preset.blocks.map((b, i) => ({
+      id: "s" + i, c: b.c,
+      x: b.x || 0, y: b.y || 0, w: b.w || 6, h: b.h || 5,
+      props: b.props || {},
+    })),
+  };
+  memFiles[`_wb/boards/${id}.json`] = JSON.stringify(board);
+}
+
+async function main() {
+  try {
+    await loadDispatcher();
+
+    /* 把 _wb/ 下的文件也放进假库。host.list() 是扫 vault.getFiles() 找
+       主题和组件的，少了这些文件，「曜石」这种中文主题名就解析不成 id。 */
+    const wbFiles = await fetchWbFileList();
+    fakeApp = makeFakeApp({ pages: FAKE_PAGES, files: memFiles,
+                            extraFiles: wbFiles, log: () => {} });
+
+    /* 先引导一次内核。原生数据层的任务索引必须在任何组件渲染前建好，
+       否则 tasks / upcoming 只会显示「没有待办」。 */
+    const boot = document.createElement("div");
+    await runView(makeFakeDv(boot, { app: fakeApp, pages: FAKE_PAGES }), { c: "masthead" });
+    const WB = window.__WB__;
+    if (!WB) throw new Error("内核未能引导起来，看控制台");
+    if (WB.query.reindex) await WB.query.reindex();
+
+    const ids = await listPresets();
+    const shown = ONLY ? ids.filter((x) => x === ONLY) : ids;
+    if (ONLY && !shown.length) throw new Error(`没有名为 "${ONLY}" 的模板；现有：${ids.join("、")}`);
+
+    // 顶栏的模板切换链接
+    const tabs = document.getElementById("tabs");
+    for (const id of ids) {
+      const a = document.createElement("a");
+      a.href = `?p=${encodeURIComponent(id)}${WIDTH !== 1280 ? "&w=" + WIDTH : ""}`;
+      a.textContent = id;
+      if (id === ONLY) a.className = "on";
+      tabs.appendChild(a);
+    }
+    if (ONLY) {
+      const a = document.createElement("a");
+      a.href = "?"; a.textContent = "全部";
+      tabs.appendChild(a);
+    }
+
+    for (const id of shown) {
+      const res = await fetch(`../vault/_wb/presets/${id}.json`, { cache: "no-store" });
+      const preset = await res.json();
+      seedBoard(id, preset);
+
+      const shot = document.createElement("div");
+      shot.className = "shot";
+      shot.dataset.preset = id;
+      shot.innerHTML =
+        `<div class="cap"><b>${preset.name.zh}</b>` +
+        `<span class="id">${id}</span>` +
+        `<span class="desc">${preset.desc.zh}</span></div>`;
+      const frame = document.createElement("div");
+      frame.className = "frame";
+      shot.appendChild(frame);
+      outEl.appendChild(shot);
+
+      await runView(makeFakeDv(frame, { app: fakeApp, pages: FAKE_PAGES, notePath: id + ".md" }),
+                    { board: id });
+
+      /* 模板里的 h 是手写估值，换套主题、换个库就不准了 —— 会露出大片空档
+         或者把内容切掉。用看板自己的 fitHeight 收一遍，和用户点「套用模板」
+         走的是同一段代码。 */
+      const st = frame.querySelector(".wb")?.__wbState;
+      if (st) {
+        for (const b of st.data.blocks) st.fitHeight(b);
+        // 收完高度再压紧，顺序反了会留下一条条空档（applyPreset 同理）
+        WB.runtime.applyPositions(st.data.blocks, WB.board.relayout(st.data.blocks));
+        st.applyLayout();
+      }
+    }
+    /* 截图脚本先用 --dump-dom 跑一遍，从标题里读出该开多高的窗口。
+       用标题传是因为 headless 的 --dump-dom 只能拿到 DOM，拿不到返回值。 */
+    /* 用 setTimeout 而不是 requestAnimationFrame 等一帧：
+       无头模式下加了 --virtual-time-budget 之后，页面被判定为空闲时 rAF
+       可能根本不触发，这个 await 就永远挂着、标题永远不写 ——
+       表现是九套模板随机只成功两三套。定时器在虚拟时间里是照跑的。 */
+    await new Promise((r) => setTimeout(r, 120));
+    const h = Math.ceil(document.body.getBoundingClientRect().height);
+    document.title = `WBSHOT h=${h} n=${shown.length}`;
+  } catch (e) {
+    errEl.textContent = "出错：" + (e && e.message || e);
+    console.error(e);
+  }
+}
+
+document.getElementById("mode").onclick = () => {
+  document.body.classList.toggle("theme-dark");
+  document.body.classList.toggle("theme-light");
+};
+document.getElementById("plain").onclick = () => document.body.classList.toggle("plain");
+
+main();
+</script>
+</body>
+</html>

@@ -27,8 +27,19 @@
         if (k === "class" || k === "cls") {
           el.classList.add(...String(v).split(/\s+/).filter(Boolean));
         } else if (k === "style") {
-          if (typeof v === "object") Object.assign(el.style, v);
-          else el.setAttribute("style", String(v));
+          /* 自定义属性（--wb-*）必须走 setProperty。
+             以前这里是 Object.assign(el.style, v)，而 CSSStyleDeclaration
+             对 "--x" 这种键的直接赋值是静默忽略的 —— 于是 kanban 的列数、
+             stats / bookmarks / image / countdown 的 columns、habit 的天数、
+             ui.cols 的柱数，全都悄悄退回 CSS 里的默认值。
+             库里所有 columns 参数都因此形同虚设，且不报任何错。 */
+          if (typeof v === "object") {
+            for (const [ck, cv] of Object.entries(v)) {
+              if (cv == null) continue;
+              if (ck.startsWith("--")) el.style.setProperty(ck, String(cv));
+              else el.style[ck] = cv;
+            }
+          } else el.setAttribute("style", String(v));
         } else if (k === "dataset") {
           Object.assign(el.dataset, v);
         } else if (k === "text") {
