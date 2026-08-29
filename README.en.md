@@ -6,6 +6,10 @@ A component library for Obsidian homepages. Drop the `_wb/` folder into your vau
 
 > Status: **v0.5.0**. Visual board, **51 components in 7 categories**, **12 themes**, **9 ready-made layouts**, and a packaged plugin build.
 
+![Work Desk, Obsidian Glass theme](docs/shots/office.png)
+
+<sub>The "Work Desk" preset on the 曜石 Obsidian Glass theme. All screenshots are exported from the real components by `node scripts/shoot.mjs`, against a script-generated test vault.</sub>
+
 ---
 
 ## The problem it solves

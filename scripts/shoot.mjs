@@ -19,7 +19,12 @@ import { fileURLToPath } from "node:url";
 const ROOT = process.env.WB_ROOT
   ? path.resolve(process.env.WB_ROOT)
   : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const OUT = path.join(ROOT, "dist", "shots");
+/* 默认出到 dist/shots（2 倍图，发社媒用，不进仓库）。
+   WB_SHOT_OUT + WB_SHOT_SCALE=1 可以另出一套 1 倍图给 README —— 2 倍图
+   一张就半兆，九张塞进仓库太重。 */
+const OUT = process.env.WB_SHOT_OUT
+  ? path.resolve(process.env.WB_SHOT_OUT)
+  : path.join(ROOT, "dist", "shots");
 const BASE = process.env.WB_SHOT_URL || "http://localhost:8123/dev/shots.html";
 const WIDTH = Number(process.env.WB_SHOT_WIDTH || 1280);
 const SCALE = Number(process.env.WB_SHOT_SCALE || 2);   // 2 倍图，社媒上不糊
@@ -71,6 +76,18 @@ const want = process.argv.slice(2);
 const list = want.length ? presets.filter((p) => want.includes(p)) : presets;
 if (!list.length) {
   console.error(`没有匹配的模板。现有：${presets.join("、")}`);
+  process.exit(1);
+}
+
+/* 先确认静态服务器活着。
+   少了这一步，服务器没起的时候九套模板会齐刷刷报「量不到高度，没渲染完」——
+   指向的是渲染，真正的原因却是根本没连上。我自己就被这条信息误导过一次。 */
+try {
+  const res = await fetch(BASE, { method: "GET" });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+} catch (e) {
+  console.error(`连不上 ${BASE} —— ${e.message}`);
+  console.error("先起静态服务器：python -m http.server 8123（在仓库根目录）");
   process.exit(1);
 }
 

@@ -7,6 +7,10 @@
 > 状态：**v0.5.0**。可视化看板、**51 个组件（7 大分类）**、**12 套中式主题**、**9 套开箱模板**。
 > 两种安装方式：**插件版**（推荐，不依赖任何其他插件）或 **dataviewjs 版**（不装插件，直接放文件夹）。
 
+![工作台 · 曜石主题](docs/shots/office.png)
+
+<sub>「工作台」模板 · 曜石主题。以下截图均由 `node scripts/shoot.mjs` 从真实组件渲染导出，数据来自脚本生成的测试库。</sub>
+
 ---
 
 ## 它解决什么问题
@@ -356,11 +360,48 @@ wbTheme: 松烟
 | **阅读台** | 在读进度 + 摘抄 + 那年今日 + 竖排诗词 | 宣纸 |
 | **生活雅集** | 农历 + 节气 + 习惯打卡 + 印章 + 诗词，最不像仪表盘的一套 | 竹影 |
 
+
+### 长什么样
+
+<table>
+<tr>
+<td width="50%"><b>项目管理</b> · 绀宇<br><img src="docs/shots/project.png" alt="项目管理模板"></td>
+<td width="50%"><b>生活雅集</b> · 竹影<br><img src="docs/shots/life.png" alt="生活雅集模板"></td>
+</tr>
+<tr>
+<td><b>研究台</b> · 水墨<br><img src="docs/shots/research.png" alt="研究台模板"></td>
+<td><b>阅读台</b> · 宣纸<br><img src="docs/shots/reading.png" alt="阅读台模板"></td>
+</tr>
+</table>
+
+<details>
+<summary>其余四套：极简起步 · 知识库 · 日程计划 · 写作台</summary>
+
+<br>
+
+**极简起步**（不指定主题，跟随你的 Obsidian）
+
+![极简起步](docs/shots/start.png)
+
+**知识库** · 朱砂
+
+![知识库](docs/shots/knowledge.png)
+
+**日程计划** · 素笺
+
+![日程计划](docs/shots/planner.png)
+
+**写作台** · 秋毫
+
+![写作台](docs/shots/writing.png)
+
+</details>
+
 完整参考：**[docs/presets.md](docs/presets.md)**。模板是 `_wb/presets/*.json`，格式和看板布局文件一样，自己加一个就会出现在列表里。套用时会先按实际内容定高、再跑一遍布局算法压紧，所以手写坐标和高度都不必精确。
 
 `node scripts/verify-presets.mjs` 校验模板：组件 id 存在、参数名在 `meta.props` 里声明过、布局不越界不重叠、主题名能解析。手写 JSON 里拼错一个字母不会报错，只会安静地渲染成一张空卡片。
 
-**出图**：`dev/shots.html` 把每套模板按自己的主题渲染成一张固定宽度的图（`?p=<id>` 单张、`?plain=1` 去掉页面外壳），`node scripts/shoot.mjs` 用无头 Chrome/Edge 批量导出 2 倍图到 `dist/shots/`。不依赖 puppeteer。
+**出图**：`dev/shots.html` 把每套模板按自己的主题渲染成一张固定宽度的图（`?p=<id>` 单张、`?plain=1` 去掉页面外壳），`node scripts/shoot.mjs` 用无头 Chrome/Edge 批量导出 2 倍图到 `dist/shots/`（发社媒用，不进仓库）；README 里这批 1 倍图是 `WB_SHOT_OUT=docs/shots WB_SHOT_SCALE=1 node scripts/shoot.mjs` 出的。需要先起静态服务器（`python -m http.server 8123`）。不依赖 puppeteer。
 
 ---
 
