@@ -33,6 +33,19 @@ Obsidian 社区里漂亮的首页方案很多，但它们几乎都是**一次性
 
 **不依赖任何其他插件。**
 
+先拿到构建好的插件包 —— 二选一：
+
+- 从 [Releases](https://github.com/jialingxiao/Obsidian-Workbench-Kit/releases) 下载 `main.js` 和 `manifest.json`；
+- 或者克隆仓库后自己构建（不需要 npm，也不需要装任何依赖）：
+
+  ```bash
+  node scripts/build-plugin.mjs
+  ```
+
+  产物在 `dist/plugin/`。`dist/` 不进仓库，所以直接克隆是没有这个目录的。
+
+然后：
+
 1. 把 `dist/plugin/` 整个复制成 `你的库/.obsidian/plugins/workbench-kit/`
 2. 在 Obsidian 的第三方插件里启用 **Workbench Kit**
 3. 点侧边栏的 ⊞ 图标 —— 没有工作台笔记就自动建一篇

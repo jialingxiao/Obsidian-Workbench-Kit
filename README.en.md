@@ -26,6 +26,35 @@ Components always say `@inbox`, never `00.raw`. That is what makes the same comp
 
 ## Install
 
+Two routes; pick either. **Same kernel, same 51 components, same 12 themes** — the pages look identical.
+
+### A. Plugin (recommended)
+
+**No other plugin required.**
+
+Get a built bundle first — either download `main.js` and `manifest.json` from
+[Releases](https://github.com/jialingxiao/Obsidian-Workbench-Kit/releases), or clone the repo and build it yourself (no npm, no dependencies):
+
+```bash
+node scripts/build-plugin.mjs
+```
+
+The output lands in `dist/plugin/`, which is not committed — a fresh clone will not have it.
+
+1. Copy `dist/plugin/` to `YourVault/.obsidian/plugins/workbench-kit/`.
+2. Enable **Workbench Kit** under Community plugins.
+3. Click the ⊞ ribbon icon — if no workbench note exists, one is created.
+4. Point the **path aliases** in the plugin settings at your real folders.
+
+In a note:
+
+````markdown
+```workbench
+```
+````
+
+### B. dataviewjs
+
 **Requires** the [Dataview](https://github.com/blacksmithgu/obsidian-dataview) plugin with **JavaScript Queries** enabled.
 
 1. Copy `vault/_wb/` into your vault root (so you end up with `YourVault/_wb/`).
