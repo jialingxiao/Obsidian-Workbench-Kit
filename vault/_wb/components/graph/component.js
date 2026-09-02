@@ -22,7 +22,7 @@
       showLabels: { type: "bool", default: true, desc: "显示笔记名" },
       label:  { type: "text",   default: "",  desc: "分区标题" },
     },
-    layout: { w: 5, h: 8 },
+    layout: { w: 10, h: 16 },
     demo: { label: "关系图", nodes: 10 },
   },
 

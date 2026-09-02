@@ -17,7 +17,7 @@
         showCount:{ type: "bool", default: true,         desc: "标题右侧显示本月已写篇数" },
         label:    { type: "text", default: "",           desc: "分区标题，留空显示「YYYY年M月」" },
       },
-      layout: { w: 4, h: 8 },
+      layout: { w: 8, h: 16 },
       demo: {},
     },
 

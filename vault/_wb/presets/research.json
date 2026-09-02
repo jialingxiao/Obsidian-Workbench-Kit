@@ -1,34 +1,125 @@
 {
-  "name": { "zh": "研究台", "en": "Research Desk" },
-  "desc": { "zh": "关系图 + 枢纽 / 孤岛 + 字段体检，盯的是「知识网结不结实」", "en": "Graph, hubs and orphans, field coverage — is the network actually connected?" },
+  "name": {
+    "zh": "研究台",
+    "en": "Research Desk"
+  },
+  "desc": {
+    "zh": "关系图 + 枢纽 / 孤岛 + 字段体检，盯的是「知识网结不结实」",
+    "en": "Graph, hubs and orphans, field coverage — is the network actually connected?"
+  },
   "theme": "水墨",
   "blocks": [
-    { "c": "masthead", "x": 0, "y": 0, "w": 12, "h": 6,
-      "props": { "subtitle": "Research Desk", "kicker": "读 · 想 · 记", "inverted": false, "edition": false } },
-
-    { "c": "graph", "x": 0, "y": 6, "w": 7, "h": 9,
-      "props": { "label": "关系图", "nodes": 14, "showLabels": true } },
-
-    { "c": "hubs", "x": 7, "y": 6, "w": 5, "h": 9,
-      "props": { "label": "枢纽笔记", "limit": 8, "style": "bars" } },
-
-    { "c": "timeline", "x": 0, "y": 15, "w": 7, "h": 9,
-      "props": { "label": "研究时间线", "source": "@notes", "limit": 10,
-                 "order": "desc", "descField": "一句话描述" } },
-
-    { "c": "orphans", "x": 7, "y": 15, "w": 5, "h": 9,
-      "props": { "label": "孤岛笔记", "limit": 8, "alsoNoLinks": true, "sort": "mtime" } },
-
-    { "c": "tags", "x": 0, "y": 24, "w": 5, "h": 7,
-      "props": { "label": "主题分布", "style": "bars", "limit": 10 } },
-
-    { "c": "coverage", "x": 5, "y": 24, "w": 7, "h": 7,
-      "props": { "label": "字段体检", "source": "@notes", "field": "一句话描述,status,project", "showMiss": 5 } },
-
-    { "c": "stale", "x": 0, "y": 31, "w": 6, "h": 7,
-      "props": { "label": "久未回顾", "limit": 6 } },
-
-    { "c": "vault-info", "x": 6, "y": 31, "w": 6, "h": 7,
-      "props": { "label": "库总览", "showWords": true, "showOldest": true } }
+    {
+      "c": "masthead",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 12,
+      "props": {
+        "subtitle": "Research Desk",
+        "kicker": "读 · 想 · 记",
+        "inverted": false,
+        "edition": false
+      }
+    },
+    {
+      "c": "graph",
+      "x": 0,
+      "y": 12,
+      "w": 14,
+      "h": 18,
+      "props": {
+        "label": "关系图",
+        "nodes": 14,
+        "showLabels": true
+      }
+    },
+    {
+      "c": "hubs",
+      "x": 14,
+      "y": 12,
+      "w": 10,
+      "h": 18,
+      "props": {
+        "label": "枢纽笔记",
+        "limit": 8,
+        "style": "bars"
+      }
+    },
+    {
+      "c": "timeline",
+      "x": 0,
+      "y": 30,
+      "w": 14,
+      "h": 18,
+      "props": {
+        "label": "研究时间线",
+        "source": "@notes",
+        "limit": 10,
+        "order": "desc",
+        "descField": "一句话描述"
+      }
+    },
+    {
+      "c": "orphans",
+      "x": 14,
+      "y": 30,
+      "w": 10,
+      "h": 18,
+      "props": {
+        "label": "孤岛笔记",
+        "limit": 8,
+        "alsoNoLinks": true,
+        "sort": "mtime"
+      }
+    },
+    {
+      "c": "tags",
+      "x": 0,
+      "y": 48,
+      "w": 10,
+      "h": 14,
+      "props": {
+        "label": "主题分布",
+        "style": "bars",
+        "limit": 10
+      }
+    },
+    {
+      "c": "coverage",
+      "x": 10,
+      "y": 48,
+      "w": 14,
+      "h": 14,
+      "props": {
+        "label": "字段体检",
+        "source": "@notes",
+        "field": "一句话描述,status,project",
+        "showMiss": 5
+      }
+    },
+    {
+      "c": "stale",
+      "x": 0,
+      "y": 62,
+      "w": 12,
+      "h": 14,
+      "props": {
+        "label": "久未回顾",
+        "limit": 6
+      }
+    },
+    {
+      "c": "vault-info",
+      "x": 12,
+      "y": 62,
+      "w": 12,
+      "h": 14,
+      "props": {
+        "label": "库总览",
+        "showWords": true,
+        "showOldest": true
+      }
+    }
   ]
 }

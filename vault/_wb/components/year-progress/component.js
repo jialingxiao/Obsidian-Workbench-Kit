@@ -33,7 +33,7 @@
         style: { type: "enum", default: "bar",  options: ["bar", "dots"], desc: "bar 进度条，dots 点阵（一格一天）" },
         label: { type: "text", default: "",     desc: "标题，留空自动显示年份或月份" },
       },
-      layout: { w: 4, h: 3 },
+      layout: { w: 8, h: 6 },
       demo: { unit: "year" },
     },
 

@@ -15,7 +15,7 @@
         showOldest: { type: "bool", default: true,  desc: "显示最早的一篇" },
         label:      { type: "text", default: "",    desc: "分区标题" },
       },
-      layout: { w: 5, h: 6 },
+      layout: { w: 10, h: 12 },
       demo: { label: "库总览" },
     },
 

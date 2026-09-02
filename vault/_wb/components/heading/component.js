@@ -13,7 +13,7 @@
       rule:  { type: "enum", default: "under", options: ["under", "none", "over"], desc: "线的位置" },
       align: { type: "enum", default: "left",  options: ["left", "center"], desc: "对齐方式" },
     },
-    layout: { w: 12, h: 2 },
+    layout: { w: 24, h: 4 },
     demo: { text: "今天", note: "Today" },
   },
 

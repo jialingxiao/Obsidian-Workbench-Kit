@@ -36,7 +36,7 @@
         vertical: { type: "bool",  default: true, desc: "竖排右起（关掉则横排）" },
         showMeta: { type: "bool",  default: true, desc: "显示标题与作者" },
       },
-      layout: { w: 4, h: 8 },
+      layout: { w: 8, h: 16 },
       demo: {
         items: [{
           title: "山中问答", author: "李白",

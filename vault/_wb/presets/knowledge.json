@@ -1,38 +1,135 @@
 {
-  "name": { "zh": "知识库", "en": "Knowledge Base" },
-  "desc": { "zh": "报头 + 数据概览 + 精选 / 标签 / 枢纽 / 孤岛，完整的知识库仪表盘", "en": "A full knowledge-base dashboard: stats, spotlight, tags, hubs and orphans" },
+  "name": {
+    "zh": "知识库",
+    "en": "Knowledge Base"
+  },
+  "desc": {
+    "zh": "报头 + 数据概览 + 精选 / 标签 / 枢纽 / 孤岛，完整的知识库仪表盘",
+    "en": "A full knowledge-base dashboard: stats, spotlight, tags, hubs and orphans"
+  },
   "theme": "朱砂",
   "blocks": [
-    { "c": "masthead", "x": 0, "y": 0, "w": 12, "h": 6,
-      "props": { "subtitle": "Personal Knowledge Base", "kicker": "Vol. I" } },
-
-    { "c": "stats", "x": 0, "y": 6, "w": 7, "h": 5,
-      "props": { "label": "概览", "items": [
-        { "label": "收件箱", "sub": "待整理", "source": "@inbox" },
-        { "label": "笔记",   "sub": "已归档", "source": "@notes" },
-        { "label": "日记",   "sub": "Daily",  "source": "@daily" },
-        { "label": "产出",   "sub": "Output", "source": "@output" }
-      ] } },
-
-    { "c": "heatmap", "x": 7, "y": 6, "w": 5, "h": 5,
-      "props": { "label": "活动记录", "weeks": 40 } },
-
-    { "c": "spotlight", "x": 0, "y": 11, "w": 7, "h": 5,
-      "props": { "kicker": "今日精选", "descField": "一句话描述,description" } },
-
-    { "c": "tags", "x": 7, "y": 11, "w": 5, "h": 6,
-      "props": { "label": "标签", "limit": 16 } },
-
-    { "c": "recent", "x": 0, "y": 16, "w": 6, "h": 8,
-      "props": { "label": "最近更新", "limit": 8, "showFolder": true } },
-
-    { "c": "hubs", "x": 6, "y": 17, "w": 6, "h": 7,
-      "props": { "label": "枢纽笔记", "limit": 7 } },
-
-    { "c": "orphans", "x": 0, "y": 24, "w": 6, "h": 7,
-      "props": { "label": "孤岛笔记", "limit": 6 } },
-
-    { "c": "untagged", "x": 6, "y": 24, "w": 6, "h": 7,
-      "props": { "label": "待整理", "rule": "untagged", "limit": 6 } }
+    {
+      "c": "masthead",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 12,
+      "props": {
+        "subtitle": "Personal Knowledge Base",
+        "kicker": "Vol. I"
+      }
+    },
+    {
+      "c": "stats",
+      "x": 0,
+      "y": 12,
+      "w": 14,
+      "h": 10,
+      "props": {
+        "label": "概览",
+        "items": [
+          {
+            "label": "收件箱",
+            "sub": "待整理",
+            "source": "@inbox"
+          },
+          {
+            "label": "笔记",
+            "sub": "已归档",
+            "source": "@notes"
+          },
+          {
+            "label": "日记",
+            "sub": "Daily",
+            "source": "@daily"
+          },
+          {
+            "label": "产出",
+            "sub": "Output",
+            "source": "@output"
+          }
+        ]
+      }
+    },
+    {
+      "c": "heatmap",
+      "x": 14,
+      "y": 12,
+      "w": 10,
+      "h": 10,
+      "props": {
+        "label": "活动记录",
+        "weeks": 40
+      }
+    },
+    {
+      "c": "spotlight",
+      "x": 0,
+      "y": 22,
+      "w": 14,
+      "h": 10,
+      "props": {
+        "kicker": "今日精选",
+        "descField": "一句话描述,description"
+      }
+    },
+    {
+      "c": "tags",
+      "x": 14,
+      "y": 22,
+      "w": 10,
+      "h": 12,
+      "props": {
+        "label": "标签",
+        "limit": 16
+      }
+    },
+    {
+      "c": "recent",
+      "x": 0,
+      "y": 32,
+      "w": 12,
+      "h": 16,
+      "props": {
+        "label": "最近更新",
+        "limit": 8,
+        "showFolder": true
+      }
+    },
+    {
+      "c": "hubs",
+      "x": 12,
+      "y": 34,
+      "w": 12,
+      "h": 14,
+      "props": {
+        "label": "枢纽笔记",
+        "limit": 7
+      }
+    },
+    {
+      "c": "orphans",
+      "x": 0,
+      "y": 48,
+      "w": 12,
+      "h": 14,
+      "props": {
+        "label": "孤岛笔记",
+        "limit": 6
+      }
+    },
+    {
+      "c": "untagged",
+      "x": 12,
+      "y": 48,
+      "w": 12,
+      "h": 14,
+      "props": {
+        "label": "待整理",
+        "rule": "untagged",
+        "limit": 6
+      }
+    }
   ]
 }

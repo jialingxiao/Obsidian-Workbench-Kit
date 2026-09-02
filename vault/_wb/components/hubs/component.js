@@ -13,7 +13,7 @@
       style:  { type: "enum",   default: "bars", options: ["bars", "list"], desc: "bars 带条形，list 纯列表" },
       label:  { type: "text",   default: "",     desc: "分区标题" },
     },
-    layout: { w: 5, h: 7 },
+    layout: { w: 10, h: 14 },
     demo: { label: "枢纽笔记", limit: 7 },
   },
 

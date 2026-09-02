@@ -29,7 +29,7 @@
         stripFront:  { type: "bool", default: true, desc: "去掉 frontmatter" },
         showTitle:   { type: "bool", default: true, desc: "顶部显示可点击的笔记名" },
       },
-      layout: { w: 6, h: 8 },
+      layout: { w: 12, h: 16 },
       demo: {},
     },
 

@@ -15,7 +15,7 @@
       limit:       { type: "number", default: 8,   desc: "最多显示几条" },
       label:       { type: "text",   default: "",  desc: "分区标题" },
     },
-    layout: { w: 5, h: 7 },
+    layout: { w: 10, h: 14 },
     demo: { label: "待整理", rule: "untagged", limit: 6 },
   },
 

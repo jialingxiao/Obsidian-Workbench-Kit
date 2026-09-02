@@ -35,7 +35,7 @@
         edition:  { type: "bool", default: true, desc: "底栏显示刊次（早间版/晚间版…）" },
         inverted: { type: "bool", default: true, desc: "使用反色底块" },
       },
-      layout: { w: 12, h: 6 },
+      layout: { w: 24, h: 12 },
       demo: {
         title: "个人知识库",
         subtitle: "Personal Knowledge Base · AI-Maintained Wiki",

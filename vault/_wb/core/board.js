@@ -4,14 +4,34 @@
  * 有重力（空隙会自动上浮）。但这里是自己实现的 —— 组件库要能离线、
  * 免 CDN，不能引外部库。 */
 (WB) => {
+  /* 栅格颗粒度直接决定拖拽的精度：一步最小能挪多少像素。
+   *
+   * 24 列 / 行高 12 是从 12 列 / 行高 34 精确二分来的 —— 不是随便调的数。
+   * 令 step = (容器宽 + gap) / cols，则 24 列的步进正好是 12 列的一半；
+   * 行高取 (34 - gap) / 2 = 12，纵向步进 44px 也正好减半到 22px。
+   * 这样把每个块的 x/y/w/h 乘以 2，渲染出来的像素和原来分毫不差 ——
+   * 旧看板迁移过来外观完全不变，变的只是能停在多细的位置上。 */
   const DEFAULT_BOARD = () => ({
-    version: 1,
+    version: 2,
     theme: null,
-    cols: 12,
-    rowHeight: 34,
+    cols: 24,
+    rowHeight: 12,
     gap: 10,
     blocks: [],
   });
+
+  /* v1（12 列 / 行高 34）的存档升到 v2。外观不变，见上面的注释。 */
+  function migrate(data) {
+    if ((data.version || 1) >= 2) return data;
+    for (const b of data.blocks || []) {
+      b.x = (b.x || 0) * 2; b.y = (b.y || 0) * 2;
+      b.w = Math.max(1, (b.w || 1) * 2); b.h = Math.max(1, (b.h || 1) * 2);
+    }
+    data.cols = 24;
+    data.rowHeight = 12;
+    data.version = 2;
+    return data;
+  }
 
   /* ── 布局数学 ───────────────────────────────────────────── */
 
@@ -106,7 +126,7 @@
     const app = dv.app;
     const name = WB.store.nameFor(dv, input);
 
-    const data = Object.assign(DEFAULT_BOARD(), (await WB.store.load(app, name)) || {});
+    const data = migrate(Object.assign(DEFAULT_BOARD(), (await WB.store.load(app, name)) || {}));
     data.blocks = (data.blocks || []).map((b) => clamp({ ...b }, data.cols));
 
     // 看板自己存的主题优先于 config.json（调用参数写死的除外）。

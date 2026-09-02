@@ -19,7 +19,7 @@
       bullet:    { type: "text",   default: "",      desc: "每行前缀符号，如 ·" },
       label:     { type: "text",   default: "",      desc: "分区标题" },
     },
-    layout: { w: 5, h: 8 },
+    layout: { w: 10, h: 16 },
     demo: { label: "笔记", limit: 7, showPath: true, descField: "一句话描述" },
   },
 

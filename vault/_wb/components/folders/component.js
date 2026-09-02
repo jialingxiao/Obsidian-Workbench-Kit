@@ -13,7 +13,7 @@
       sort:    { type: "enum",   default: "count", options: ["count", "name"], desc: "按数量还是名称排序" },
       label:   { type: "text",   default: "",     desc: "分区标题" },
     },
-    layout: { w: 4, h: 7 },
+    layout: { w: 8, h: 14 },
     demo: { label: "目录" },
   },
 

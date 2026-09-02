@@ -24,7 +24,7 @@
         showValue: { type: "bool",   default: true,    desc: "柱子上显示数字" },
         label:     { type: "text",   default: "",      desc: "分区标题" },
       },
-      layout: { w: 7, h: 6 },
+      layout: { w: 14, h: 12 },
       demo: { label: "近 12 周新增", periods: 12 },
     },
 

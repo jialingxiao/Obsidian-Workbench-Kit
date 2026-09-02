@@ -439,6 +439,14 @@
    *    没必要一帧算好几遍。
    */
 
+  /* 只算不写：拿到这个块最终会落到哪一格。
+     布局算法本身是纯的（进去的是快照副本，出来的是新数组），
+     所以可以在拖动过程中反复调用而不动真实数据。 */
+  function landingOf(snapshot, moved, cols) {
+    const out = WB.board.place(snapshot, moved, cols);
+    return out.find((r) => r.id === moved.id);
+  }
+
   /* 把一串 pointermove 压成每帧最多一次 */
   function rafThrottle(fn) {
     let pending = null, id = 0;
@@ -467,8 +475,9 @@
     const ghost = makeGhost(state);
     moveGhost(state, ghost, block);
 
-    // 记住上一次的落点格子，没变就不重排
+    // 记住上一次的落点格子，没变就不用重算
     let lastX = block.x, lastY = block.y;
+    let landing = { ...block };
 
     const onMove = rafThrottle((e) => {
       const g = state.geo();
@@ -480,13 +489,16 @@
 
       const nx = Math.round((startBox.left + dx) / (g.colW + g.gap));
       const ny = Math.round((startBox.top + dy) / (g.rowH + g.gap));
-      if (nx === lastX && ny === lastY) return;   // 还在同一格，别人不用动
+      if (nx === lastX && ny === lastY) return;   // 还在同一格，落点没变
       lastX = nx; lastY = ny;
 
-      const moved = { ...block, x: nx, y: ny };
-      WB.runtime.applyPositions(state.data.blocks, WB.board.place(snapshot, moved, g.cols));
-      moveGhost(state, ghost, block);
-      state.applyLayout(block.id);               // 跳过自己，保持跟手
+      /* 延迟让位：拖动过程中一个块都不动，只把落点算出来给 ghost。
+         以前是实时让位，别的块跟着一起挪 —— 画面一直在动，反而看不清
+         自己要落到哪；而且拖拽代码和布局代码同时在写同一批元素，
+         「谁把谁改回去」这类竞态就是从这儿来的。
+         place() 只算不写，真正落位留到松手时。 */
+      landing = landingOf(snapshot, { ...block, x: nx, y: ny }, g.cols) || landing;
+      moveGhost(state, ghost, landing);
     });
 
     const onUp = () => {
@@ -494,11 +506,17 @@
       document.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerup", onUp);
       try { el.releasePointerCapture(ev.pointerId); } catch (err) {}
-      el.classList.remove("is-dragging");
+      /* 顺序要紧：落位必须在还挂着 .is-dragging（transition: none）时完成。
+         先摘 class 再清 transform 的话，元素会先弹回拖动前的 left/top，
+         再用 160ms 滑到终点 —— 看起来像「甩回去又飞过来」。
+         现在是无过渡地一步归位，正好落在 ghost 所在的地方。 */
       state.activeId = null;
-      el.style.transform = "";                   // 落格由 applyLayout 接手
-      ghost.remove();
+      el.style.transform = "";
+      WB.runtime.applyPositions(state.data.blocks,
+        WB.board.place(snapshot, { ...block, x: landing.x, y: landing.y }, state.geo().cols));
       state.applyLayout();
+      ghost.remove();
+      el.classList.remove("is-dragging");
       state.save();
     };
 
@@ -522,6 +540,7 @@
     moveGhost(state, ghost, block);
 
     let lastW = w0, lastH = h0;
+    let landing = { ...block };
 
     const onMove = rafThrottle((e) => {
       const g = state.geo();
@@ -540,11 +559,10 @@
       if (nw === lastW && nh === lastH) return;
       lastW = nw; lastH = nh;
 
-      // 用 resize() 而不是 place()：被改尺寸的块要钉在原地，只让别人让路
-      const moved = { ...block, w: nw, h: nh };
-      WB.runtime.applyPositions(state.data.blocks, WB.board.resize(snapshot, moved, g.cols));
-      moveGhost(state, ghost, block);
-      state.applyLayout(block.id);               // 同样要跳过自己
+      // 同样延迟让位。ghost 直接显示目标尺寸 —— 缩放时被拖的块钉在原地，
+      // 落点就是它自己的新尺寸，不需要再过一遍布局算法
+      landing = { ...block, w: nw, h: nh };
+      moveGhost(state, ghost, landing);
     });
 
     const onUp = () => {
@@ -552,10 +570,14 @@
       document.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerup", onUp);
       try { el.releasePointerCapture(ev.pointerId); } catch (err) {}
-      el.classList.remove("is-resizing");
+      // 同上：先落位，最后才摘 class
       state.activeId = null;
-      ghost.remove();
+      el.style.width = ""; el.style.height = "";   // 交回 applyLayout
+      WB.runtime.applyPositions(state.data.blocks,
+        WB.board.resize(snapshot, { ...block, w: landing.w, h: landing.h }, state.geo().cols));
       state.applyLayout();
+      ghost.remove();
+      el.classList.remove("is-resizing");
       state.save();
     };
 

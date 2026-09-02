@@ -13,7 +13,7 @@
       hour12:      { type: "bool", default: false, desc: "12 小时制" },
       align:       { type: "enum", default: "left", options: ["left", "center", "right"], desc: "对齐方式" },
     },
-    layout: { w: 3, h: 4 },
+    layout: { w: 6, h: 8 },
     demo: { showSeconds: true },
   },
 

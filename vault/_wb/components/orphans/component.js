@@ -14,7 +14,7 @@
       sort:        { type: "enum",   default: "ctime", options: ["ctime", "mtime", "random"], desc: "排序方式" },
       label:       { type: "text",   default: "",     desc: "分区标题" },
     },
-    layout: { w: 5, h: 7 },
+    layout: { w: 10, h: 14 },
     demo: { label: "孤岛笔记", limit: 6 },
   },
 

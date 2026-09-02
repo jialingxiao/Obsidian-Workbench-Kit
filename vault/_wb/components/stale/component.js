@@ -19,7 +19,7 @@
       descField: { type: "text",   default: "",      desc: "摘要字段名" },
       label:     { type: "text",   default: "",      desc: "分区标题" },
     },
-    layout: { w: 5, h: 7 },
+    layout: { w: 10, h: 14 },
     demo: { label: "久未回顾", months: 3, limit: 6 },
   },
 

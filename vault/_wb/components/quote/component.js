@@ -31,7 +31,7 @@
         items: { type: "array", default: [],      desc: "直接写句子 [{ text, from }]（没填 note 时用）" },
         mode:  { type: "enum",  default: "daily", options: ["daily", "random"], desc: "daily 每天一句，random 每次刷新都换" },
       },
-      layout: { w: 6, h: 4 },
+      layout: { w: 12, h: 8 },
       demo: {
         items: [
           { text: "我们塑造工具，然后工具塑造我们。", from: "麦克卢汉" },

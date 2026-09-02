@@ -40,7 +40,7 @@
         hideDone:   { type: "bool",   default: false,  desc: "隐藏已读完的" },
         label:      { type: "text",   default: "",     desc: "分区标题" },
       },
-      layout: { w: 5, h: 6 },
+      layout: { w: 10, h: 12 },
       demo: { label: "在读", field: "进度", limit: 4 },
     },
 

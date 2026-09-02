@@ -15,7 +15,7 @@
       align:    { type: "enum", default: "bottom", options: ["top", "center", "bottom"], desc: "文字竖向位置" },
       overlay:  { type: "bool", default: true,     desc: "文字下加暗色渐变，保证可读" },
     },
-    layout: { w: 12, h: 6 },
+    layout: { w: 24, h: 12 },
     demo: { title: "我的知识库", subtitle: "Personal Knowledge Base" },
   },
 

@@ -18,7 +18,7 @@
         template: { type: "path",   default: "",           desc: "新建时套用的模板文件（可留空）" },
         label:    { type: "text",   default: "",           desc: "分区标题" },
       },
-      layout: { w: 4, h: 5 },
+      layout: { w: 8, h: 10 },
       demo: { label: "日记", days: 14 },
     },
 

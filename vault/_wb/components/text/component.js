@@ -14,7 +14,7 @@
       align:   { type: "enum", default: "left", options: ["left", "center"], desc: "对齐方式" },
       boxed:   { type: "bool", default: false, desc: "加个边框底色，变成便签的样子" },
     },
-    layout: { w: 4, h: 4 },
+    layout: { w: 8, h: 8 },
     demo: { title: "提醒", content: "每周日晚上回顾一次本周笔记。\\n把值得展开的挑出来。" },
   },
 

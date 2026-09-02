@@ -35,7 +35,7 @@
         },
         label: { type: "text", default: "", desc: "分区标题，留空则不显示" },
       },
-      layout: { w: 7, h: 5 },
+      layout: { w: 14, h: 10 },
       demo: {
         label: "By the Numbers",
         items: [

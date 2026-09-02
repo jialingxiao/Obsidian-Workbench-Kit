@@ -21,7 +21,7 @@
       showRate: { type: "bool", default: true,         desc: "右侧显示完成率" },
       label:  { type: "text",   default: "",           desc: "分区标题" },
     },
-    layout: { w: 6, h: 6 },
+    layout: { w: 12, h: 12 },
     demo: {
       label: "习惯",
       habits: ["晨跑", "读书", "冥想"],

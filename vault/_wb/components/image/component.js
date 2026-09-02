@@ -34,7 +34,7 @@
         rounded: { type: "bool",   default: true, desc: "圆角" },
         label:   { type: "text",   default: "",  desc: "分区标题" },
       },
-      layout: { w: 4, h: 6 },
+      layout: { w: 8, h: 12 },
       demo: { caption: "把库里的图片路径填进 src 就能显示" },
     },
 

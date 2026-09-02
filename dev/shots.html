@@ -135,9 +135,12 @@ async function listPresets() {
 /* 把模板塞成「已保存的看板」再渲染。
    直接调 applyPreset 要先进编辑态，会带上工具栏；而截图要的是干净的观看态。 */
 function seedBoard(id, preset) {
+  /* 只写主题和块，不写 version / cols / rowHeight —— 那些交给内核的
+     DEFAULT_BOARD 填。写死过一次，栅格从 12 列细化到 24 列之后这里还留着
+     version:1，迁移逻辑就把已经是 24 列坐标的模板又乘了一遍 2，
+     截图整体高度差不多翻倍。 */
   const board = {
-    version: 1, theme: preset.theme || null,
-    cols: 12, rowHeight: 34, gap: 10,
+    theme: preset.theme || null,
     blocks: preset.blocks.map((b, i) => ({
       id: "s" + i, c: b.c,
       x: b.x || 0, y: b.y || 0, w: b.w || 6, h: b.h || 5,

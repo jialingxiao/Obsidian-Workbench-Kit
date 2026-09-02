@@ -397,9 +397,15 @@ wbTheme: 松烟
 
 </details>
 
-完整参考：**[docs/presets.md](docs/presets.md)**。模板是 `_wb/presets/*.json`，格式和看板布局文件一样，自己加一个就会出现在列表里。套用时会先按实际内容定高、再跑一遍布局算法压紧，所以手写坐标和高度都不必精确。
+完整参考：**[docs/presets.md](docs/presets.md)**。模板是 `_wb/presets/*.json`，格式和看板布局文件一样，自己加一个就会出现在列表里。套用时会先按实际内容定高、再跑一遍布局算法压紧，所以手写坐标和高度都不必精确。坐标写在 **24 列**的栅格上（`_wb/core/board.js` 里的 `DEFAULT_BOARD`）。
 
 `node scripts/verify-presets.mjs` 校验模板：组件 id 存在、参数名在 `meta.props` 里声明过、布局不越界不重叠、主题名能解析。手写 JSON 里拼错一个字母不会报错，只会安静地渲染成一张空卡片。
+
+### 拖拽手感
+
+栅格是 **24 列 · 行高 12px**。这个颗粒度直接决定拖拽精度 —— 一步最小能挪多少像素：800px 宽的看板上水平步进 34px、垂直 22px（12 列 / 行高 34 的旧栅格是 68px / 44px）。旧看板会自动迁移（`version: 1 → 2`，坐标 ×2），迁移前后**渲染像素完全一致**，变的只是能停在多细的位置上。
+
+拖动和缩放采用**延迟让位**：过程中其他块一个都不动，落点由虚框提示，松手才整理并带过渡动画。实时让位看着热闹，但画面一直在动反而看不清自己要落到哪；更要紧的是，拖拽代码和布局代码同时在写同一批元素，「谁把谁改回去」那类竞态就是从那里来的。
 
 **出图**：`dev/shots.html` 把每套模板按自己的主题渲染成一张固定宽度的图（`?p=<id>` 单张、`?plain=1` 去掉页面外壳），`node scripts/shoot.mjs` 用无头 Chrome/Edge 批量导出 2 倍图到 `dist/shots/`（发社媒用，不进仓库）；README 里这批 1 倍图是 `WB_SHOT_OUT=docs/shots WB_SHOT_SCALE=1 node scripts/shoot.mjs` 出的。需要先起静态服务器（`python -m http.server 8123`）。不依赖 puppeteer。
 

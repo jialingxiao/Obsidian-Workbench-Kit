@@ -63,7 +63,7 @@
         compact: { type: "bool",   default: false, desc: "紧凑行高" },
         label:   { type: "text",   default: "",  desc: "分区标题" },
       },
-      layout: { w: 8, h: 8 },
+      layout: { w: 16, h: 16 },
       demo: {
         label: "最近笔记",
         columns: ["file", "一句话描述", "mtime"],

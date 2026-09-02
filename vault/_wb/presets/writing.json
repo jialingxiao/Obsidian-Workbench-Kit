@@ -1,30 +1,103 @@
 {
-  "name": { "zh": "写作台", "en": "Writing Desk" },
-  "desc": { "zh": "目标 + 产出趋势 + 进行中的稿子，盯住「写了多少」", "en": "Goals, output trend and works in progress — focused on shipping" },
+  "name": {
+    "zh": "写作台",
+    "en": "Writing Desk"
+  },
+  "desc": {
+    "zh": "目标 + 产出趋势 + 进行中的稿子，盯住「写了多少」",
+    "en": "Goals, output trend and works in progress — focused on shipping"
+  },
   "theme": "秋毫",
   "blocks": [
-    { "c": "masthead", "x": 0, "y": 0, "w": 12, "h": 5,
-      "props": { "subtitle": "Writing Desk", "inverted": false, "edition": false } },
-
-    { "c": "goals", "x": 0, "y": 5, "w": 5, "h": 6,
-      "props": { "label": "目标", "items": [
-        { "label": "笔记总数", "target": 300, "source": "@notes" },
-        { "label": "已产出",   "target": 50,  "source": "@output" }
-      ] } },
-
-    { "c": "trend", "x": 5, "y": 5, "w": 7, "h": 6,
-      "props": { "label": "近 12 周新增", "unit": "week", "periods": 12 } },
-
-    { "c": "notes", "x": 0, "y": 11, "w": 6, "h": 9,
-      "props": { "label": "进行中", "sort": "mtime", "limit": 9, "showPath": true } },
-
-    { "c": "quote", "x": 6, "y": 11, "w": 6, "h": 4,
-      "props": { "items": [
-        { "text": "写作是把想清楚这件事外包给纸。", "from": "无名氏" },
-        { "text": "先写完，再写好。", "from": "写作老话" }
-      ] } },
-
-    { "c": "text", "x": 6, "y": 15, "w": 6, "h": 5,
-      "props": { "title": "本周提醒", "content": "周日回顾一次本周笔记。\\n把值得展开的挑出来，排进下周。", "boxed": true } }
+    {
+      "c": "masthead",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 10,
+      "props": {
+        "subtitle": "Writing Desk",
+        "inverted": false,
+        "edition": false
+      }
+    },
+    {
+      "c": "goals",
+      "x": 0,
+      "y": 10,
+      "w": 10,
+      "h": 12,
+      "props": {
+        "label": "目标",
+        "items": [
+          {
+            "label": "笔记总数",
+            "target": 300,
+            "source": "@notes"
+          },
+          {
+            "label": "已产出",
+            "target": 50,
+            "source": "@output"
+          }
+        ]
+      }
+    },
+    {
+      "c": "trend",
+      "x": 10,
+      "y": 10,
+      "w": 14,
+      "h": 12,
+      "props": {
+        "label": "近 12 周新增",
+        "unit": "week",
+        "periods": 12
+      }
+    },
+    {
+      "c": "notes",
+      "x": 0,
+      "y": 22,
+      "w": 12,
+      "h": 18,
+      "props": {
+        "label": "进行中",
+        "sort": "mtime",
+        "limit": 9,
+        "showPath": true
+      }
+    },
+    {
+      "c": "quote",
+      "x": 12,
+      "y": 22,
+      "w": 12,
+      "h": 8,
+      "props": {
+        "items": [
+          {
+            "text": "写作是把想清楚这件事外包给纸。",
+            "from": "无名氏"
+          },
+          {
+            "text": "先写完，再写好。",
+            "from": "写作老话"
+          }
+        ]
+      }
+    },
+    {
+      "c": "text",
+      "x": 12,
+      "y": 30,
+      "w": 12,
+      "h": 10,
+      "props": {
+        "title": "本周提醒",
+        "content": "周日回顾一次本周笔记。\\n把值得展开的挑出来，排进下周。",
+        "boxed": true
+      }
+    }
   ]
 }

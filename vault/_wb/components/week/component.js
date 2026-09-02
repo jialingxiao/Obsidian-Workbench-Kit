@@ -23,7 +23,7 @@
         offset:      { type: "number", default: 0,          desc: "偏移几周。0 是本周，-1 是上周" },
         label:       { type: "text", default: "",           desc: "分区标题，留空显示日期范围" },
       },
-      layout: { w: 12, h: 5 },
+      layout: { w: 24, h: 10 },
       demo: { label: "本周" },
     },
 

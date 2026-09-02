@@ -41,7 +41,7 @@
         columns: { type: "number", default: 0, desc: "每行几个，0 表示自适应" },
         label:   { type: "text",   default: "", desc: "分区标题" },
       },
-      layout: { w: 5, h: 4 },
+      layout: { w: 10, h: 8 },
       demo: {
         label: "倒计时",
         items: [

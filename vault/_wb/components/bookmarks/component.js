@@ -47,7 +47,7 @@
         columns: { type: "number", default: 2,        desc: "分几列" },
         label:   { type: "text",   default: "",       desc: "分区标题" },
       },
-      layout: { w: 5, h: 6 },
+      layout: { w: 10, h: 12 },
       demo: {
         mode: "manual",
         label: "常用",

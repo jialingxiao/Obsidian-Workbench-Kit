@@ -31,7 +31,7 @@
         align:  { type: "enum",   default: "center", options: ["left", "center", "right"] },
         caption:{ type: "text",   default: "",   desc: "印章下方的小字" },
       },
-      layout: { w: 3, h: 4 },
+      layout: { w: 6, h: 8 },
       demo: { text: "知之为知之", caption: "个人知识库" },
     },
 

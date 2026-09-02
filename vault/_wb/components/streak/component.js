@@ -19,7 +19,7 @@
         unit:   { type: "text", default: "天",    desc: "单位文字" },
         label:  { type: "text", default: "",      desc: "分区标题" },
       },
-      layout: { w: 4, h: 4 },
+      layout: { w: 8, h: 8 },
       demo: { label: "连续记录" },
     },
 

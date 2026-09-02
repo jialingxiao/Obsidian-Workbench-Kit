@@ -17,7 +17,7 @@
       showMiss: { type: "number", default: 5,   desc: "列出几条没填的（0 = 不列）" },
       label:    { type: "text",   default: "",  desc: "分区标题，留空用字段名" },
     },
-    layout: { w: 5, h: 6 },
+    layout: { w: 10, h: 12 },
     demo: { field: "一句话描述", showMiss: 4 },
   },
 

@@ -18,7 +18,7 @@
       descField: { type: "text",   default: "",      desc: "摘要字段名" },
       label:     { type: "text",   default: "",      desc: "分区标题" },
     },
-    layout: { w: 5, h: 6 },
+    layout: { w: 10, h: 12 },
     demo: { label: "那年今日", window: 3, limit: 5 },
   },
 

@@ -22,7 +22,7 @@
       descField:{ type: "text",   default: "",       desc: "卡片副标题取哪个字段" },
       label:    { type: "text",   default: "",       desc: "分区标题" },
     },
-    layout: { w: 12, h: 8 },
+    layout: { w: 24, h: 16 },
     demo: {
       label: "进度",
       field: "folder",

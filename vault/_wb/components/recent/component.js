@@ -18,7 +18,7 @@
       showFolder: { type: "bool",   default: false,   desc: "标题下显示所在文件夹" },
       descField:  { type: "text",   default: "",      desc: "用作摘要的 frontmatter 字段名，如 一句话描述" },
     },
-    layout: { w: 5, h: 8 },
+    layout: { w: 10, h: 16 },
     demo: { label: "最近更新", limit: 6, showFolder: true },
   },
 

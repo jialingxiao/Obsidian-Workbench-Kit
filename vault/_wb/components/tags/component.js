@@ -13,7 +13,7 @@
       minCount: { type: "number", default: 1,    desc: "至少被用过几次才显示" },
       label:  { type: "text",   default: "",     desc: "分区标题" },
     },
-    layout: { w: 5, h: 6 },
+    layout: { w: 10, h: 12 },
     demo: { label: "标签", limit: 18 },
   },
 

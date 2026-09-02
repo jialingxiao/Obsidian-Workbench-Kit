@@ -23,7 +23,7 @@
         showDate: { type: "bool", default: true, desc: "显示日期与星期" },
         align:    { type: "enum", default: "left", options: ["left", "center", "right"], desc: "对齐方式" },
       },
-      layout: { w: 6, h: 4 },
+      layout: { w: 12, h: 8 },
       demo: { name: "霄哥", subtitle: "今天想写点什么？" },
     },
 

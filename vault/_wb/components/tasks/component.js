@@ -17,7 +17,7 @@
       groupByFile: { type: "bool", default: true, desc: "按所在笔记分组" },
       label:    { type: "text",   default: "",    desc: "分区标题" },
     },
-    layout: { w: 5, h: 8 },
+    layout: { w: 10, h: 16 },
     demo: { label: "待办", limit: 8 },
   },
 

@@ -10,7 +10,7 @@
       style: { type: "enum", default: "line", options: ["line", "double", "dashed", "space"], desc: "line 细线，double 双线，dashed 虚线，space 纯留白" },
       label: { type: "text", default: "",     desc: "线中间的文字（space 模式无效）" },
     },
-    layout: { w: 12, h: 2 },
+    layout: { w: 24, h: 4 },
     demo: {},
   },
 

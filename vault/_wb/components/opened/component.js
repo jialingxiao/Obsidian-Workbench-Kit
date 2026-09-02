@@ -20,7 +20,7 @@
       showFolder:{ type: "bool",   default: true, desc: "显示所在文件夹" },
       label:     { type: "text",   default: "", desc: "分区标题" },
     },
-    layout: { w: 5, h: 7 },
+    layout: { w: 10, h: 14 },
     demo: { label: "最近打开", limit: 7 },
   },
 

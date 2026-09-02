@@ -24,7 +24,7 @@
         label:     { type: "text", default: "",      desc: "分区标题" },
         kicker:    { type: "text", default: "今日精选", desc: "左上角小标签" },
       },
-      layout: { w: 7, h: 5 },
+      layout: { w: 14, h: 10 },
       demo: { kicker: "Today's Pick · 今日精选" },
     },
 

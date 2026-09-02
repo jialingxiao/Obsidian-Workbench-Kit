@@ -17,7 +17,7 @@ const ROOT = process.env.WB_ROOT
   ? path.resolve(process.env.WB_ROOT)
   : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WB = path.join(ROOT, "vault", "_wb");
-const COLS = 12;
+const COLS = 24;   // 栅格已细化，见 core/board.js 里 DEFAULT_BOARD 的注释
 
 /* 组件源码是一个 (WB) => ({...}) 的表达式，直接求值拿 meta 最准 ——
    用正则去猜 props 有哪些键，正则本身就可能漏。 */

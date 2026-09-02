@@ -14,15 +14,15 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `masthead` | x0 y0 | 12×6 |
-| `stats` | x0 y6 | 7×5 |
-| `heatmap` | x7 y6 | 5×5 |
-| `spotlight` | x0 y11 | 7×5 |
-| `tags` | x7 y11 | 5×6 |
-| `recent` | x0 y16 | 6×8 |
-| `hubs` | x6 y17 | 6×7 |
-| `orphans` | x0 y24 | 6×7 |
-| `untagged` | x6 y24 | 6×7 |
+| `masthead` | x0 y0 | 24×12 |
+| `stats` | x0 y12 | 14×10 |
+| `heatmap` | x14 y12 | 10×10 |
+| `spotlight` | x0 y22 | 14×10 |
+| `tags` | x14 y22 | 10×12 |
+| `recent` | x0 y32 | 12×16 |
+| `hubs` | x12 y34 | 12×14 |
+| `orphans` | x0 y48 | 12×14 |
+| `untagged` | x12 y48 | 12×14 |
 
 ## 生活雅集（`life`）
 
@@ -32,17 +32,17 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `greeting` | x0 y0 | 7×4 |
-| `analog-clock` | x7 y0 | 5×6 |
-| `lunar` | x0 y4 | 4×6 |
-| `solar-term` | x4 y4 | 3×6 |
-| `week` | x7 y6 | 5×6 |
-| `habit` | x0 y10 | 7×8 |
-| `countdown` | x7 y12 | 5×6 |
-| `poem` | x0 y18 | 4×8 |
-| `seal` | x4 y18 | 3×8 |
-| `year-progress` | x7 y18 | 5×4 |
-| `quote` | x7 y22 | 5×4 |
+| `greeting` | x0 y0 | 14×8 |
+| `analog-clock` | x14 y0 | 10×12 |
+| `lunar` | x0 y8 | 8×12 |
+| `solar-term` | x8 y8 | 6×12 |
+| `week` | x14 y12 | 10×12 |
+| `habit` | x0 y20 | 14×16 |
+| `countdown` | x14 y24 | 10×12 |
+| `poem` | x0 y36 | 8×16 |
+| `seal` | x8 y36 | 6×16 |
+| `year-progress` | x14 y36 | 10×8 |
+| `quote` | x14 y44 | 10×8 |
 
 ## 工作台（`office`）
 
@@ -52,15 +52,15 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `clock` | x0 y0 | 3×4 |
-| `greeting` | x3 y0 | 6×4 |
-| `year-progress` | x9 y0 | 3×4 |
-| `quick-actions` | x0 y4 | 12×4 |
-| `upcoming` | x0 y8 | 5×9 |
-| `tasks` | x5 y8 | 7×9 |
-| `kanban` | x0 y17 | 12×8 |
-| `trend` | x0 y25 | 7×6 |
-| `breakdown` | x7 y25 | 5×6 |
+| `clock` | x0 y0 | 6×8 |
+| `greeting` | x6 y0 | 12×8 |
+| `year-progress` | x18 y0 | 6×8 |
+| `quick-actions` | x0 y8 | 24×8 |
+| `upcoming` | x0 y16 | 10×18 |
+| `tasks` | x10 y16 | 14×18 |
+| `kanban` | x0 y34 | 24×16 |
+| `trend` | x0 y50 | 14×12 |
+| `breakdown` | x14 y50 | 10×12 |
 
 ## 日程计划（`planner`）
 
@@ -70,14 +70,14 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `clock` | x0 y0 | 3×4 |
-| `greeting` | x3 y0 | 9×4 |
-| `daily` | x0 y4 | 4×6 |
-| `calendar` | x4 y4 | 4×9 |
-| `streak` | x8 y4 | 4×4 |
-| `upcoming` | x8 y8 | 4×7 |
-| `tasks` | x0 y10 | 4×8 |
-| `heatmap` | x0 y18 | 12×5 |
+| `clock` | x0 y0 | 6×8 |
+| `greeting` | x6 y0 | 18×8 |
+| `daily` | x0 y8 | 8×12 |
+| `calendar` | x8 y8 | 8×18 |
+| `streak` | x16 y8 | 8×8 |
+| `upcoming` | x16 y16 | 8×14 |
+| `tasks` | x0 y20 | 8×16 |
+| `heatmap` | x0 y36 | 24×10 |
 
 ## 项目管理（`project`）
 
@@ -87,14 +87,14 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `heading` | x0 y0 | 12×2 |
-| `goals` | x0 y2 | 5×7 |
-| `countdown` | x5 y2 | 7×7 |
-| `kanban` | x0 y9 | 12×9 |
-| `table` | x0 y18 | 7×9 |
-| `upcoming` | x7 y18 | 5×9 |
-| `coverage` | x0 y27 | 6×6 |
-| `breakdown` | x6 y27 | 6×6 |
+| `heading` | x0 y0 | 24×4 |
+| `goals` | x0 y4 | 10×14 |
+| `countdown` | x10 y4 | 14×14 |
+| `kanban` | x0 y18 | 24×18 |
+| `table` | x0 y36 | 14×18 |
+| `upcoming` | x14 y36 | 10×18 |
+| `coverage` | x0 y54 | 12×12 |
+| `breakdown` | x12 y54 | 12×12 |
 
 ## 阅读台（`reading`）
 
@@ -104,14 +104,14 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `masthead` | x0 y0 | 12×6 |
-| `reading` | x0 y6 | 7×8 |
-| `streak` | x7 y6 | 5×4 |
-| `quote` | x7 y10 | 5×4 |
-| `notes` | x0 y14 | 7×9 |
-| `on-this-day` | x7 y14 | 5×9 |
-| `poem` | x0 y23 | 5×8 |
-| `heatmap` | x5 y23 | 7×8 |
+| `masthead` | x0 y0 | 24×12 |
+| `reading` | x0 y12 | 14×16 |
+| `streak` | x14 y12 | 10×8 |
+| `quote` | x14 y20 | 10×8 |
+| `notes` | x0 y28 | 14×18 |
+| `on-this-day` | x14 y28 | 10×18 |
+| `poem` | x0 y46 | 10×16 |
+| `heatmap` | x10 y46 | 14×16 |
 
 ## 研究台（`research`）
 
@@ -121,15 +121,15 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `masthead` | x0 y0 | 12×6 |
-| `graph` | x0 y6 | 7×9 |
-| `hubs` | x7 y6 | 5×9 |
-| `timeline` | x0 y15 | 7×9 |
-| `orphans` | x7 y15 | 5×9 |
-| `tags` | x0 y24 | 5×7 |
-| `coverage` | x5 y24 | 7×7 |
-| `stale` | x0 y31 | 6×7 |
-| `vault-info` | x6 y31 | 6×7 |
+| `masthead` | x0 y0 | 24×12 |
+| `graph` | x0 y12 | 14×18 |
+| `hubs` | x14 y12 | 10×18 |
+| `timeline` | x0 y30 | 14×18 |
+| `orphans` | x14 y30 | 10×18 |
+| `tags` | x0 y48 | 10×14 |
+| `coverage` | x10 y48 | 14×14 |
+| `stale` | x0 y62 | 12×14 |
+| `vault-info` | x12 y62 | 12×14 |
 
 ## 极简起步（`start`）
 
@@ -139,10 +139,10 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `greeting` | x0 y0 | 12×4 |
-| `quick-actions` | x0 y4 | 12×3 |
-| `recent` | x0 y7 | 6×8 |
-| `tasks` | x6 y7 | 6×8 |
+| `greeting` | x0 y0 | 24×8 |
+| `quick-actions` | x0 y8 | 24×6 |
+| `recent` | x0 y14 | 12×16 |
+| `tasks` | x12 y14 | 12×16 |
 
 ## 写作台（`writing`）
 
@@ -152,9 +152,9 @@
 
 | 组件 | 位置 | 尺寸 |
 |---|---|---|
-| `masthead` | x0 y0 | 12×5 |
-| `goals` | x0 y5 | 5×6 |
-| `trend` | x5 y5 | 7×6 |
-| `notes` | x0 y11 | 6×9 |
-| `quote` | x6 y11 | 6×4 |
-| `text` | x6 y15 | 6×5 |
+| `masthead` | x0 y0 | 24×10 |
+| `goals` | x0 y10 | 10×12 |
+| `trend` | x10 y10 | 14×12 |
+| `notes` | x0 y22 | 12×18 |
+| `quote` | x12 y22 | 12×8 |
+| `text` | x12 y30 | 12×10 |

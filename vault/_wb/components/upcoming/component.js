@@ -36,7 +36,7 @@
         limit:      { type: "number", default: 10,  desc: "最多显示几条" },
         label:      { type: "text",   default: "",  desc: "分区标题" },
       },
-      layout: { w: 5, h: 7 },
+      layout: { w: 10, h: 14 },
       demo: { label: "即将到期", days: 14 },
     },
 

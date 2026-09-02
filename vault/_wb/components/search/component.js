@@ -13,7 +13,7 @@
       presets:     { type: "array", default: [],       desc: "预置查询按钮 [{ label, query }]" },
       label:       { type: "text",  default: "",       desc: "分区标题" },
     },
-    layout: { w: 5, h: 3 },
+    layout: { w: 10, h: 6 },
     demo: {
       presets: [
         { label: "待办", query: "task-todo:\"\"" },

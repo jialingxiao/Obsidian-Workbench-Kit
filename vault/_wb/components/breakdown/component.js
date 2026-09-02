@@ -18,7 +18,7 @@
       showPercent: { type: "bool",   default: false, desc: "显示百分比而不是绝对数量" },
       label:       { type: "text",   default: "",    desc: "分区标题" },
     },
-    layout: { w: 5, h: 6 },
+    layout: { w: 10, h: 12 },
     demo: { label: "分类", source: "", items: [], limit: 6 },
   },
 

@@ -1,22 +1,76 @@
 {
-  "name": { "zh": "极简起步", "en": "Simple Start" },
-  "desc": { "zh": "问候 + 快捷入口 + 最近笔记与待办，四块起步", "en": "Greeting, quick actions, recent notes and tasks" },
+  "name": {
+    "zh": "极简起步",
+    "en": "Simple Start"
+  },
+  "desc": {
+    "zh": "问候 + 快捷入口 + 最近笔记与待办，四块起步",
+    "en": "Greeting, quick actions, recent notes and tasks"
+  },
   "blocks": [
-    { "c": "greeting", "x": 0, "y": 0, "w": 12, "h": 4,
-      "props": { "subtitle": "今天想做点什么？" } },
-
-    { "c": "quick-actions", "x": 0, "y": 4, "w": 12, "h": 3,
-      "props": { "items": [
-        { "label": "新笔记",   "icon": "✏️", "folder": "@inbox" },
-        { "label": "搜索",     "icon": "🔍", "command": "global-search:open" },
-        { "label": "命令面板", "icon": "⌘",  "command": "command-palette:open" },
-        { "label": "随机漫游", "icon": "🎲", "command": "random-note" }
-      ] } },
-
-    { "c": "recent", "x": 0, "y": 7, "w": 6, "h": 8,
-      "props": { "label": "最近笔记", "limit": 8, "showFolder": true } },
-
-    { "c": "tasks", "x": 6, "y": 7, "w": 6, "h": 8,
-      "props": { "label": "待办", "limit": 8 } }
+    {
+      "c": "greeting",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 8,
+      "props": {
+        "subtitle": "今天想做点什么？"
+      }
+    },
+    {
+      "c": "quick-actions",
+      "x": 0,
+      "y": 8,
+      "w": 24,
+      "h": 6,
+      "props": {
+        "items": [
+          {
+            "label": "新笔记",
+            "icon": "✏️",
+            "folder": "@inbox"
+          },
+          {
+            "label": "搜索",
+            "icon": "🔍",
+            "command": "global-search:open"
+          },
+          {
+            "label": "命令面板",
+            "icon": "⌘",
+            "command": "command-palette:open"
+          },
+          {
+            "label": "随机漫游",
+            "icon": "🎲",
+            "command": "random-note"
+          }
+        ]
+      }
+    },
+    {
+      "c": "recent",
+      "x": 0,
+      "y": 14,
+      "w": 12,
+      "h": 16,
+      "props": {
+        "label": "最近笔记",
+        "limit": 8,
+        "showFolder": true
+      }
+    },
+    {
+      "c": "tasks",
+      "x": 12,
+      "y": 14,
+      "w": 12,
+      "h": 16,
+      "props": {
+        "label": "待办",
+        "limit": 8
+      }
+    }
   ]
 }

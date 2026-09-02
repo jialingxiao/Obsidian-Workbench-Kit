@@ -39,7 +39,7 @@
         label: { type: "text", default: "", desc: "分区标题" },
         style: { type: "enum", default: "chip", options: ["chip", "tile"], desc: "chip 紧凑一排，tile 大方块" },
       },
-      layout: { w: 12, h: 3 },
+      layout: { w: 24, h: 6 },
       demo: {
         items: [
           { label: "新笔记", icon: "✏️", folder: "@inbox" },

@@ -59,7 +59,7 @@
         showLegend: { type: "bool",   default: true,     desc: "显示 少—多 图例" },
         showMonths: { type: "bool",   default: true,     desc: "显示月份标签" },
       },
-      layout: { w: 5, h: 5 },
+      layout: { w: 10, h: 10 },
       demo: { weeks: 26 },
     },
 

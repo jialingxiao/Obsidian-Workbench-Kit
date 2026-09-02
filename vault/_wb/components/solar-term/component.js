@@ -21,7 +21,7 @@
       showList: { type: "number", default: 0,    desc: "再往后列出几个（0 = 不列）" },
       align:    { type: "enum",   default: "left", options: ["left", "center"] },
     },
-    layout: { w: 3, h: 4 },
+    layout: { w: 6, h: 8 },
     demo: { showList: 3 },
   },
 

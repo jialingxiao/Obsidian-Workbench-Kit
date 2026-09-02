@@ -33,7 +33,7 @@
         descField: { type: "text",   default: "",      desc: "摘要字段名" },
         label:     { type: "text",   default: "",      desc: "分区标题" },
       },
-      layout: { w: 5, h: 8 },
+      layout: { w: 10, h: 16 },
       demo: { label: "时间线", limit: 10, descField: "一句话描述" },
     },
 

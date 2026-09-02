@@ -21,7 +21,7 @@
       showSolar:   { type: "bool", default: true,  desc: "显示公历日期" },
       align:       { type: "enum", default: "left", options: ["left", "center"] },
     },
-    layout: { w: 3, h: 5 },
+    layout: { w: 6, h: 10 },
     demo: { showSpring: true },
   },
 

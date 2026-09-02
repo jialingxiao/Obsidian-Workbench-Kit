@@ -16,7 +16,7 @@
       size:        { type: "number", default: 120, desc: "直径（像素）" },
       align:       { type: "enum", default: "center", options: ["left", "center", "right"] },
     },
-    layout: { w: 3, h: 5 },
+    layout: { w: 6, h: 10 },
     demo: { showNumbers: true },
   },
 
