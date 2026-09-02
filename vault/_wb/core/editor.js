@@ -107,6 +107,16 @@
     });
     state.onHistory = () => { undoBtn.disabled = !state.history.length; };
 
+    // 整理：放哪就是哪的模式下，块之间会留空白，想紧凑时手动压一次
+    const tidyBtn = h("button.wb-tb-btn", { text: "⇅ 整理" });
+    tidyBtn.addEventListener("click", () => {
+      state.snapshot();
+      WB.runtime.applyPositions(state.data.blocks, WB.board.relayout(state.data.blocks));
+      state.applyLayout();
+      state.save();
+      flash("已整理");
+    });
+
     // 主题
     const themeBtn = h("button.wb-tb-btn", { text: "🎨 主题" });
     themeBtn.addEventListener("click", () => openThemeMenu(state, themeBtn));
@@ -126,6 +136,7 @@
 
     bar.appendChild(addBtn);
     bar.appendChild(presetBtn);
+    bar.appendChild(tidyBtn);
     bar.appendChild(undoBtn);
     bar.appendChild(themeBtn);
     bar.appendChild(h("span.wb-tb-sp"));
@@ -439,11 +450,13 @@
    *    没必要一帧算好几遍。
    */
 
+  const floatOpt = (state) => ({ float: state.data.float !== false });
+
   /* 只算不写：拿到这个块最终会落到哪一格。
      布局算法本身是纯的（进去的是快照副本，出来的是新数组），
      所以可以在拖动过程中反复调用而不动真实数据。 */
-  function landingOf(snapshot, moved, cols) {
-    const out = WB.board.place(snapshot, moved, cols);
+  function landingOf(snapshot, moved, cols, opts) {
+    const out = WB.board.place(snapshot, moved, cols, opts);
     return out.find((r) => r.id === moved.id);
   }
 
@@ -498,7 +511,7 @@
          place() 只算不写，真正落位留到松手时。 */
       // ghost 显示的是压紧之后的落点；而松手时要喂回算法的是「你拖到的那一格」，
       // 两者不能混用，见 onUp 里的说明
-      const preview = landingOf(snapshot, { ...block, x: nx, y: ny }, g.cols);
+      const preview = landingOf(snapshot, { ...block, x: nx, y: ny }, g.cols, floatOpt(state));
       if (preview) moveGhost(state, ghost, preview);
     });
 
@@ -520,7 +533,7 @@
          若拿 y6 再算一遍，这次轮到 b 给 a 让路，最后 a 回到 y0、b 掉到
          y6，两块正好对调。表现就是「虚框在这儿，松手却跑到别处」。 */
       WB.runtime.applyPositions(state.data.blocks,
-        WB.board.place(snapshot, { ...block, x: lastX, y: lastY }, state.geo().cols));
+        WB.board.place(snapshot, { ...block, x: lastX, y: lastY }, state.geo().cols, floatOpt(state)));
       state.applyLayout();
       ghost.remove();
       el.classList.remove("is-dragging");
@@ -579,7 +592,7 @@
       state.activeId = null;
       el.style.width = ""; el.style.height = "";   // 交回 applyLayout
       WB.runtime.applyPositions(state.data.blocks,
-        WB.board.resize(snapshot, { ...block, w: lastW, h: lastH }, state.geo().cols));
+        WB.board.resize(snapshot, { ...block, w: lastW, h: lastH }, state.geo().cols, floatOpt(state)));
       state.applyLayout();
       ghost.remove();
       el.classList.remove("is-resizing");

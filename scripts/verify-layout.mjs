@@ -132,6 +132,51 @@ console.log("\n── 整体重排（relayout）──");
   check("重叠输入也能压成不重叠", !overlaps(out), show(out));
 }
 
+console.log("");
+console.log("── 放哪就是哪（float，默认行为）──");
+{
+  /* 用户抱怨的两条，正是自动压紧的必然结果：
+       「左边最上面的模块不能往下拖」—— 上方没东西挡，压紧把它拉回 y0
+       「下面的往上拖会自动跑到最上面」—— 落点上方有空位，一路浮到顶
+     float 模式只解重叠、不上浮，位置由用户说了算。 */
+  const F = { float: true };
+  {
+    const blocks = [
+      { id: "top", x: 0, y: 0, w: 12, h: 6 },
+      { id: "low", x: 12, y: 0, w: 12, h: 6 },
+    ];
+    const out = board.place(blocks, { ...at(blocks, "top"), y: 20 }, COLS, F);
+    check("最上面的块往下拖，停在你放的地方", at(out, "top").y === 20,
+          `top.y=${at(out, "top").y}`);
+  }
+  {
+    const blocks = [
+      { id: "a", x: 0, y: 0,  w: 12, h: 6 },
+      { id: "b", x: 0, y: 40, w: 12, h: 6 },
+    ];
+    const out = board.place(blocks, { ...at(blocks, "b"), y: 20 }, COLS, F);
+    check("下面的块往上拖，停在中间而不是冲到顶", at(out, "b").y === 20,
+          `b.y=${at(out, "b").y}`);
+    check("上面那块不受影响", at(out, "a").y === 0, `a.y=${at(out, "a").y}`);
+  }
+  {
+    const blocks = [
+      { id: "a", x: 0, y: 0,  w: 12, h: 6 },
+      { id: "b", x: 0, y: 10, w: 12, h: 6 },
+    ];
+    const out = board.place(blocks, { ...at(blocks, "b"), y: 2 }, COLS, F);
+    check("拖到别人身上时，被压住的那块让开", !overlaps(out), show(out));
+  }
+  {
+    const blocks = [
+      { id: "a", x: 0, y: 0,  w: 12, h: 6 },
+      { id: "b", x: 0, y: 30, w: 12, h: 6 },
+    ];
+    const tidy = board.relayout(blocks);
+    check("「⇅ 整理」仍能把空白压掉", at(tidy, "b").y === 6, `b.y=${at(tidy, "b").y}`);
+  }
+}
+
 console.log("\n── 找空位（findSlot）──");
 {
   const blocks = [{ id: "a", x: 0, y: 0, w: 12, h: 6 }];

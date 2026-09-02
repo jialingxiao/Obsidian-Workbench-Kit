@@ -17,6 +17,13 @@
     cols: 24,
     rowHeight: 12,
     gap: 10,
+    /* 放哪就是哪：拖到哪儿就停在哪儿，块之间允许留空白。
+     *
+     * 反过来那种「自动向上压紧、永不留洞」看着整齐，代价是你根本没法
+     * 把块放在中间 —— 最上面的往下拖会弹回去，下面的往上拖会一路冲顶。
+     * 整页的紧凑是算法说了算，不是你说了算。
+     * 想要紧凑排版时点工具栏的「⇅ 整理」手动压一次。 */
+    float: true,
     blocks: [],
   });
 
@@ -86,9 +93,9 @@
 
   /* 把 moved 放到它的新位置，被它压住的块依次往下让，然后整体上浮。
    * 拖动用这个：被拖的块享有最高重力优先级，跟手才自然。 */
-  function place(blocks, moved, cols) {
+  function place(blocks, moved, cols, opts) {
     clamp(moved, cols);
-    return arrange(blocks, moved, cols, null);
+    return arrange(blocks, moved, cols, null, opts && opts.float);
   }
 
   /* 缩放专用：被改尺寸的块钉在原地，只让别人给它让路。
@@ -96,12 +103,12 @@
    * 不能沿用 place()：那会让被改的块抢到最高重力优先级，一改大小就
    * 自己往上浮，用户看到的就是「我在拉大小，它却跑了」。
    * 宽度也只在右边界处截断，绝不反过来推 x —— 左边缘必须钉死。 */
-  function resize(blocks, moved, cols) {
+  function resize(blocks, moved, cols, opts) {
     moved.x = Math.max(0, Math.min(cols - 1, Math.round(moved.x || 0)));
     moved.y = Math.max(0, Math.round(moved.y || 0));
     moved.w = Math.max(1, Math.min(cols - moved.x, Math.round(moved.w || 1)));
     moved.h = Math.max(1, Math.round(moved.h || 1));
-    return arrange(blocks, moved, cols, moved.id);
+    return arrange(blocks, moved, cols, moved.id, opts && opts.float);
   }
 
   /* 两步走，而且这两步的顺序依据不一样 —— 混为一谈就会「拖哪都不准」：
@@ -114,14 +121,26 @@
    * 飞到顶上去了」。relayout() 早就用 byPos 绕开了这个坑（那儿的注释写着
    * 「用 place() 会让被改的块抢到最高优先级一路浮到顶」），但拖拽这条路
    * 一直没跟上。 */
-  function arrange(blocks, moved, cols, pinnedId) {
+  function arrange(blocks, moved, cols, pinnedId, float) {
     const result = [{ ...moved }];
     for (const o of byPos(blocks.filter((b) => b.id !== moved.id))) {
       const b = { ...o };
       while (result.some((r) => overlap(b, r))) b.y++;
       result.push(b);
     }
-    return compactOrdered(byPos(result), pinnedId);
+    // 放哪就是哪：只解重叠，不做上浮，被拖的块原样停在你松手的地方
+    return float ? result : compactOrdered(byPos(result), pinnedId);
+  }
+
+  /* 只解重叠、不上浮。位置由用户决定，算法只负责别让它们叠在一起。 */
+  function settle(blocks) {
+    const out = [];
+    for (const b of byPos(blocks)) {
+      const c = { ...b };
+      while (out.some((o) => overlap(c, o))) c.y++;
+      out.push(c);
+    }
+    return out;
   }
 
   const rowsOf = (blocks) => blocks.reduce((m, b) => Math.max(m, b.y + b.h), 0);
@@ -278,7 +297,8 @@
       if (rec) rec.el.remove();
       state.els.delete(id);
       data.blocks = data.blocks.filter((b) => b.id !== id);
-      WB.runtime.applyPositions(data.blocks, relayout(data.blocks));
+      // 删一块不该把下面的全拉上来 —— 留下的空位由用户自己决定怎么用
+      if (!data.float) WB.runtime.applyPositions(data.blocks, relayout(data.blocks));
       applyLayout();
       await renderEmptyHint();
       save();
@@ -322,7 +342,8 @@
       const h2 = Math.max(2, Math.ceil((need + gap) / (rowH + gap)));
       if (h2 !== b.h) {
         b.h = h2;
-        WB.runtime.applyPositions(data.blocks, relayout(data.blocks));
+        WB.runtime.applyPositions(data.blocks,
+          data.float ? settle(data.blocks) : relayout(data.blocks));
         applyLayout();
       }
     }
@@ -431,7 +452,7 @@
   }
 
   return {
-    render, place, resize, compactOrdered, relayout, findSlot,
+    render, place, resize, compactOrdered, relayout, settle, findSlot,
     overlap, clamp, rowsOf, byPos, newId, DEFAULT_BOARD,
   };
 }
