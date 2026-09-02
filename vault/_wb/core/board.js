@@ -121,11 +121,30 @@
    * 飞到顶上去了」。relayout() 早就用 byPos 绕开了这个坑（那儿的注释写着
    * 「用 place() 会让被改的块抢到最高优先级一路浮到顶」），但拖拽这条路
    * 一直没跟上。 */
+  /* 被压住的块往哪边让？上下各找最近的落点，取挪动距离小的那边（相同则优先向上）。
+   *
+   * 以前只会往下推（b.y++），于是向上拖和向下拖完全不对称：
+   *   向上拖 —— 下面的块顺势下移，看着自然；
+   *   向下拖 —— 被你压住的块被推得更靠下，而你腾出来的那块空白没人填，
+   *             板子越拖越长，位置越拖越乱。
+   * 两边都试之后，向下拖时被压的块会升进你让出的空位，也就是「交换位置」，
+   * 这正是拖动本该有的手感。 */
+  function makeWay(b, placed) {
+    const hits = (y) => placed.some((o) => overlap({ ...b, y }, o));
+    if (!hits(b.y)) return b.y;
+    let up = b.y;
+    while (up > 0 && hits(up)) up--;
+    let down = b.y;
+    while (hits(down)) down++;
+    if (hits(up)) return down;                       // 上面根本没地方
+    return b.y - up <= down - b.y ? up : down;
+  }
+
   function arrange(blocks, moved, cols, pinnedId, float) {
     const result = [{ ...moved }];
     for (const o of byPos(blocks.filter((b) => b.id !== moved.id))) {
       const b = { ...o };
-      while (result.some((r) => overlap(b, r))) b.y++;
+      b.y = makeWay(b, result);
       result.push(b);
     }
     // 放哪就是哪：只解重叠，不做上浮，被拖的块原样停在你松手的地方
