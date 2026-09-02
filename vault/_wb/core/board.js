@@ -104,6 +104,16 @@
     return arrange(blocks, moved, cols, moved.id);
   }
 
+  /* 两步走，而且这两步的顺序依据不一样 —— 混为一谈就会「拖哪都不准」：
+   *
+   * 1. 避让：被拖的块优先，别人绕开它。这一步它必须排第一。
+   * 2. 上浮：按位置从上到下依次安置，被拖的块和别人一视同仁。
+   *
+   * 第二步以前也沿用了第一步的顺序（被拖的块排头），于是它总是第一个上浮、
+   * 抢到最顶上的空位，把本来在它上面的块顶下去 —— 表现就是「往下拖，它却
+   * 飞到顶上去了」。relayout() 早就用 byPos 绕开了这个坑（那儿的注释写着
+   * 「用 place() 会让被改的块抢到最高优先级一路浮到顶」），但拖拽这条路
+   * 一直没跟上。 */
   function arrange(blocks, moved, cols, pinnedId) {
     const result = [{ ...moved }];
     for (const o of byPos(blocks.filter((b) => b.id !== moved.id))) {
@@ -111,7 +121,7 @@
       while (result.some((r) => overlap(b, r))) b.y++;
       result.push(b);
     }
-    return compactOrdered(result, pinnedId);
+    return compactOrdered(byPos(result), pinnedId);
   }
 
   const rowsOf = (blocks) => blocks.reduce((m, b) => Math.max(m, b.y + b.h), 0);

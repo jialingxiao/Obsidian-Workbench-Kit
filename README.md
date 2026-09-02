@@ -399,6 +399,8 @@ wbTheme: 松烟
 
 完整参考：**[docs/presets.md](docs/presets.md)**。模板是 `_wb/presets/*.json`，格式和看板布局文件一样，自己加一个就会出现在列表里。套用时会先按实际内容定高、再跑一遍布局算法压紧，所以手写坐标和高度都不必精确。坐标写在 **24 列**的栅格上（`_wb/core/board.js` 里的 `DEFAULT_BOARD`）。
 
+`node scripts/verify-layout.mjs` 校验布局算法：往下拖不会飞到顶上、缩放的块钉在原地、重排后不重叠不留洞。布局到今天出过三次 bug，每次都是「本地看着还行、用户拖起来不对」，所以这些性质用纯函数断言，不靠肉眼。
+
 `node scripts/verify-presets.mjs` 校验模板：组件 id 存在、参数名在 `meta.props` 里声明过、布局不越界不重叠、主题名能解析。手写 JSON 里拼错一个字母不会报错，只会安静地渲染成一张空卡片。
 
 ### 拖拽手感
