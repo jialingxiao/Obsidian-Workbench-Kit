@@ -453,14 +453,17 @@
 
   function startDrag(state, block, el, ev) {
     ev.preventDefault();
-    // 捕获指针：移出元素、越过别的块时事件也不会丢
-    try { ev.target.setPointerCapture(ev.pointerId); } catch (e) {}
+    /* 捕获指针：移出元素、越过别的块时事件也不会丢。
+       捕获挂在块元素上而不是 ev.target —— 后者是标题条里被按到的那个子元素
+       （⠿ 图标、名字 span 都可能），生命周期没有块本身可靠。 */
+    try { el.setPointerCapture(ev.pointerId); } catch (e) {}
     state.snapshot();
     const snapshot = state.data.blocks.map((b) => ({ ...b }));
     const startBox = state.boxOf(block);
     const px = ev.clientX, py = ev.clientY;
 
     el.classList.add("is-dragging");
+    state.activeId = block.id;     // 告诉 ResizeObserver：别碰这个块
     const ghost = makeGhost(state);
     moveGhost(state, ghost, block);
 
@@ -490,8 +493,9 @@
       onMove.cancel();
       document.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerup", onUp);
-      try { ev.target.releasePointerCapture(ev.pointerId); } catch (err) {}
+      try { el.releasePointerCapture(ev.pointerId); } catch (err) {}
       el.classList.remove("is-dragging");
+      state.activeId = null;
       el.style.transform = "";                   // 落格由 applyLayout 接手
       ghost.remove();
       state.applyLayout();
@@ -505,7 +509,7 @@
   function startResize(state, block, el, ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    try { ev.target.setPointerCapture(ev.pointerId); } catch (e) {}
+    try { el.setPointerCapture(ev.pointerId); } catch (e) {}
     state.snapshot();
     const snapshot = state.data.blocks.map((b) => ({ ...b }));
     const startBox = state.boxOf(block);
@@ -513,6 +517,7 @@
     const w0 = block.w, h0 = block.h;
 
     el.classList.add("is-resizing");
+    state.activeId = block.id;
     const ghost = makeGhost(state);
     moveGhost(state, ghost, block);
 
@@ -546,8 +551,9 @@
       onMove.cancel();
       document.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerup", onUp);
-      try { ev.target.releasePointerCapture(ev.pointerId); } catch (err) {}
+      try { el.releasePointerCapture(ev.pointerId); } catch (err) {}
       el.classList.remove("is-resizing");
+      state.activeId = null;
       ghost.remove();
       state.applyLayout();
       state.save();

@@ -379,9 +379,23 @@
        fitHeight —— 又是一份会漂的副本。组件本身用不到这个。 */
     root.__wbState = state;
 
-    // 容器宽度变了（侧栏开合、窗口缩放）要重算像素位置
+    /* 容器宽度变了（侧栏开合、窗口缩放）要重算像素位置。
+     *
+     * 只认宽度。高度是 applyLayout 自己写上去的（grid.style.height 跟着
+     * 总行数走），监听高度等于自己触发自己：拖动跨格 → 行数变 → 高度变 →
+     * RO 回调 → applyLayout() 又把正在拖的那个块按栅格位置写回去，和跟手用的
+     * transform 打架。只在行数变化时才发生，所以表现为「有时候」不跟手。
+     *
+     * 回调里也要带上 activeId：正在拖/缩放的块由拖拽代码直接写像素值，
+     * 谁都不许改它。 */
     if (typeof ResizeObserver !== "undefined") {
-      const ro = new ResizeObserver(() => applyLayout());
+      let lastW = 0;
+      const ro = new ResizeObserver(() => {
+        const w = grid.clientWidth;
+        if (w === lastW) return;
+        lastW = w;
+        applyLayout(state.activeId);
+      });
       ro.observe(grid);
     }
   }
