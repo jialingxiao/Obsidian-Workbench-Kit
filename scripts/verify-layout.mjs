@@ -201,6 +201,63 @@ console.log("── 放哪就是哪（float，默认行为）──");
   }
 }
 
+console.log("");
+console.log("── 落点吸附（磁吸）──");
+{
+  const F = { float: true };
+  {
+    /* 差一行没对准 → 贴上去 */
+    const blocks = [
+      { id: "a", x: 0, y: 0, w: 12, h: 6 },
+      { id: "b", x: 0, y: 20, w: 12, h: 6 },
+    ];
+    const out = board.place(blocks, { ...at(blocks, "b"), y: 7 }, COLS, F);
+    check("离上方块只差 1 行 → 贴上去", at(out, "b").y === 6, `b.y=${at(out, "b").y}`);
+  }
+  {
+    /* 差得多 → 说明是故意留的空，不动 */
+    const blocks = [
+      { id: "a", x: 0, y: 0, w: 12, h: 6 },
+      { id: "b", x: 0, y: 20, w: 12, h: 6 },
+    ];
+    const out = board.place(blocks, { ...at(blocks, "b"), y: 14 }, COLS, F);
+    check("缝隙大 → 保持原样，不被吸走", at(out, "b").y === 14, `b.y=${at(out, "b").y}`);
+  }
+  {
+    /* 并排两块，顶边差一行 → 对齐 */
+    const blocks = [
+      { id: "a", x: 0,  y: 10, w: 12, h: 6 },
+      { id: "b", x: 12, y: 30, w: 12, h: 6 },
+    ];
+    const out = board.place(blocks, { ...at(blocks, "b"), y: 11 }, COLS, F);
+    check("并排时顶边差 1 行 → 对齐", at(out, "b").y === 10, `b.y=${at(out, "b").y}`);
+  }
+  {
+    /* 横向：差一列 → 贴到邻居右边缘 */
+    const blocks = [
+      { id: "a", x: 0,  y: 0,  w: 12, h: 6 },
+      { id: "b", x: 0,  y: 20, w: 10, h: 6 },
+    ];
+    const out = board.place(blocks, { ...at(blocks, "b"), x: 13, y: 20 }, COLS, F);
+    check("横向差 1 列 → 贴到邻居右边缘", at(out, "b").x === 12, `b.x=${at(out, "b").x}`);
+  }
+  {
+    /* 靠近顶部 → 贴顶 */
+    const blocks = [{ id: "a", x: 0, y: 30, w: 12, h: 6 }];
+    const out = board.place(blocks, { ...at(blocks, "a"), y: 2 }, COLS, F);
+    check("离顶部只差 2 行 → 贴顶", at(out, "a").y === 0, `a.y=${at(out, "a").y}`);
+  }
+  {
+    /* 吸附之后仍然不能重叠 */
+    const blocks = [
+      { id: "a", x: 0, y: 0,  w: 12, h: 6 },
+      { id: "b", x: 0, y: 20, w: 12, h: 6 },
+    ];
+    const out = board.place(blocks, { ...at(blocks, "b"), y: 5 }, COLS, F);
+    check("吸附后不产生重叠", !overlaps(out), show(out));
+  }
+}
+
 console.log("\n── 找空位（findSlot）──");
 {
   const blocks = [{ id: "a", x: 0, y: 0, w: 12, h: 6 }];

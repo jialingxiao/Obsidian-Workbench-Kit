@@ -95,7 +95,13 @@
    * 拖动用这个：被拖的块享有最高重力优先级，跟手才自然。 */
   function place(blocks, moved, cols, opts) {
     clamp(moved, cols);
-    return arrange(blocks, moved, cols, null, opts && opts.float);
+    const float = !!(opts && opts.float);
+    // 吸附只在「放哪就是哪」下有意义：压紧模式本来就不留缝
+    if (float && !(opts && opts.snap === false)) {
+      snapMoved(moved, blocks.filter((b) => b.id !== moved.id), cols);
+      clamp(moved, cols);
+    }
+    return arrange(blocks, moved, cols, null, float);
   }
 
   /* 缩放专用：被改尺寸的块钉在原地，只让别人给它让路。
@@ -138,6 +144,54 @@
     while (hits(down)) down++;
     if (hits(up)) return down;                       // 上面根本没地方
     return b.y - up <= down - b.y ? up : down;
+  }
+
+  /* ── 落点吸附 ────────────────────────────────────────────
+   *
+   * 「放哪就是哪」允许留白，代价是常留下一两行的零星缝隙 —— 不是你想要的
+   * 间距，只是没对准。松手时把这种近失误吸掉：离邻居只差一点点就贴上去，
+   * 差得多就说明是你故意留的，不动。
+   *
+   * 阈值刻意小（纵向 2 行 ≈ 44px、横向 1 列）。放大只会让「我明明想留空」
+   * 变成「它又自己跑了」—— 那正是自动压紧被换掉的原因。
+   *
+   * 只吸被拖的那一块。别的块跟着一起吸，就又变成整页重排了。 */
+  const SNAP_ROWS = 2;
+  const SNAP_COLS = 1;
+
+  function pickNear(cands, v, max) {
+    let best = null, bestD = Infinity;
+    for (const c of cands) {
+      const d = Math.abs(c - v);
+      if (d <= max && d < bestD) { best = c; bestD = d; }
+    }
+    return best;
+  }
+
+  function snapMoved(moved, others, cols) {
+    const sameCols = (o) => o.x < moved.x + moved.w && moved.x < o.x + o.w;
+
+    /* 纵向：贴到上方块的底边、与任意块的顶边对齐、贴看板顶部。
+       「与任意块顶边对齐」不要求列重叠 —— 并排两块顶边齐平最好看。 */
+    /* 候选按优先级排：邻居在前、看板边缘在后。
+       两个候选距离相同时（比如「贴邻居右边缘」和「贴看板右边」正好都差 1 列），
+       pickNear 取先出现的那个 —— 所以顺序必须是刻意的，不能靠遍历碰运气。 */
+    const ys = [];
+    for (const o of others) {
+      if (sameCols(o)) ys.push(o.y + o.h);
+      ys.push(o.y);
+    }
+    ys.push(0);
+    const y = pickNear(ys.filter((v) => v >= 0), moved.y, SNAP_ROWS);
+    if (y != null) moved.y = y;
+
+    /* 横向：与任意块左边缘对齐、紧贴其右边缘、贴看板左右边 */
+    const xs = [];
+    for (const o of others) { xs.push(o.x); xs.push(o.x + o.w); }
+    xs.push(0, cols - moved.w);
+    const x = pickNear(xs.filter((v) => v >= 0 && v + moved.w <= cols), moved.x, SNAP_COLS);
+    if (x != null) moved.x = x;
+    return moved;
   }
 
   function arrange(blocks, moved, cols, pinnedId, float) {
@@ -471,7 +525,7 @@
   }
 
   return {
-    render, place, resize, compactOrdered, relayout, settle, findSlot,
+    render, place, resize, compactOrdered, relayout, settle, snapMoved, findSlot,
     overlap, clamp, rowsOf, byPos, newId, DEFAULT_BOARD,
   };
 }
