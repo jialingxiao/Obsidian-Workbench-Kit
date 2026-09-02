@@ -421,8 +421,36 @@
     });
   }
 
-  /* 拖动中：被拖的块跟着指针走（像素级），其他块按栅格实时让位。
-   * 只有松手时才落到栅格上并保存。 */
+  /* ── 拖动与缩放 ──────────────────────────────────────────
+   *
+   * 三条规矩，缺一个就会「不跟手」：
+   *
+   * 1. 被操作的那个块永远排除在 applyLayout 之外，由这里直接写像素值。
+   *    交给 applyLayout 的话它会被写成整格数值 —— 于是块是一格一格跳的。
+   *    以前拖动做对了（applyLayout(block.id)），缩放漏了 skipId，所以
+   *    缩放手感明显比拖动差一截。
+   *
+   * 2. 只有落点格子真的变了才重跑布局算法。指针在同一格里移动时，
+   *    别人不需要让位。以前每个 pointermove 都跑一遍完整的碰撞检测加
+   *    两步压紧，高刷屏上一秒一百多次，还把其他块 160ms 的过渡动画
+   *    反复打断重启，整体就发黏。
+   *
+   * 3. pointermove 用 rAF 归并。浏览器一帧内可能给好几个事件，
+   *    没必要一帧算好几遍。
+   */
+
+  /* 把一串 pointermove 压成每帧最多一次 */
+  function rafThrottle(fn) {
+    let pending = null, id = 0;
+    const run = () => { id = 0; if (pending) fn(pending); };
+    const push = (e) => {
+      pending = { clientX: e.clientX, clientY: e.clientY };
+      if (!id) id = requestAnimationFrame(run);
+    };
+    push.cancel = () => { if (id) cancelAnimationFrame(id); id = 0; pending = null; };
+    return push;
+  }
+
   function startDrag(state, block, el, ev) {
     ev.preventDefault();
     // 捕获指针：移出元素、越过别的块时事件也不会丢
@@ -436,25 +464,35 @@
     const ghost = makeGhost(state);
     moveGhost(state, ghost, block);
 
-    const onMove = (e) => {
+    // 记住上一次的落点格子，没变就不重排
+    let lastX = block.x, lastY = block.y;
+
+    const onMove = rafThrottle((e) => {
       const g = state.geo();
       const dx = e.clientX - px, dy = e.clientY - py;
-      el.style.left = `${startBox.left + dx}px`;
-      el.style.top = `${startBox.top + dy}px`;
+
+      /* 跟手用 transform 而不是改 left/top：translate 走合成，不触发
+         重排；改 left/top 每帧都要让浏览器重新算一遍布局。 */
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
 
       const nx = Math.round((startBox.left + dx) / (g.colW + g.gap));
       const ny = Math.round((startBox.top + dy) / (g.rowH + g.gap));
+      if (nx === lastX && ny === lastY) return;   // 还在同一格，别人不用动
+      lastX = nx; lastY = ny;
+
       const moved = { ...block, x: nx, y: ny };
       WB.runtime.applyPositions(state.data.blocks, WB.board.place(snapshot, moved, g.cols));
       moveGhost(state, ghost, block);
-      state.applyLayout(block.id);
-    };
+      state.applyLayout(block.id);               // 跳过自己，保持跟手
+    });
 
-    const onUp = (e) => {
+    const onUp = () => {
+      onMove.cancel();
       document.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerup", onUp);
       try { ev.target.releasePointerCapture(ev.pointerId); } catch (err) {}
       el.classList.remove("is-dragging");
+      el.style.transform = "";                   // 落格由 applyLayout 接手
       ghost.remove();
       state.applyLayout();
       state.save();
@@ -470,6 +508,7 @@
     try { ev.target.setPointerCapture(ev.pointerId); } catch (e) {}
     state.snapshot();
     const snapshot = state.data.blocks.map((b) => ({ ...b }));
+    const startBox = state.boxOf(block);
     const px = ev.clientX, py = ev.clientY;
     const w0 = block.w, h0 = block.h;
 
@@ -477,18 +516,34 @@
     const ghost = makeGhost(state);
     moveGhost(state, ghost, block);
 
-    const onMove = (e) => {
+    let lastW = w0, lastH = h0;
+
+    const onMove = rafThrottle((e) => {
       const g = state.geo();
-      const nw = Math.max(1, Math.round(w0 + (e.clientX - px) / (g.colW + g.gap)));
-      const nh = Math.max(2, Math.round(h0 + (e.clientY - py) / (g.rowH + g.gap)));
+      const dx = e.clientX - px, dy = e.clientY - py;
+
+      /* 尺寸没法用 transform（scale 会把内容一起拉变形），只能写像素。
+         但只写这一个元素，代价可以接受；关键是别让 applyLayout 把它
+         改回整格。 */
+      const maxW = (g.cols - block.x) * (g.colW + g.gap) - g.gap;
+      el.style.width = `${Math.max(g.colW, Math.min(maxW, startBox.width + dx))}px`;
+      el.style.height = `${Math.max(g.rowH * 2 + g.gap, startBox.height + dy)}px`;
+
+      const nw = Math.max(1, Math.min(g.cols - block.x,
+                          Math.round(w0 + dx / (g.colW + g.gap))));
+      const nh = Math.max(2, Math.round(h0 + dy / (g.rowH + g.gap)));
+      if (nw === lastW && nh === lastH) return;
+      lastW = nw; lastH = nh;
+
       // 用 resize() 而不是 place()：被改尺寸的块要钉在原地，只让别人让路
       const moved = { ...block, w: nw, h: nh };
       WB.runtime.applyPositions(state.data.blocks, WB.board.resize(snapshot, moved, g.cols));
       moveGhost(state, ghost, block);
-      state.applyLayout();
-    };
+      state.applyLayout(block.id);               // 同样要跳过自己
+    });
 
-    const onUp = (e) => {
+    const onUp = () => {
+      onMove.cancel();
       document.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerup", onUp);
       try { ev.target.releasePointerCapture(ev.pointerId); } catch (err) {}

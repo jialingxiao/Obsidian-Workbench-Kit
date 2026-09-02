@@ -131,10 +131,13 @@
     linear-gradient(135deg, transparent 70%, var(--wb-faint) 70%, var(--wb-faint) 80%, transparent 80%);
 }
 
-/* 拖动中：脱离过渡动画，跟手才不粘滞 */
+/* 拖动中：脱离过渡动画，跟手才不粘滞。
+   will-change 让浏览器提前把它提到独立合成层，transform 每帧就不用重排。
+   注意只在拖动时加 —— 常驻 will-change 会白占显存。 */
 .wb .wb-blk.is-dragging,
 .wb .wb-blk.is-resizing {
   transition: none;
+  will-change: transform, width, height;
   user-select: none;
   z-index: 20;
   opacity: .92;

@@ -150,7 +150,6 @@
 
 const THEMES = ["sujian", "xuanzhi", "shuimo", "zhusha", "qingci", "qiuhao", "zhuying", "ganyu",
                 "songyan", "dianlan", "yaoshi", "chenlv"];
-const PRESETS = ["knowledge", "planner", "start", "writing"];
 const IDS = [
   // header
   "masthead", "clock", "greeting", "quote", "banner",
@@ -185,15 +184,23 @@ const FAKE_ATTACHMENTS = Array.from({ length: 18 }, (_, i) => ({
   stat: { size: 20000 + i * 37000 },
 }));
 
+/* _wb/ 下的条目在 render() 里用真实目录列表填进来，不在这里写死。
+   以前这里是拿 IDS / THEMES / PRESETS 三个手写数组拼的，加了五套模板之后
+   PRESETS 还停在原来四套 —— 空看板只摆得出四张模板卡片，看着像功能坏了，
+   其实是测试台的清单过期了。 */
 const FAKE_FILES = [
   ...FAKE_ATTACHMENTS,
-  { path: "_wb/view.js" },
-  { path: "_wb/core/runtime.js" },
-  ...IDS.map((id) => ({ path: `_wb/components/${id}/component.js` })),
-  ...THEMES.map((t) => ({ path: `_wb/themes/${t}.css` })),
-  ...PRESETS.map((t) => ({ path: `_wb/presets/${t}.json` })),
   ...FAKE_PAGES.map((p) => ({ path: p.file.path })),
 ];
+
+async function syncWbFiles() {
+  const wb = await fetchWbFileList();
+  for (let i = FAKE_FILES.length - 1; i >= 0; i--) {
+    if (FAKE_FILES[i].path.startsWith("_wb/")) FAKE_FILES.splice(i, 1);
+  }
+  FAKE_FILES.push({ path: "_wb/view.js" }, { path: "_wb/core/runtime.js" }, ...wb);
+  return wb.length;
+}
 
 /* 内存版 vault.adapter：布局存 localStorage，刷新页面也还在，
    跟真实 Obsidian 里存 JSON 文件的行为一致。 */
@@ -339,6 +346,7 @@ async function render() {
 
   try {
     await loadDispatcher();
+    log("假库里的 _wb 文件", await syncWbFiles(), "个");
 
     /* 先用一次性容器把内核引导起来。原生数据层的任务索引必须在任何组件
        渲染之前建好 —— 任务是同步读的，索引没就绪就只会显示「没有待办」。
