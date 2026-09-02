@@ -475,9 +475,8 @@
     const ghost = makeGhost(state);
     moveGhost(state, ghost, block);
 
-    // 记住上一次的落点格子，没变就不用重算
+    // 记住「你拖到的那一格」。松手时喂回算法的就是它。
     let lastX = block.x, lastY = block.y;
-    let landing = { ...block };
 
     const onMove = rafThrottle((e) => {
       const g = state.geo();
@@ -497,8 +496,10 @@
          自己要落到哪；而且拖拽代码和布局代码同时在写同一批元素，
          「谁把谁改回去」这类竞态就是从这儿来的。
          place() 只算不写，真正落位留到松手时。 */
-      landing = landingOf(snapshot, { ...block, x: nx, y: ny }, g.cols) || landing;
-      moveGhost(state, ghost, landing);
+      // ghost 显示的是压紧之后的落点；而松手时要喂回算法的是「你拖到的那一格」，
+      // 两者不能混用，见 onUp 里的说明
+      const preview = landingOf(snapshot, { ...block, x: nx, y: ny }, g.cols);
+      if (preview) moveGhost(state, ghost, preview);
     });
 
     const onUp = () => {
@@ -512,8 +513,14 @@
          现在是无过渡地一步归位，正好落在 ghost 所在的地方。 */
       state.activeId = null;
       el.style.transform = "";
+      /* 喂回去的必须是「你拖到的那一格」(lastX/lastY)，不能是 ghost 上
+         那个已经压紧过的坐标。place() 不是幂等的：把它的输出再喂一遍，
+         排布结果会变。举个真实例子 —— a 在 y0、b 在 y6，把 a 往下拖到
+         y20：算一遍得到 a 落在 y6、b 升到 y0（ghost 就是这么画的）；
+         若拿 y6 再算一遍，这次轮到 b 给 a 让路，最后 a 回到 y0、b 掉到
+         y6，两块正好对调。表现就是「虚框在这儿，松手却跑到别处」。 */
       WB.runtime.applyPositions(state.data.blocks,
-        WB.board.place(snapshot, { ...block, x: landing.x, y: landing.y }, state.geo().cols));
+        WB.board.place(snapshot, { ...block, x: lastX, y: lastY }, state.geo().cols));
       state.applyLayout();
       ghost.remove();
       el.classList.remove("is-dragging");
@@ -540,7 +547,6 @@
     moveGhost(state, ghost, block);
 
     let lastW = w0, lastH = h0;
-    let landing = { ...block };
 
     const onMove = rafThrottle((e) => {
       const g = state.geo();
@@ -561,8 +567,7 @@
 
       // 同样延迟让位。ghost 直接显示目标尺寸 —— 缩放时被拖的块钉在原地，
       // 落点就是它自己的新尺寸，不需要再过一遍布局算法
-      landing = { ...block, w: nw, h: nh };
-      moveGhost(state, ghost, landing);
+      moveGhost(state, ghost, { ...block, w: nw, h: nh });
     });
 
     const onUp = () => {
@@ -574,7 +579,7 @@
       state.activeId = null;
       el.style.width = ""; el.style.height = "";   // 交回 applyLayout
       WB.runtime.applyPositions(state.data.blocks,
-        WB.board.resize(snapshot, { ...block, w: landing.w, h: landing.h }, state.geo().cols));
+        WB.board.resize(snapshot, { ...block, w: lastW, h: lastH }, state.geo().cols));
       state.applyLayout();
       ghost.remove();
       el.classList.remove("is-resizing");

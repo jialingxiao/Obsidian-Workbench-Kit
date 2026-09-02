@@ -70,6 +70,28 @@ console.log("── 拖动（place）──");
         `a.y=${at(out,"a").y} b.y=${at(out,"b").y}`);
 }
 
+console.log("");
+console.log("── 落点计算的输入（place 不是幂等的）──");
+{
+  /* 松手时喂回算法的必须是「用户拖到的那一格」，不能是 ghost 上那个
+     已经压紧过的坐标。这一条曾经写错，表现是「虚框在这儿、松手却跑到别处」：
+     a 在 y0、b 在 y6，把 a 拖到 y20 —— 算一遍得到 a 落在 b 之下（ghost 就
+     这么画）；拿这个结果再算一遍，轮到 b 给 a 让路，两块正好对调。
+     下面把这个非幂等性钉死：谁再改成「把输出喂回去」，这里就会亮。 */
+  const blocks = [
+    { id: "a", x: 0, y: 0, w: 12, h: 6 },
+    { id: "b", x: 0, y: 6, w: 12, h: 6 },
+  ];
+  const once = board.place(blocks, { ...at(blocks, "a"), y: 20 }, COLS);
+  const twice = board.place(blocks, { ...at(blocks, "a"), y: at(once, "a").y }, COLS);
+  check("place() 的输出再喂一遍结果就变了 —— 所以只能喂用户拖到的格子",
+        at(once, "a").y !== at(twice, "a").y,
+        `一次=${at(once, "a").y} 两次=${at(twice, "a").y}`);
+  check("按用户意图算：a 往下拖之后确实落在 b 之下",
+        at(once, "a").y > at(once, "b").y,
+        `a.y=${at(once, "a").y} b.y=${at(once, "b").y}`);
+}
+
 console.log("\n── 缩放（resize）──");
 {
   const blocks = [
